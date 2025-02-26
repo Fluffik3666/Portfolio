@@ -1,3 +1,9 @@
+
+# TODO
+# Make the style floting black card dark mode shaow rounded corner
+# Finish css and html
+# Add section smooth scrolling
+
 from flask import Flask, send_from_directory, render_template
 
 app = Flask(__name__, template_folder='../src/templates', static_folder='../src/static')

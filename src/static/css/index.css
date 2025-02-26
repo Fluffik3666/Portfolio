@@ -1,4 +1,25 @@
+:root {
+    --primary-color: #626F47;
+    --secondary-color: #A4B465;
+    --background-color: #FEFAE0;
+    --text-color: #212529;
+    --accent-color: #FFCF50;
+}
+
+
 .container {
     display: flex;
-    background-color: red;
+}
+
+.navbar {
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 1rem;
+}
+
+.navbar-brand a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-size: 1.5rem;
+    font-weight: bold;
 }
