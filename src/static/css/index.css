@@ -1,24 +1,29 @@
 :root {
-    --primary-color: #626F47;
-    --secondary-color: #A4B465;
+    --primary-color: #ffffff;
+    --secondary-color: #000000;
     --background-color: #FEFAE0;
     --text-color: #212529;
-    --accent-color: #FFCF50;
+    --accent-color: #626F47;
 }
 
+html {
+    background: var(--primary-color);
+}
 
 .container {
     display: flex;
 }
 
 .navbar {
-    background-color: white;
+    border: 3px solid var(--accent-color);
+    stroke-width: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     padding: 1rem;
+    border-radius: 8px;
 }
 
 .navbar-brand a {
-    color: var(--primary-color);
+    color: var(--text-color);
     text-decoration: none;
     font-size: 1.5rem;
     font-weight: bold;
