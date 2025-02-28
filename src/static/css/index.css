@@ -204,6 +204,12 @@ html {
     margin-bottom: 20px;
 }
 
+@media (min-width: 768px) {
+    .photo img {
+        width: 25%;
+    }
+}
+
 .content > div {
     opacity: 0;
     transform: translateY(20px);
