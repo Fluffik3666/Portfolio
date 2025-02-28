@@ -1,9 +1,3 @@
-
-# TODO
-# Make the style floting black card dark mode shaow rounded corner
-# Finish css and html
-# Add section smooth scrolling
-
 from flask import Flask, send_from_directory, render_template
 
 app = Flask(__name__, template_folder='../src/templates', static_folder='../src/static')
@@ -21,4 +15,4 @@ def serve_static(filename):
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=8080) # debug flag remove in prod or detect when running on vercel
+    app.run(host='0.0.0.0', port=8080) 
