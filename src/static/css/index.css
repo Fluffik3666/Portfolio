@@ -1,5 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
+
 :root {
-    --primary-color: #ffffff;
+    --primary-color: #f5f5f5;
     --secondary-color: #000000;
     --background-color: #FEFAE0;
     --text-color: #212529;
@@ -12,19 +15,204 @@ html {
 
 .container {
     display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    font-family: 'Poppins', sans-serif;
+    padding: 40px 20px;
+    gap: 40px;
 }
 
-.navbar {
-    border: 3px solid var(--accent-color);
-    stroke-width: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    padding: 1rem;
-    border-radius: 8px;
+
+.intro {
+    text-align: center;
+    width: 100%;
+    position: relative;
 }
 
-.navbar-brand a {
+.buttons {
+    width: 100%;
+    max-width: 1200px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+@media (min-width: 768px) {
+    .buttons {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Our button code */
+.button-container {
+    display: flex;
+    flex-direction: column;
+    place-items: center;
+    background-color: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    height: auto;
+}
+
+.button-container.collapsed {
+    height: 40px; /* Height for icon only */
+    padding: 10px;
+}
+
+.button-container.collapsed .top-row,
+.button-container.collapsed .subtext,
+.button-container.collapsed .badge-text {
+    opacity: 0;
+    height: 0;
+    overflow: hidden;
+    transition: opacity 0.3s ease, height 0.3s ease;
+}
+
+.button-container.collapsed .icon {
+    animation: none;
+    margin: 0;
+    transform: rotate(180deg);
+}
+
+.button-container.inactive {
+    opacity: 0.5;
+    filter: blur(1px);
+}
+
+.button-container:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transform: translateY(-4px);
+    filter: none;
+    opacity: 1;
+}
+
+.top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    opacity: 1;
+    height: auto;
+    transition: opacity 0.3s ease, height 0.3s ease;
+}
+
+.main-text {
+    font-size: 20px;
+    font-weight: 600;
+    color: #000;
+}
+
+.badge {
+    display: flex;
+    align-items: center;
+    background-color: #c7d0ff;
+    border-radius: 12px;
+    padding: 6px 12px;
+}
+
+.icon {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 6px;
+    color: #666;
+    font-size: 12px;
+    cursor: pointer;
+    animation: float 2s ease-in-out infinite;
+}
+
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+}
+
+.icon:hover {
+    transform: scale(1.2);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.content {
+    width: 100%;
+    max-width: 1200px;
+    margin-top: 0;
+}
+
+.projects, .skills {
+    background-color: white;
+    border-radius: 16px;
+    padding: 30px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.projects h2, .skills h2, .myphotography h2, .contact h2 {
     color: var(--text-color);
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+.project, .skill, .contact, .photo {
+    border-bottom: 1px solid #e0e0e0;
+    padding: 20px 0;
+}
+
+.project:last-child, .skill:last-child, .contact:last-child, .photo:last-child {
+    border-bottom: none;
+}
+
+.project h3, .skill h3, .contact h3, .photo h3 {
+    color: var(--accent-color);
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+.project span, .skill span, .contact span, .photo span {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #666;
+}
+
+.project p, .skill p, .contact p, .photo p {
+    color: var(--text-color);
+    line-height: 1.6;
+    font-size: 16px;
     text-decoration: none;
-    font-size: 1.5rem;
-    font-weight: bold;
+}
+
+.project a, .skill a, .contact a, .photo a {
+    color: var(--text-color);
+    line-height: 1.6;
+    font-size: 16px;
+    text-decoration: none;
+}
+
+.photo img {
+    width: 100%;
+    border-radius: 16px;
+    margin-bottom: 20px;
+}
+
+.content > div {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.5s ease;
+    display: none;
+}
+
+.content > div.active {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
 }

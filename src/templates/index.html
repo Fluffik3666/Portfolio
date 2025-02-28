@@ -3,19 +3,198 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
     <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"/>
     <title>My Portfolio</title>
 </head>
 <body>
-    <nav class="navbar">
-        <div class="navbar-brand">
-            <a>Portfolio</a>
-        </div>
-    </nav>
-
-
     <div class="container">
-        <h1>Hello World!</h1>
+        <div class="intro">
+            <h1>Hej! I'm Sasha</h1>
+            <h4>I've been coding since 9 years old and know how to do full stack development. I love theatre tech, photography and videography! My photos are mostly based in London. Have a look at the individual sections to see what I can do!</h4>
+        </div>
+
+        <div class="buttons">
+            <div class="button-container">
+                <div class="top-row">
+                    <div class="main-text">My Projects</div>
+                </div>
+                <div class="icon">
+                    <span class="material-symbols-outlined">
+                        keyboard_arrow_down
+                    </span>
+                </div>
+            </div>
+            
+            <div class="button-container">
+                <div class="top-row">
+                    <div class="main-text">My Skills</div>
+                </div>
+                <div class="icon">
+                    <span class="material-symbols-outlined">
+                        keyboard_arrow_down
+                    </span>
+                </div>
+            </div>
+
+            <div class="button-container">
+                <div class="top-row">
+                    <div class="main-text">My Photography</div>
+                </div>
+                <div class="icon">
+                    <span class="material-symbols-outlined">
+                        keyboard_arrow_down
+                    </span>
+                </div>
+            </div>
+
+            <div class="button-container">
+                <div class="top-row">
+                    <div class="main-text">Contact & Info</div>
+                </div>
+                <div class="icon">
+                    <span class="material-symbols-outlined">
+                        keyboard_arrow_down
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="myprojects">
+                <h2>My Projects</h2>
+                <div class="project">
+                    <a href="https://kidshustle.app">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <h3>Kidshustle</h3>
+                                <p>A work in progress project. Allows for kids and teens to earn money by completing quick jobs.</p>
+                            </div>
+                            <span class="material-symbols-outlined" style="margin-left: 20px;">
+                                chevron_right
+                            </span>
+                        </div>
+                    </a>
+                </div>
+                <div class="project">
+                    <a href="https://pollify.co.uk">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <h3>Pollify</h3>
+                                <p>A privacy focused, open source poll creation site. Built with Firebase, Python, HTML, CSS and JS.</p>
+                            </div>
+                            <span class="material-symbols-outlined" style="margin-left: 20px;">
+                                chevron_right
+                            </span>
+                        </div>
+                    </a>
+                </div>
+                <div class="project">
+                    <a href="https://apps.apple.com/gb/app/animeatlas/id6739979715">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <h3>AnimeAtlas</h3>
+                                <p>Despite not watching anime, AnimeAtlas is a native iOS 15+ SwiftUI anime tracker. Track what anime you watch and more!</p>
+                            </div>
+                            <span class="material-symbols-outlined" style="margin-left: 20px;">
+                                chevron_right
+                            </span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <div class="myskills">
+                <h2>My Skills</h2>
+                <div class="skill">
+                    <h3>Python</h3>
+                    <p>Learned Python for 2 years. Use it regularly for backend.</p>
+                </div>
+                <div class="skill">
+                    <h3>HTML + CSS + JS</h3>
+                    <p>Learned web languages for a year, using them regularly. This website was built with just pure HTML, CSS and JS!</p>
+                </div>
+                <div class="skill">
+                    <h3>Swift + Swift UI</h3>
+                    <p>Started learning Swift and Swift UI in 2024. Now I make apps for Apple Platforms and even have an app on the app store!</p>
+                </div>
+                <div class="skill">
+                    <h3>Google Cloud Platform</h3>
+                    <p>I deploy many projects on GCP. Started using it for Kidshustle for hosting backend services usng kubernetes and docker.</p>
+                </div>
+                <div class="skill">
+                    <h3>Firebase</h3>
+                    <p>My go-to service for fast, free databases and authentication. If the project is more complex, I might even build my own OAuth2 system!</p>
+                </div>
+            </div>
+
+            <div class="myphotography">
+                <h2>My Photography - Around London</h2>
+                <div class="photo">
+                    <img src="{{ url_for('static', filename='images/photography/1.jpg') }}" alt="A photo of a car at night">
+                    <h3>Car at night</h3>
+                    <p>This image is for display purposes only. All rights reserved. Not to be used without explicit permission.</p>
+                </div>
+                <div class="photo">
+                    <img src="{{ url_for('static', filename='images/photography/2.jpg') }}" alt="A photo of a give way sign">
+                    <h3>Give way!</h3>
+                    <p>This image is for display purposes only. All rights reserved. Not to be used without explicit permission.</p>
+                </div>
+                <div class="photo">
+                    <img src="{{ url_for('static', filename='images/photography/3.jpg') }}" alt="A photo of a give way sign">
+                    <h3>Give way more!</h3>
+                    <p>This image is for display purposes only. All rights reserved. Not to be used without explicit permission.</p>
+                </div>
+                <div class="photo">
+                    <img src="{{ url_for('static', filename='images/photography/4.jpg') }}" alt="A photo of a teal car">
+                    <h3>Small teal car</h3>
+                    <p>This image is for display purposes only. All rights reserved. Not to be used without explicit permission.</p>
+                </div>
+                <div class="photo">
+                    <img src="{{ url_for('static', filename='images/photography/5.jpg') }}" alt="A photo of a lime bike layed down on the sidewalk">
+                    <h3>Tired Lime Bike</h3>
+                    <p>This image is for display purposes only. All rights reserved. Not to be used without explicit permission.</p>
+                </div>
+            </div>
+
+            <div class="contactinfo">
+                <h2>Contact & Info</h2>
+                <div class="contact">
+                    <a href="https://github.com/Fluffik3666">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <h3>Github</h3>
+                                <p>Check out my github and check out my repositories!</p>
+                            </div>
+                            <span class="material-symbols-outlined" style="margin-left: 20px;">
+                                chevron_right
+                            </span>
+                        </div>
+                    </a>
+                </div>
+                <div class="contact">
+                    <a href="mailto:sasha@urbanmechanics.co.uk">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <h3>Email</h3>
+                                <p>Email me! I'll try to respond as fast as I can.</p>
+                            </div>
+                            <span class="material-symbols-outlined" style="margin-left: 20px;">
+                                mail
+                            </span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <footer style="text-align: center; width: 100%; margin: 20px 0;"></footer>
+                <p>&copy; 2024 Sasha Bagrov. All rights reserved.</p>
+            </footer>
+        </div>
     </div>
+
+    <script src="{{ url_for('static', filename='js/index.js') }}"></script>
 </body>
 </html>
