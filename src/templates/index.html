@@ -12,10 +12,18 @@
 <body>
     <div class="container">
         <div class="intro">
+            <div class="profile-container">
+                <svg class="arrow" width="200" height="100" viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M30,80 Q65,15 160,40" fill="none" stroke="#1e1e1e" stroke-width="2" stroke-dasharray="5,5"></path>
+                    <text x="30" y="30" font-family="Gloria Hallelujah" font-size="16">duck.</text>
+                </svg>
+                <div class="profile-pic">
+                    <img src="{{ url_for('static', filename='images/pfp/profile.jpg') }}" alt="Profile picture">
+                </div>
+            </div>
             <h1>Hej! I'm Sasha</h1>
             <h4>I've been coding since 9 years old and know how to do full stack development. I love theatre tech, photography and videography! My photos are mostly based in London. Have a look at the individual sections to see what I can do!</h4>
         </div>
-
         <div class="buttons">
             <div class="button-container">
                 <div class="top-row">
