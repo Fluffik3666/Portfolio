@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"/>
+    <title>New Post - Admin</title>
+</head>
+<body>
+    <div class="container">
+        <div class="nav-back">
+            <a href="{{ url_for('admin') }}">
+                <span class="material-symbols-outlined">arrow_back</span>
+                Back to Admin
+            </a>
+        </div>
+
+        <form class="admin-form" method="POST">
+            <div class="form-header">
+                <h1>Create New Post</h1>
+            </div>
+
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <div class="flash-messages">
+                        {% for message in messages %}
+                            <div class="flash-message">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <div class="form-group">
+                <label for="title">Post Title</label>
+                <input type="text" id="title" name="title" required placeholder="Enter post title...">
+            </div>
+
+            <div class="form-group">
+                <label for="content">Post Content</label>
+                <textarea id="content" name="content" required placeholder="Write your post content here. You can use HTML tags for formatting..."></textarea>
+            </div>
+
+            <div class="form-actions">
+                <a href="{{ url_for('admin') }}" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary">
+                    <span class="material-symbols-outlined">publish</span>
+                    Publish Post
+                </button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

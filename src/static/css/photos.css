@@ -1,0 +1,313 @@
+.header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.nav-back {
+    margin-bottom: 30px;
+    text-align: left;
+}
+
+.nav-back a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--accent-color);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+    padding: 8px 12px;
+    border-radius: 8px;
+}
+
+.nav-back a:hover {
+    color: var(--text-color);
+    background-color: rgba(98, 111, 71, 0.1);
+}
+
+.nav-back .material-symbols-outlined {
+    font-size: 20px;
+}
+
+.header h1 {
+    color: var(--text-color);
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.header p {
+    color: var(--text-color);
+    font-size: 1.2rem;
+    opacity: 0.7;
+    max-width: 700px;
+    margin: 0 auto;
+    line-height: 1.5;
+}
+
+.photo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    grid-auto-rows: 280px;
+}
+
+@media (min-width: 768px) {
+    .photo-grid {
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        grid-auto-rows: 320px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .photo-grid {
+        grid-template-columns: repeat(4, 1fr);
+        grid-auto-rows: 280px;
+    }
+}
+
+.photo-item {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+.photo-item.large {
+    grid-column: span 2;
+    grid-row: span 2;
+}
+
+.photo-item.wide {
+    grid-column: span 2;
+    grid-row: span 1;
+}
+
+.photo-item.tall {
+    grid-column: span 1;
+    grid-row: span 2;
+}
+
+@media (max-width: 1023px) {
+    .photo-item.large {
+        grid-column: span 2;
+        grid-row: span 1;
+    }
+    
+    .photo-item.wide {
+        grid-column: span 2;
+        grid-row: span 1;
+    }
+    
+    .photo-item.tall {
+        grid-column: span 1;
+        grid-row: span 1;
+    }
+}
+
+@media (max-width: 767px) {
+    .photo-item.large,
+    .photo-item.wide,
+    .photo-item.tall {
+        grid-column: span 1;
+        grid-row: span 1;
+    }
+}
+
+.photo-item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.photo-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+    display: block;
+}
+
+.photo-item:hover img {
+    transform: scale(1.05);
+}
+
+.photo-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        to bottom,
+        transparent 0%,
+        transparent 50%,
+        rgba(0, 0, 0, 0.7) 100%
+    );
+    display: flex;
+    align-items: flex-end;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    padding: 20px;
+}
+
+.photo-item:hover .photo-overlay {
+    opacity: 1;
+}
+
+.photo-details {
+    color: white;
+    width: 100%;
+}
+
+.photo-details h3 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: white !important;
+}
+
+.photo-details p {
+    font-size: 0.85rem;
+    line-height: 1.4;
+    opacity: 0.9;
+    color: white !important;
+}
+
+@media (hover: none) and (pointer: coarse) {
+    .photo-overlay {
+        opacity: 0.8;
+    }
+    
+    .photo-item:hover {
+        transform: none;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    .photo-item:hover img {
+        transform: none;
+    }
+}
+
+.photo-item {
+    animation: fadeInUp 0.6s ease forwards;
+    opacity: 0;
+    transform: translateY(30px);
+}
+
+.photo-item:nth-child(1) { animation-delay: 0.1s; }
+.photo-item:nth-child(2) { animation-delay: 0.15s; }
+.photo-item:nth-child(3) { animation-delay: 0.2s; }
+.photo-item:nth-child(4) { animation-delay: 0.25s; }
+.photo-item:nth-child(5) { animation-delay: 0.3s; }
+.photo-item:nth-child(6) { animation-delay: 0.35s; }
+.photo-item:nth-child(7) { animation-delay: 0.4s; }
+.photo-item:nth-child(8) { animation-delay: 0.45s; }
+.photo-item:nth-child(9) { animation-delay: 0.5s; }
+.photo-item:nth-child(10) { animation-delay: 0.55s; }
+.photo-item:nth-child(11) { animation-delay: 0.6s; }
+.photo-item:nth-child(12) { animation-delay: 0.65s; }
+.photo-item:nth-child(n+13) { animation-delay: 0.7s; }
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    animation: fadeIn 0.3s ease;
+}
+
+.modal-content {
+    position: relative;
+    margin: auto;
+    padding: 20px;
+    width: 90%;
+    max-width: 1200px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-close {
+    position: absolute;
+    top: 20px;
+    right: 35px;
+    color: white;
+    font-size: 40px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 1001;
+    transition: color 0.3s ease;
+}
+
+.modal-close:hover {
+    color: #ccc;
+}
+
+#modalImage {
+    max-width: 100%;
+    max-height: 70vh;
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.modal-info {
+    text-align: center;
+    color: white;
+    margin-top: 20px;
+    max-width: 600px;
+}
+
+.modal-info h3 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    color: white !important;
+}
+
+.modal-info p {
+    font-size: 0.9rem;
+    opacity: 0.8;
+    line-height: 1.4;
+    color: white !important;
+}
+
+@media (max-width: 768px) {
+    .modal-close {
+        top: 10px;
+        right: 20px;
+        font-size: 30px;
+    }
+    
+    #modalImage {
+        max-height: 60vh;
+    }
+    
+    .modal-info {
+        margin-top: 15px;
+        padding: 0 10px;
+    }
+    
+    .modal-info h3 {
+        font-size: 1.2rem;
+    }
+}
