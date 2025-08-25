@@ -1,6 +1,6 @@
 from datetime import datetime
 from better_profanity import profanity
-from firebase_config import initialize_firebase, ADMIN_EMAIL
+from src.firebase_config import initialize_firebase, ADMIN_EMAIL
 import uuid
 
 db, auth = initialize_firebase()

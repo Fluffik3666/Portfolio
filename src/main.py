@@ -3,8 +3,8 @@ from PIL import Image
 import io
 import os
 import json
-from blog_service import BlogService
-from firebase_config import ADMIN_EMAIL
+from src.blog_service import BlogService
+from src.firebase_config import ADMIN_EMAIL
 
 app = Flask(__name__, template_folder='../src/templates', static_folder='../src/static')
 app.secret_key = os.getenv('SECRET_KEY', 'your-secret-key-change-this')
