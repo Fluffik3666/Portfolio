@@ -5,3 +5,4 @@ better-profanity==0.7.0
 python-dotenv==1.0.0
 pyrebase4==4.8.0
 setuptools==80.9.0
+zipp>=3.19.1 # not directly required, pinned by Snyk to avoid a vulnerability
