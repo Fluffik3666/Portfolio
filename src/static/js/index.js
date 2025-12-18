@@ -35,11 +35,16 @@ if (document.getElementById('professionText')) {
     professionInterval = setInterval(animateProfession, 2000);
 }
 
-// Dreamy smooth scrolling
+// Dreamy smooth scrolling (desktop only)
 let isScrolling = false;
 let targetScroll = window.pageYOffset;
 let currentScroll = window.pageYOffset;
 const scrollSpeed = 0.08; // Lower = slower/dreamier
+
+// Check if device is mobile/touch
+const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+                 ('ontouchstart' in window) ||
+                 (navigator.maxTouchPoints > 0);
 
 function dreamyScroll() {
     if (Math.abs(targetScroll - currentScroll) < 0.5) {
@@ -55,35 +60,19 @@ function dreamyScroll() {
     }
 }
 
-window.addEventListener('wheel', (e) => {
-    e.preventDefault();
-    targetScroll += e.deltaY;
-    targetScroll = Math.max(0, Math.min(targetScroll, document.body.scrollHeight - window.innerHeight));
+// Only apply custom scrolling on desktop
+if (!isMobile) {
+    window.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        targetScroll += e.deltaY;
+        targetScroll = Math.max(0, Math.min(targetScroll, document.body.scrollHeight - window.innerHeight));
 
-    if (!isScrolling) {
-        isScrolling = true;
-        requestAnimationFrame(dreamyScroll);
-    }
-}, { passive: false });
-
-// Handle touch scrolling for mobile
-let touchStartY = 0;
-window.addEventListener('touchstart', (e) => {
-    touchStartY = e.touches[0].clientY;
-});
-
-window.addEventListener('touchmove', (e) => {
-    const touchY = e.touches[0].clientY;
-    const deltaY = touchStartY - touchY;
-    targetScroll += deltaY * 2;
-    targetScroll = Math.max(0, Math.min(targetScroll, document.body.scrollHeight - window.innerHeight));
-    touchStartY = touchY;
-
-    if (!isScrolling) {
-        isScrolling = true;
-        requestAnimationFrame(dreamyScroll);
-    }
-}, { passive: true });
+        if (!isScrolling) {
+            isScrolling = true;
+            requestAnimationFrame(dreamyScroll);
+        }
+    }, { passive: false });
+}
 
 // Navigation visibility on scroll
 const nav = document.getElementById('mainNav');
@@ -91,7 +80,7 @@ const scrollIndicator = document.getElementById('scrollIndicator');
 let lastScroll = 0;
 
 function handleScroll() {
-    const currentScrollPos = currentScroll || window.pageYOffset;
+    const currentScrollPos = isMobile ? window.pageYOffset : (currentScroll || window.pageYOffset);
 
     // Show nav after scrolling past hero section
     if (nav && !nav.classList.contains('visible')) {
@@ -113,7 +102,11 @@ function handleScroll() {
 // Scroll indicator click
 if (scrollIndicator) {
     scrollIndicator.addEventListener('click', () => {
-        targetScroll = window.innerHeight;
+        if (isMobile) {
+            window.scrollTo({ top: window.innerHeight, behavior: 'smooth' });
+        } else {
+            targetScroll = window.innerHeight;
+        }
     });
 }
 
@@ -249,7 +242,7 @@ window.addEventListener('load', () => {
 
 // Parallax effect for elements with data-scroll-speed
 function handleParallax() {
-    const scrolled = currentScroll || window.pageYOffset;
+    const scrolled = isMobile ? window.pageYOffset : (currentScroll || window.pageYOffset);
 
     document.querySelectorAll('[data-scroll-speed]').forEach((el) => {
         const speed = parseFloat(el.getAttribute('data-scroll-speed'));
@@ -259,6 +252,33 @@ function handleParallax() {
 }
 
 window.addEventListener('scroll', handleParallax);
+
+// Mobile menu toggle
+const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+const navLinks = document.querySelector('.nav-links');
+
+if (mobileMenuBtn) {
+    mobileMenuBtn.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+        mobileMenuBtn.classList.toggle('active');
+    });
+
+    // Close menu when clicking a link
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', () => {
+            navLinks.classList.remove('active');
+            mobileMenuBtn.classList.remove('active');
+        });
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.nav-content')) {
+            navLinks.classList.remove('active');
+            mobileMenuBtn.classList.remove('active');
+        }
+    });
+}
 
 // Initial calls
 handleScroll();
