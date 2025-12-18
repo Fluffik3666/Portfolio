@@ -1,57 +1,12 @@
-.header {
-    text-align: center;
-    margin-bottom: 40px;
-}
-
-.nav-back {
-    margin-bottom: 30px;
-    text-align: left;
-}
-
-.nav-back a {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    color: var(--accent-color);
-    text-decoration: none;
-    font-weight: 500;
-    transition: color 0.3s ease;
-    padding: 8px 12px;
-    border-radius: 8px;
-}
-
-.nav-back a:hover {
-    color: var(--text-color);
-    background-color: rgba(98, 111, 71, 0.1);
-}
-
-.nav-back .material-symbols-outlined {
-    font-size: 20px;
-}
-
-.header h1 {
-    color: var(--text-color);
-    font-size: 2.5rem;
-    margin-bottom: 15px;
-    font-weight: 600;
-}
-
-.header p {
-    color: var(--text-color);
-    font-size: 1.2rem;
-    opacity: 0.7;
-    max-width: 700px;
-    margin: 0 auto;
-    line-height: 1.5;
-}
-
+/* Photo Grid Styling */
 .photo-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 20px;
+    gap: 1.5rem;
     width: 100%;
     max-width: 1400px;
     margin: 0 auto;
+    padding: 2rem;
     grid-auto-rows: 280px;
 }
 
@@ -71,12 +26,35 @@
 
 .photo-item {
     position: relative;
-    border-radius: 16px;
     overflow: hidden;
-    background: white;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background: var(--card-bg);
+    border: 3px solid var(--text-color);
     cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    opacity: 0;
+    transform: translateY(50px);
+    animation: fadeInPhoto 0.6s ease forwards;
+}
+
+.photo-item:nth-child(1) { animation-delay: 0.05s; }
+.photo-item:nth-child(2) { animation-delay: 0.1s; }
+.photo-item:nth-child(3) { animation-delay: 0.15s; }
+.photo-item:nth-child(4) { animation-delay: 0.2s; }
+.photo-item:nth-child(5) { animation-delay: 0.25s; }
+.photo-item:nth-child(6) { animation-delay: 0.3s; }
+.photo-item:nth-child(7) { animation-delay: 0.35s; }
+.photo-item:nth-child(8) { animation-delay: 0.4s; }
+.photo-item:nth-child(9) { animation-delay: 0.45s; }
+.photo-item:nth-child(10) { animation-delay: 0.5s; }
+.photo-item:nth-child(11) { animation-delay: 0.55s; }
+.photo-item:nth-child(12) { animation-delay: 0.6s; }
+.photo-item:nth-child(n+13) { animation-delay: 0.65s; }
+
+@keyframes fadeInPhoto {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .photo-item.large {
@@ -99,12 +77,12 @@
         grid-column: span 2;
         grid-row: span 1;
     }
-    
+
     .photo-item.wide {
         grid-column: span 2;
         grid-row: span 1;
     }
-    
+
     .photo-item.tall {
         grid-column: span 1;
         grid-row: span 1;
@@ -121,20 +99,21 @@
 }
 
 .photo-item:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transform: translateY(-8px);
+    box-shadow: 12px 12px 0 var(--text-color);
 }
 
 .photo-item img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.3s ease;
     display: block;
+    transition: transform 0.5s ease, filter 0.3s ease;
 }
 
 .photo-item:hover img {
     transform: scale(1.05);
+    filter: contrast(1.1);
 }
 
 .photo-overlay {
@@ -147,13 +126,13 @@
         to bottom,
         transparent 0%,
         transparent 50%,
-        rgba(0, 0, 0, 0.7) 100%
+        var(--text-color) 100%
     );
     display: flex;
     align-items: flex-end;
     opacity: 0;
     transition: opacity 0.3s ease;
-    padding: 20px;
+    padding: 1.5rem;
 }
 
 .photo-item:hover .photo-overlay {
@@ -161,63 +140,30 @@
 }
 
 .photo-details {
-    color: white;
+    color: var(--bg-color);
     width: 100%;
 }
 
 .photo-details h3 {
-    font-size: 1.2rem;
-    font-weight: 600;
-    margin-bottom: 8px;
-    color: white !important;
-}
-
-.photo-details p {
-    font-size: 0.85rem;
-    line-height: 1.4;
-    opacity: 0.9;
-    color: white !important;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem;
+    text-transform: uppercase;
+    margin: 0;
+    color: var(--bg-color) !important;
 }
 
 @media (hover: none) and (pointer: coarse) {
     .photo-overlay {
         opacity: 0.8;
     }
-    
+
     .photo-item:hover {
         transform: none;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        box-shadow: 8px 8px 0 var(--text-color);
     }
-    
+
     .photo-item:hover img {
         transform: none;
-    }
-}
-
-.photo-item {
-    animation: fadeInUp 0.6s ease forwards;
-    opacity: 0;
-    transform: translateY(30px);
-}
-
-.photo-item:nth-child(1) { animation-delay: 0.1s; }
-.photo-item:nth-child(2) { animation-delay: 0.15s; }
-.photo-item:nth-child(3) { animation-delay: 0.2s; }
-.photo-item:nth-child(4) { animation-delay: 0.25s; }
-.photo-item:nth-child(5) { animation-delay: 0.3s; }
-.photo-item:nth-child(6) { animation-delay: 0.35s; }
-.photo-item:nth-child(7) { animation-delay: 0.4s; }
-.photo-item:nth-child(8) { animation-delay: 0.45s; }
-.photo-item:nth-child(9) { animation-delay: 0.5s; }
-.photo-item:nth-child(10) { animation-delay: 0.55s; }
-.photo-item:nth-child(11) { animation-delay: 0.6s; }
-.photo-item:nth-child(12) { animation-delay: 0.65s; }
-.photo-item:nth-child(n+13) { animation-delay: 0.7s; }
-
-@keyframes fadeInUp {
-    to {
-        opacity: 1;
-        transform: translateY(0);
     }
 }
 
@@ -225,12 +171,12 @@
 .modal {
     display: none;
     position: fixed;
-    z-index: 1000;
+    z-index: 10000;
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.9);
+    background-color: rgba(0, 0, 0, 0.95);
     animation: fadeIn 0.3s ease;
 }
 
@@ -251,44 +197,53 @@
     position: absolute;
     top: 20px;
     right: 35px;
-    color: white;
+    color: var(--bg-color);
     font-size: 40px;
     font-weight: bold;
     cursor: pointer;
-    z-index: 1001;
-    transition: color 0.3s ease;
+    z-index: 10001;
+    transition: transform 0.3s ease;
+    background: var(--text-color);
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid var(--bg-color);
 }
 
 .modal-close:hover {
-    color: #ccc;
+    transform: rotate(90deg);
 }
 
 #modalImage {
     max-width: 100%;
     max-height: 70vh;
     object-fit: contain;
-    border-radius: 8px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    border: 3px solid var(--bg-color);
+    box-shadow: 15px 15px 0 var(--bg-color);
 }
 
 .modal-info {
     text-align: center;
-    color: white;
+    color: var(--bg-color);
     margin-top: 20px;
     max-width: 600px;
 }
 
 .modal-info h3 {
-    font-size: 1.5rem;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
     margin-bottom: 10px;
-    color: white !important;
+    color: var(--bg-color) !important;
+    text-transform: uppercase;
 }
 
 .modal-info p {
     font-size: 0.9rem;
     opacity: 0.8;
     line-height: 1.4;
-    color: white !important;
+    color: var(--bg-color) !important;
 }
 
 @media (max-width: 768px) {
@@ -296,18 +251,29 @@
         top: 10px;
         right: 20px;
         font-size: 30px;
+        width: 40px;
+        height: 40px;
     }
-    
+
     #modalImage {
         max-height: 60vh;
     }
-    
+
     .modal-info {
         margin-top: 15px;
         padding: 0 10px;
     }
-    
+
     .modal-info h3 {
-        font-size: 1.2rem;
+        font-size: 1.5rem;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
     }
 }

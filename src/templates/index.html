@@ -3,252 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-
     <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"/>
-    <title>My Portfolio</title>
+    <title>Sasha Bagrov - Portfolio</title>
 </head>
-<body>
-    <div class="container">
-        <div class="intro">
-            <div class="profile-container">
-                <svg class="arrow" width="200" height="100" viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M30,80 Q65,15 160,40" fill="none" stroke="#1e1e1e" stroke-width="2" stroke-dasharray="5,5"></path>
-                    <text x="30" y="30" font-family="Gloria Hallelujah" font-size="16">duck.</text>
-                </svg>
-                <div class="profile-pic">
-                    <img src="{{ url_for('static', filename='images/pfp/profile.jpg') }}" alt="Profile picture">
-                </div>
-            </div>
-            <h1>Hej! I'm Sasha</h1>
-            <h4>I've been coding since 9 years old and know how to do full stack development. I love theatre tech, photography and videography! My photos are mostly based in London. Have a look at the individual sections to see what I can do!</h4>
-        </div>
-        <div class="buttons">
-            <div class="button-container">
-                <div class="top-row">
-                    <div class="main-text">My Projects</div>
-                </div>
-                <div class="icon">
-                    <span class="material-symbols-outlined">
-                        keyboard_arrow_down
-                    </span>
-                </div>
-            </div>
-            
-            <div class="button-container">
-                <div class="top-row">
-                    <div class="main-text">My Skills</div>
-                </div>
-                <div class="icon">
-                    <span class="material-symbols-outlined">
-                        keyboard_arrow_down
-                    </span>
-                </div>
-            </div>
+<body data-theme="light">
+    <!-- Page transition overlay -->
+    <div class="page-transition"></div>
 
-            <a href="/photos" style="text-decoration: none; color: inherit;">
-                <div class="button-container">
-                    <div class="top-row">
-                        <div class="main-text">My Photography</div>
-                    </div>
-                    <div class="icon">
-                        <span class="material-symbols-outlined">
-                            photo_camera
-                        </span>
-                    </div>
+    <!-- Navigation header (appears after scroll) -->
+    <nav class="main-nav" id="mainNav">
+        <div class="nav-content">
+            <div class="nav-logo">SB</div>
+            <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <div class="nav-links">
+                <a href="/" class="nav-link active">
+                    <span>Home</span>
+                    <div class="nav-underline"></div>
+                </a>
+                <a href="/projects" class="nav-link">
+                    <span>Projects</span>
+                    <div class="nav-underline"></div>
+                </a>
+                <a href="/skills" class="nav-link">
+                    <span>Skills</span>
+                    <div class="nav-underline"></div>
+                </a>
+                <a href="/photos" class="nav-link">
+                    <span>Photography</span>
+                    <div class="nav-underline"></div>
+                </a>
+                <a href="/blog" class="nav-link">
+                    <span>Blog</span>
+                    <div class="nav-underline"></div>
+                </a>
+            </div>
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+                <span class="material-symbols-outlined">dark_mode</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero/Intro Section -->
+    <section class="hero-section" id="heroSection">
+        <div class="hero-content">
+            <h1 class="hero-main-text">The world needs more</h1>
+            <div class="profession-container">
+                <span class="profession-text" id="professionText">creators</span>
+            </div>
+        </div>
+        <div class="scroll-indicator" id="scrollIndicator">
+            <span class="material-symbols-outlined">keyboard_arrow_down</span>
+        </div>
+    </section>
+
+    <!-- About Me Contrast Section -->
+    <section class="about-contrast" data-scroll-section>
+        <div class="about-split">
+            <div class="about-left" data-scroll data-scroll-speed="2">
+                <h2>Who I Am</h2>
+                <div class="about-details">
+                    <p>Sasha Bagrov</p>
+                    <p>Full Stack Developer</p>
+                    <p>Theatre Technician</p>
+                    <p>Photographer</p>
+                    <p>Based in London</p>
                 </div>
+            </div>
+            <div class="about-right" data-scroll data-scroll-speed="1">
+                <h2>What I Do</h2>
+                <div class="about-details">
+                    <p>I've been coding since I was 9 years old, building everything from iOS apps to web platforms.</p>
+                    <p>My work spans across full-stack development, with a focus on creating meaningful digital experiences.</p>
+                    <p>When I'm not coding, you'll find me in the theatre running tech, or exploring London with my camera.</p>
+                    <p>I believe in open source, clean code, and technology that serves people.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact-section" data-scroll-section>
+        <h2 data-scroll data-scroll-speed="1">Let's Connect</h2>
+        <div class="contact-grid" data-scroll data-scroll-speed="2">
+            <a href="https://github.com/Fluffik3666" class="contact-card">
+                <span class="material-symbols-outlined">code</span>
+                <h3>Github</h3>
+                <p>Check out my repositories</p>
             </a>
-
-            <a href="/blog" style="text-decoration: none; color: inherit;">
-                <div class="button-container">
-                    <div class="top-row">
-                        <div class="main-text">Blog</div>
-                    </div>
-                    <div class="icon">
-                        <span class="material-symbols-outlined">
-                            article
-                        </span>
-                    </div>
-                </div>
+            <a href="mailto:sasha@urbanmechanics.co.uk" class="contact-card">
+                <span class="material-symbols-outlined">mail</span>
+                <h3>Email</h3>
+                <p>Let's talk</p>
             </a>
-
-            <div class="button-container">
-                <div class="top-row">
-                    <div class="main-text">Contact & Info</div>
-                </div>
-                <div class="icon">
-                    <span class="material-symbols-outlined">
-                        keyboard_arrow_down
-                    </span>
-                </div>
-            </div>
         </div>
+    </section>
 
-        <div class="content">
-            <div class="myprojects">
-                <h2>My Projects</h2>
-                <div class="project">
-                    <a href="https://kidshustle.app">
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <div>
-                                <h3>Kidshustle</h3>
-                                <p>A work in progress project. Allows for kids and teens to earn money by completing quick jobs.</p>
-                            </div>
-                            <span class="material-symbols-outlined" style="margin-left: 20px;">
-                                chevron_right
-                            </span>
-                        </div>
-                    </a>
-                </div>
-                <div class="project">
-                    <a href="https://pollify.co.uk">
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <div>
-                                <h3>Pollify</h3>
-                                <p>A privacy focused, open source poll creation site. Built with Firebase, Python, HTML, CSS and JS.</p>
-                            </div>
-                            <span class="material-symbols-outlined" style="margin-left: 20px;">
-                                chevron_right
-                            </span>
-                        </div>
-                    </a>
-                </div>
-                <div class="project">
-                    <a href="https://apps.apple.com/gb/app/animeatlas/id6739979715">
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <div>
-                                <h3>AnimeAtlas</h3>
-                                <p>Despite not watching anime, AnimeAtlas is a native iOS 15+ SwiftUI anime tracker. Track what anime you watch and more!</p>
-                            </div>
-                            <span class="material-symbols-outlined" style="margin-left: 20px;">
-                                chevron_right
-                            </span>
-                        </div>
-                    </a>
-                </div>
-                <div class="project">
-                    <a href="https://www.afishalondontickets.com/">
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <div>
-                                <h3>Kassa Notifications</h3>
-                                <p>An iOS app that sends notifications when an item is bought in stripe. Custom made for Afisha London Tickets.</p>
-                            </div>
-                            <span class="material-symbols-outlined" style="margin-left: 20px;">
-                                chevron_right
-                            </span>
-                        </div>
-                    </a>
-                </div>
-                <div class="project">
-                    <a href="https://www.afishalondontickets.com/">
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <div>
-                                <h3>AfishaLondonTickets Scanner</h3>
-                                <p>Another iOS app that allows the scanning of tickets. Events are imported with the companion macOS app and stored in CloudKit using SwiftData. Made for Afisha London Tickets.</p>
-                            </div>
-                            <span class="material-symbols-outlined" style="margin-left: 20px;">
-                                chevron_right
-                            </span>
-                        </div>
-                    </a>
-                </div>
-                <div class="project">
-                    <a href="https://seurt.vercel.app/">
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <div>
-                                <h3>Seurt</h3>
-                                <p>A secure, token based web chat app. Styled to retro 8-bit terminals!</p>
-                            </div>
-                            <span class="material-symbols-outlined" style="margin-left: 20px;">
-                                chevron_right
-                            </span>
-                        </div>
-                    </a>
-                </div>
-                <div class="project">
-                    <a href="https://apps.apple.com/gb/app/dsmprompt/id6752832596">
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <div>
-                                <h3>DSMPrompt</h3>
-                                <p>An app to help with DSMing - import your script, add cues effortlessly, run shows with crewmates and more! Open source and availible on the app store.</p>
-                            </div>
-                            <span class="material-symbols-outlined" style="margin-left: 20px;">
-                                chevron_right
-                            </span>
-                        </div>
-                    </a>
-                </div>
-            </div>
-
-            <div class="myskills">
-                <h2>My Skills</h2>
-                <div class="skill">
-                    <h3>Python</h3>
-                    <p>Learned Python for 2 years. Use it regularly for backend.</p>
-                </div>
-                <div class="skill">
-                    <h3>HTML + CSS + JS</h3>
-                    <p>Learned web languages for a year, using them regularly. This website was built with just pure HTML, CSS and JS!</p>
-                </div>
-                <div class="skill">
-                    <h3>Swift + Swift UI</h3>
-                    <p>Started learning Swift and Swift UI in 2024. Now I make apps for Apple Platforms and even have an app on the app store!</p>
-                </div>
-                <div class="skill">
-                    <h3>Google Cloud Platform</h3>
-                    <p>I aim to keep my stacks google cloud focused - secret manager and workload identity are my favourite!</p>
-                </div>
-                <div class="skill">
-                    <h3>Kubernetes</h3>
-                    <p>My favourite orchestrator, used within KidsHustle</p>
-                </div>
-                <div class="skill">
-                    <h3>Github Workflows / port.io</h3>
-                    <p>Used in conjunction with kubectl, I use both tools to create access controlled CI/CD pipelines and developer self service.</p>
-                </div>
-                <div class="skill">
-                    <h3>Firebase</h3>
-                    <p>My go-to service for fast, free databases and authentication. If the project is more complex, I might even build my own OAuth2 system!</p>
-                </div>
-            </div>
-
-
-            <div class="contactinfo">
-                <h2>Contact & Info</h2>
-                <div class="contact">
-                    <a href="https://github.com/Fluffik3666">
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <div>
-                                <h3>Github</h3>
-                                <p>Check out my github and my repositories!</p>
-                            </div>
-                            <span class="material-symbols-outlined" style="margin-left: 20px;">
-                                chevron_right
-                            </span>
-                        </div>
-                    </a>
-                </div>
-                <div class="contact">
-                    <a href="mailto:sasha@urbanmechanics.co.uk">
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <div>
-                                <h3>Email</h3>
-                                <p>Email me! I'll try to respond as fast as I can.</p>
-                            </div>
-                            <span class="material-symbols-outlined" style="margin-left: 20px;">
-                                mail
-                            </span>
-                        </div>
-                    </a>
-                </div>
-            </div>
-
-            <footer style="text-align: center; width: 100%; margin: 20px 0;"></footer>
-                <p>&copy; 2025 Sasha Bagrov. All rights reserved.</p>
-            </footer>
-        </div>
-    </div>
+    <footer>
+        <p>&copy; 2025 Sasha Bagrov. All rights reserved.</p>
+    </footer>
 
     <script src="{{ url_for('static', filename='js/index.js') }}"></script>
     <script>

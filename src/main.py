@@ -20,6 +20,14 @@ def index():
 def photos():
     return render_template('photos.html')
 
+@app.route('/projects')
+def projects():
+    return render_template('projects.html')
+
+@app.route('/skills')
+def skills():
+    return render_template('skills.html')
+
 @app.route('/blog')
 def blog():
     posts = blog_service.get_all_posts()

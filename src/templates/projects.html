@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"/>
+    <title>Projects - Sasha Bagrov</title>
+</head>
+<body data-theme="light">
+    <!-- Page transition overlay -->
+    <div class="page-transition"></div>
+
+    <!-- Navigation header -->
+    <nav class="main-nav visible" id="mainNav">
+        <div class="nav-content">
+            <div class="nav-logo">SB</div>
+            <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <div class="nav-links">
+                <a href="/" class="nav-link">
+                    <span>Home</span>
+                    <div class="nav-underline"></div>
+                </a>
+                <a href="/projects" class="nav-link active">
+                    <span>Projects</span>
+                    <div class="nav-underline"></div>
+                </a>
+                <a href="/skills" class="nav-link">
+                    <span>Skills</span>
+                    <div class="nav-underline"></div>
+                </a>
+                <a href="/photos" class="nav-link">
+                    <span>Photography</span>
+                    <div class="nav-underline"></div>
+                </a>
+                <a href="/blog" class="nav-link">
+                    <span>Blog</span>
+                    <div class="nav-underline"></div>
+                </a>
+            </div>
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+                <span class="material-symbols-outlined">dark_mode</span>
+            </button>
+        </div>
+    </nav>
+
+    <main class="content-page">
+        <section class="page-hero">
+            <h1 data-scroll>My Projects</h1>
+            <p data-scroll>A collection of things I've built</p>
+        </section>
+
+        <section class="projects-grid" data-scroll-section>
+            <a href="https://kidshustle.app" class="project-card" data-scroll>
+                <div class="project-number">01</div>
+                <h3>Kidshustle</h3>
+                <p>A work in progress project. Allows for kids and teens to earn money by completing quick jobs.</p>
+                <span class="material-symbols-outlined">arrow_outward</span>
+            </a>
+
+            <a href="https://pollify.co.uk" class="project-card" data-scroll>
+                <div class="project-number">02</div>
+                <h3>Pollify</h3>
+                <p>A privacy focused, open source poll creation site. Built with Firebase, Python, HTML, CSS and JS.</p>
+                <span class="material-symbols-outlined">arrow_outward</span>
+            </a>
+
+            <a href="https://apps.apple.com/gb/app/animeatlas/id6739979715" class="project-card" data-scroll>
+                <div class="project-number">03</div>
+                <h3>AnimeAtlas</h3>
+                <p>Despite not watching anime, AnimeAtlas is a native iOS 15+ SwiftUI anime tracker. Track what anime you watch and more!</p>
+                <span class="material-symbols-outlined">arrow_outward</span>
+            </a>
+
+            <a href="https://www.afishalondontickets.com/" class="project-card" data-scroll>
+                <div class="project-number">04</div>
+                <h3>Kassa Notifications</h3>
+                <p>An iOS app that sends notifications when an item is bought in stripe. Custom made for Afisha London Tickets.</p>
+                <span class="material-symbols-outlined">arrow_outward</span>
+            </a>
+
+            <a href="https://www.afishalondontickets.com/" class="project-card" data-scroll>
+                <div class="project-number">05</div>
+                <h3>AfishaLondonTickets Scanner</h3>
+                <p>Another iOS app that allows the scanning of tickets. Events are imported with the companion macOS app and stored in CloudKit using SwiftData. Made for Afisha London Tickets.</p>
+                <span class="material-symbols-outlined">arrow_outward</span>
+            </a>
+
+            <a href="https://seurt.vercel.app/" class="project-card" data-scroll>
+                <div class="project-number">06</div>
+                <h3>Seurt</h3>
+                <p>A secure, token based web chat app. Styled to retro 8-bit terminals!</p>
+                <span class="material-symbols-outlined">arrow_outward</span>
+            </a>
+
+            <a href="https://apps.apple.com/gb/app/dsmprompt/id6752832596" class="project-card" data-scroll>
+                <div class="project-number">07</div>
+                <h3>DSMPrompt</h3>
+                <p>An app to help with DSMing - import your script, add cues effortlessly, run shows with crewmates and more! Open source and available on the app store.</p>
+                <span class="material-symbols-outlined">arrow_outward</span>
+            </a>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Sasha Bagrov. All rights reserved.</p>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/index.js') }}"></script>
+    <script>
+        window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+    </script>
+    <script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>
