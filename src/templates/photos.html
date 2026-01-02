@@ -78,26 +78,26 @@
         async function loadPhotos() {
             const photoGrid = document.getElementById('photoGrid');
             const layoutClasses = ['', 'large', 'wide', 'tall']; // Variety in layout
-            let imageId = 1;
-            let consecutiveFailures = 0;
-            const maxFailures = 3; // Stop after 3 consecutive failures
 
-            while (consecutiveFailures < maxFailures) {
-                try {
-                    // Try to load the image
-                    const response = await fetch(`/images/${imageId}?w=600&q=80`, { method: 'HEAD' });
+            try {
+                // Fetch the list of images from the API
+                const response = await fetch('/api/images');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch images');
+                }
 
-                    if (!response.ok) {
-                        consecutiveFailures++;
-                        imageId++;
-                        continue;
-                    }
+                const data = await response.json();
+                const images = data.images;
 
-                    // Reset failure counter on success
-                    consecutiveFailures = 0;
+                if (!images || images.length === 0) {
+                    photoGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 2rem;">No images found</p>';
+                    return;
+                }
 
+                // Create photo items for each image
+                images.forEach((image, index) => {
                     // Determine layout class for variety
-                    const layoutClass = layoutClasses[imageId % layoutClasses.length];
+                    const layoutClass = layoutClasses[index % layoutClasses.length];
 
                     // Determine quality and width based on layout
                     const isLarge = layoutClass === 'large' || layoutClass === 'wide';
@@ -107,28 +107,28 @@
                     // Create photo item
                     const photoItem = document.createElement('div');
                     photoItem.className = `photo-item ${layoutClass}`;
-                    photoItem.setAttribute('data-title', `Photo ${imageId}`);
+                    photoItem.setAttribute('data-title', image.title);
                     photoItem.setAttribute('data-copyright', 'This image is for display purposes only. All rights reserved. Not to be used without explicit permission.');
 
                     photoItem.innerHTML = `
-                        <img loading="lazy" src="/images/${imageId}?w=${width}&q=${quality}" alt="Photo ${imageId}">
+                        <img loading="lazy" src="/images/${image.id}?w=${width}&q=${quality}" alt="${image.title}">
                         <div class="photo-overlay">
                             <div class="photo-details">
-                                <h3>Photo ${imageId}</h3>
+                                <h3>${image.title}</h3>
                             </div>
                         </div>
                     `;
 
                     photoGrid.appendChild(photoItem);
-                    imageId++;
-                } catch (error) {
-                    consecutiveFailures++;
-                    imageId++;
-                }
-            }
+                });
 
-            // Re-attach modal listeners after loading photos
-            attachModalListeners();
+                // Re-attach modal listeners after loading photos
+                attachModalListeners();
+
+            } catch (error) {
+                console.error('Error loading photos:', error);
+                photoGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 2rem;">Error loading images. Please try again later.</p>';
+            }
         }
 
         function attachModalListeners() {
