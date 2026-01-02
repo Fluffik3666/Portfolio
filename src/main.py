@@ -33,8 +33,8 @@ def skills():
 def serve_static(filename):
     return send_from_directory(app.static_folder, filename)
 
-@app.route('/images/optimized/<path:filename>')
-def serve_optimized_image(filename):
+@app.route('/images/<int:image_id>')
+def serve_optimized_image(image_id):
     try:
         if not storage_bucket:
             return "Firebase Storage not initialized", 500
@@ -42,8 +42,8 @@ def serve_optimized_image(filename):
         quality = int(request.args.get('q', 75))
         width = request.args.get('w')
 
-        # Get the blob from Firebase Storage
-        blob = storage_bucket.blob(f'images/{filename}')
+        # Get the blob from Firebase Storage using just the ID
+        blob = storage_bucket.blob(f'{image_id}.jpg')
 
         if not blob.exists():
             return "Image not found", 404
