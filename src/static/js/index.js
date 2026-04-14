@@ -181,8 +181,8 @@ const themeToggle = document.getElementById('themeToggle');
 const html = document.documentElement;
 const body = document.body;
 
-// Check for saved theme preference or default to light mode
-const currentTheme = localStorage.getItem('theme') || 'light';
+// Check for saved theme preference or default to dark mode (cosmic theme)
+const currentTheme = localStorage.getItem('theme') || 'dark';
 body.setAttribute('data-theme', currentTheme);
 
 // Update icon based on theme
@@ -283,3 +283,82 @@ if (mobileMenuBtn) {
 // Initial calls
 handleScroll();
 handleParallax();
+
+// =========================================================
+// INTRO PORTAL — "who am I?" rocket-ship launch into site
+// =========================================================
+(function initIntroPortal() {
+    const introPortal = document.getElementById('introPortal');
+    const introText = document.getElementById('introText');
+    const introStreaks = document.getElementById('introStreaks');
+    const introHint = document.getElementById('introHint');
+
+    if (!introPortal || !introText || !introStreaks) return;
+
+    // Skip intro if already launched through it this session
+    if (sessionStorage.getItem('introLaunched') === 'true') {
+        introPortal.classList.add('gone');
+        return;
+    }
+
+    // Lock page scroll while intro is up
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    // Update hint copy on touch devices
+    if (isMobile && introHint) {
+        introHint.textContent = 'tap to find out';
+    }
+
+    let launched = false;
+
+    function launch() {
+        if (launched) return;
+        launched = true;
+
+        // Generate radial light streaks shooting from center
+        const streakCount = window.matchMedia('(max-width: 768px)').matches ? 48 : 80;
+        const frag = document.createDocumentFragment();
+        for (let i = 0; i < streakCount; i++) {
+            const streak = document.createElement('div');
+            streak.className = 'light-streak';
+            // Distribute evenly around 360° with a touch of jitter
+            const angle = (360 / streakCount) * i + (Math.random() * 14 - 7);
+            const delay = Math.random() * 180;
+            const width = 1 + Math.random() * 2.5;
+            streak.style.transform = `translateX(-50%) rotate(${angle}deg)`;
+            streak.style.animationDelay = `${delay}ms`;
+            streak.style.width = `${width}px`;
+            frag.appendChild(streak);
+        }
+        introStreaks.appendChild(frag);
+
+        introPortal.classList.add('launching');
+
+        // Fade overlay out once the rocket-zoom has consumed the view
+        window.setTimeout(() => {
+            introPortal.classList.add('dismissed');
+            document.body.style.overflow = prevOverflow;
+            sessionStorage.setItem('introLaunched', 'true');
+        }, 1100);
+
+        // Remove overlay from the DOM flow entirely
+        window.setTimeout(() => {
+            introPortal.classList.add('gone');
+        }, 1800);
+    }
+
+    // Desktop: hover. Mobile/touch: tap or click.
+    if (!isMobile) {
+        introText.addEventListener('mouseenter', launch, { once: true });
+    }
+    introText.addEventListener('click', launch, { once: true });
+    introText.addEventListener('touchstart', launch, { once: true, passive: true });
+    // Keyboard accessibility
+    introText.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            launch();
+        }
+    });
+})();

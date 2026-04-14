@@ -680,3 +680,277 @@ footer p {
     opacity: 1;
     transform: translateY(0);
 }
+
+/* =========================================================
+   INTRO PORTAL — "who am I?" → hyperspace launch into site
+   ========================================================= */
+
+.intro-portal {
+    position: fixed;
+    inset: 0;
+    background: #000;
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    transition: opacity 0.5s ease;
+}
+
+.intro-portal.dismissed {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.intro-portal.gone {
+    display: none;
+}
+
+/* Ambient star field behind the text */
+.intro-stars {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+        radial-gradient(1px 1px at 12% 18%, #fff, transparent),
+        radial-gradient(1px 1px at 28% 72%, rgba(255, 255, 255, 0.8), transparent),
+        radial-gradient(2px 2px at 44% 34%, rgba(255, 255, 255, 0.6), transparent),
+        radial-gradient(1px 1px at 62% 88%, #fff, transparent),
+        radial-gradient(1px 1px at 78% 22%, rgba(255, 255, 255, 0.7), transparent),
+        radial-gradient(2px 2px at 88% 58%, rgba(255, 255, 255, 0.5), transparent),
+        radial-gradient(1px 1px at 54% 14%, #fff, transparent),
+        radial-gradient(1px 1px at 8% 80%, rgba(255, 255, 255, 0.8), transparent),
+        radial-gradient(1px 1px at 92% 40%, rgba(255, 255, 255, 0.7), transparent),
+        radial-gradient(2px 2px at 36% 54%, rgba(255, 255, 255, 0.5), transparent),
+        radial-gradient(1px 1px at 72% 66%, #fff, transparent);
+    opacity: 0.5;
+    animation: introTwinkle 4s ease-in-out infinite alternate;
+}
+
+@keyframes introTwinkle {
+    from { opacity: 0.3; }
+    to   { opacity: 0.75; }
+}
+
+/* The inviting "who am I?" text */
+.intro-text {
+    font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+    font-weight: 300;
+    font-style: italic;
+    font-size: clamp(3rem, 11vw, 9rem);
+    color: #fff;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    letter-spacing: 0.01em;
+    padding: 1rem 2rem;
+    position: relative;
+    z-index: 3;
+    text-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
+    animation: introPulse 3.2s ease-in-out infinite alternate;
+    transition: text-shadow 0.4s ease, transform 0.4s ease, letter-spacing 0.6s ease;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+}
+
+.intro-text .intro-question {
+    display: inline-block;
+    transform-origin: center bottom;
+    animation: introQuestionTilt 3.2s ease-in-out infinite alternate;
+}
+
+@keyframes introPulse {
+    from {
+        text-shadow: 0 0 18px rgba(255, 255, 255, 0.15);
+        transform: scale(1);
+    }
+    to {
+        text-shadow: 0 0 55px rgba(255, 255, 255, 0.45);
+        transform: scale(1.015);
+    }
+}
+
+@keyframes introQuestionTilt {
+    from { transform: rotate(-4deg); }
+    to   { transform: rotate(6deg); }
+}
+
+.intro-text:hover,
+.intro-text:focus-visible {
+    text-shadow: 0 0 70px rgba(255, 255, 255, 0.75),
+                 0 0 140px rgba(255, 255, 255, 0.25);
+    letter-spacing: 0.03em;
+    outline: none;
+}
+
+/* Hint text */
+.intro-hint {
+    position: absolute;
+    bottom: 3rem;
+    left: 50%;
+    transform: translateX(-50%);
+    color: rgba(255, 255, 255, 0.45);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    animation: introHintFade 3s ease-in-out infinite alternate;
+    z-index: 3;
+    pointer-events: none;
+    white-space: nowrap;
+}
+
+@keyframes introHintFade {
+    from { opacity: 0.35; }
+    to   { opacity: 0.85; }
+}
+
+/* Light streaks container */
+.intro-streaks {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 2;
+}
+
+/* A single white streak shooting outward from center */
+.light-streak {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 2px;
+    height: 0;
+    background: linear-gradient(to top,
+        rgba(255, 255, 255, 1) 0%,
+        rgba(255, 255, 255, 0.85) 30%,
+        rgba(255, 255, 255, 0) 100%);
+    transform-origin: center bottom;
+    opacity: 0;
+    border-radius: 2px;
+    will-change: height, opacity, filter;
+}
+
+/* Launch sequence — triggered when user hovers/taps */
+.intro-portal.launching .intro-text {
+    animation: introRocketZoom 1.2s cubic-bezier(0.7, 0, 0.84, 0) forwards;
+}
+
+.intro-portal.launching .intro-hint,
+.intro-portal.launching .intro-stars {
+    animation: introFadeQuick 0.35s ease forwards;
+}
+
+.intro-portal.launching .intro-question {
+    animation: none;
+}
+
+.intro-portal.launching .light-streak {
+    animation: introStreakLaunch 1.1s cubic-bezier(0.55, 0.05, 0.35, 1) forwards;
+}
+
+@keyframes introFadeQuick {
+    to { opacity: 0; }
+}
+
+@keyframes introRocketZoom {
+    0% {
+        transform: scale(1);
+        filter: blur(0);
+        opacity: 1;
+    }
+    25% {
+        transform: scale(2);
+        filter: blur(2px);
+        opacity: 1;
+    }
+    65% {
+        transform: scale(10);
+        filter: blur(18px);
+        opacity: 0.6;
+    }
+    100% {
+        transform: scale(45);
+        filter: blur(60px);
+        opacity: 0;
+    }
+}
+
+@keyframes introStreakLaunch {
+    0% {
+        height: 0;
+        opacity: 0;
+        filter: blur(0);
+    }
+    8% {
+        opacity: 1;
+    }
+    70% {
+        filter: blur(0.5px);
+    }
+    100% {
+        height: 160vmax;
+        opacity: 0;
+        filter: blur(1.5px);
+    }
+}
+
+/* Accessibility: reduce motion */
+@media (prefers-reduced-motion: reduce) {
+    .intro-text,
+    .intro-text .intro-question,
+    .intro-hint,
+    .intro-stars {
+        animation: none !important;
+    }
+    .intro-portal.launching .intro-text {
+        animation: introRocketZoom 0.5s linear forwards;
+    }
+    .intro-portal.launching .light-streak {
+        animation-duration: 0.5s !important;
+    }
+}
+
+/* Mobile tuning */
+@media (max-width: 768px) {
+    .intro-hint {
+        bottom: 2rem;
+        font-size: 0.75rem;
+        letter-spacing: 0.3em;
+    }
+    .intro-text {
+        font-size: clamp(2.5rem, 14vw, 6rem);
+    }
+}
+
+/* =========================================================
+   HERO SECTION — subtle cosmic backdrop for continuity
+   ========================================================= */
+
+body[data-theme="dark"] .hero-section {
+    position: relative;
+    overflow: hidden;
+}
+
+body[data-theme="dark"] .hero-section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+        radial-gradient(1px 1px at 15% 25%, rgba(254, 250, 224, 0.6), transparent),
+        radial-gradient(1px 1px at 38% 78%, rgba(254, 250, 224, 0.4), transparent),
+        radial-gradient(2px 2px at 66% 32%, rgba(254, 250, 224, 0.3), transparent),
+        radial-gradient(1px 1px at 82% 68%, rgba(254, 250, 224, 0.5), transparent),
+        radial-gradient(1px 1px at 24% 58%, rgba(254, 250, 224, 0.35), transparent),
+        radial-gradient(1px 1px at 90% 18%, rgba(254, 250, 224, 0.45), transparent);
+    pointer-events: none;
+    opacity: 0.6;
+    animation: introTwinkle 6s ease-in-out infinite alternate;
+    z-index: 0;
+}
+
+body[data-theme="dark"] .hero-content,
+body[data-theme="dark"] .scroll-indicator {
+    position: relative;
+    z-index: 1;
+}
