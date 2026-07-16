@@ -1,19 +1,26 @@
-from flask import Flask, send_from_directory, render_template, request, Response, jsonify
+from flask import Flask, send_from_directory, render_template, request, Response, jsonify, session
 from PIL import Image
 import io
 import os
 import json
+import stripe
 from src.firebase_config import initialize_firebase
+from src.stripe_bluprnt import blueprint
+
+stripe.api_key = os.getenv("STRIPE_API_KEY")
 
 app = Flask(__name__, template_folder='../src/templates', static_folder='../src/static')
+app.secret_key = os.getenv('SECRET_KEY', 'dev-secret-change-me')
+app.config['SESSION_COOKIE_HTTPONLY'] = True
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+app.register_blueprint(blueprint)
 
-# Initialize Firebase Storage
 storage_bucket = initialize_firebase()
 
 #! serve our important routes
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index.html', logged_in='user_uid' in session)
 
 @app.route('/photos')
 def photos():

@@ -37,6 +37,16 @@
                     <span>Photography</span>
                     <div class="nav-underline"></div>
                 </a>
+                <a href="/tutoring/book" class="nav-link">
+                    <span>Tutoring</span>
+                    <div class="nav-underline"></div>
+                </a>
+                {% if logged_in %}
+                <a href="/tutoring/account" class="nav-link">
+                    <span>My Sessions</span>
+                    <div class="nav-underline"></div>
+                </a>
+                {% endif %}
             </div>
             <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
                 <span class="material-symbols-outlined">dark_mode</span>

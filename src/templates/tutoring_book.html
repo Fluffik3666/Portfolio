@@ -1,0 +1,193 @@
+{% extends "tutoring_base.html" %}
+{% block title %}Book a Session — Sasha Bagrov{% endblock %}
+
+{% set credits = user_profile.sessions_remaining or 0 if user_profile else 0 %}
+
+{% block content %}
+<div class="book-page">
+    <header class="book-header">
+        <h1 class="heading">book a session.</h1>
+        <p class="subtitle">1-on-1 programming &amp; coding tutoring. Python, Swift, web development, and more.</p>
+    </header>
+
+    {% if not logged_in %}
+    <!-- ══ NOT LOGGED IN ══ -->
+    <div class="flow-step">
+        <div class="step-header">
+            <span class="step-number">1</span>
+            <div>
+                <h2 class="step-title">create an account</h2>
+                <p class="step-desc">sign up to purchase sessions and book slots.</p>
+            </div>
+        </div>
+        <a href="/tutoring/auth" class="btn btn-primary">get started &rarr;</a>
+    </div>
+
+    <div class="flow-step flow-step-locked">
+        <div class="step-header">
+            <span class="step-number">2</span>
+            <div>
+                <h2 class="step-title">choose a package</h2>
+                <p class="step-desc">pick the number of sessions that works for you.</p>
+            </div>
+        </div>
+        <div class="packages-preview">
+            {% for pkg in packages %}
+            <div class="package-card-mini">
+                <span class="package-name-mini">{{ pkg.name }}</span>
+                <span class="package-price-mini">&pound;{{ '%.2f' | format(pkg.price_cents / 100) }}</span>
+                {% if pkg.session_count > 1 %}
+                <span class="package-per-mini">&pound;{{ '%.0f' | format(pkg.price_cents / 100 / pkg.session_count) }}/session</span>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="flow-step flow-step-locked">
+        <div class="step-header">
+            <span class="step-number">3</span>
+            <div>
+                <h2 class="step-title">pick a date &amp; time</h2>
+                <p class="step-desc">browse the calendar and book your session.</p>
+            </div>
+        </div>
+    </div>
+
+    {% elif credits == 0 %}
+    <!-- ══ LOGGED IN, NO CREDITS ══ -->
+    <div class="flow-step flow-step-done">
+        <div class="step-header">
+            <span class="step-check">&check;</span>
+            <div>
+                <h2 class="step-title">account created</h2>
+                <p class="step-desc">signed in as {{ user_email }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="flow-step flow-step-active">
+        <div class="step-header">
+            <span class="step-number">2</span>
+            <div>
+                <h2 class="step-title">choose a package</h2>
+                <p class="step-desc">buy session credits to start booking.</p>
+            </div>
+        </div>
+        <div class="packages-stack">
+            {% for pkg in packages %}
+            <div class="package-card {% if loop.length > 1 and loop.index == loop.length %}package-best-value{% endif %}">
+                {% if loop.length > 1 and loop.index == loop.length %}
+                <div class="package-badge">best value</div>
+                {% endif %}
+                <div class="package-top">
+                    <h3 class="package-name">{{ pkg.name }}</h3>
+                    <div class="package-price">&pound;{{ '%.2f' | format(pkg.price_cents / 100) }}</div>
+                </div>
+                <p class="package-desc">{{ pkg.description }}</p>
+                <div class="package-meta">
+                    <span class="package-sessions">{{ pkg.session_count }} session{{ 's' if pkg.session_count != 1 }}</span>
+                    {% if pkg.session_count > 1 %}
+                    <span class="package-per-session">&pound;{{ '%.0f' | format(pkg.price_cents / 100 / pkg.session_count) }}/session</span>
+                    {% endif %}
+                </div>
+                <button class="btn btn-primary btn-full buy-package-btn" data-package-id="{{ pkg.id }}">buy now</button>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="flow-step flow-step-locked">
+        <div class="step-header">
+            <span class="step-number">3</span>
+            <div>
+                <h2 class="step-title">pick a date &amp; time</h2>
+                <p class="step-desc">buy a package above to unlock the calendar.</p>
+            </div>
+        </div>
+    </div>
+
+    {% else %}
+    <!-- ══ LOGGED IN, HAS CREDITS ══ -->
+    <div class="flow-step flow-step-done">
+        <div class="step-header">
+            <span class="step-check">&check;</span>
+            <div>
+                <h2 class="step-title">you're all set</h2>
+                <p class="step-desc">{{ credits }} session{{ 's' if credits != 1 }} remaining</p>
+            </div>
+        </div>
+        <details class="buy-more">
+            <summary class="buy-more-toggle">need more sessions?</summary>
+            <div class="packages-stack packages-compact">
+                {% for pkg in packages %}
+                <div class="package-card package-card-compact">
+                    <div class="package-top">
+                        <h3 class="package-name">{{ pkg.name }}</h3>
+                        <div class="package-price">&pound;{{ '%.2f' | format(pkg.price_cents / 100) }}</div>
+                    </div>
+                    <div class="package-meta">
+                        <span class="package-sessions">{{ pkg.session_count }} session{{ 's' if pkg.session_count != 1 }}</span>
+                        {% if pkg.session_count > 1 %}
+                        <span class="package-per-session">&pound;{{ '%.0f' | format(pkg.price_cents / 100 / pkg.session_count) }}/session</span>
+                        {% endif %}
+                    </div>
+                    <button class="btn btn-small buy-package-btn" data-package-id="{{ pkg.id }}">buy</button>
+                </div>
+                {% endfor %}
+            </div>
+        </details>
+    </div>
+
+    <div class="flow-step flow-step-active">
+        <div class="step-header">
+            <span class="step-number">&darr;</span>
+            <div>
+                <h2 class="step-title">pick a date &amp; time</h2>
+                <p class="step-desc">choose a slot below. you'll receive the meeting link by email.</p>
+            </div>
+        </div>
+
+        <div class="calendar-container" id="calendar-container">
+            <div class="calendar-nav">
+                <button class="cal-nav-btn" id="cal-prev">&larr;</button>
+                <span class="cal-month-label" id="cal-month-label"></span>
+                <button class="cal-nav-btn" id="cal-next">&rarr;</button>
+            </div>
+            <div class="calendar-grid">
+                <div class="cal-header-row">
+                    <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+                </div>
+                <div class="cal-body" id="cal-body"></div>
+            </div>
+            <div class="cal-legend">
+                <span class="legend-item"><span class="legend-dot legend-dot-few"></span>1-2 slots</span>
+                <span class="legend-item"><span class="legend-dot legend-dot-some"></span>3-4 slots</span>
+                <span class="legend-item"><span class="legend-dot legend-dot-many"></span>5+ slots</span>
+            </div>
+        </div>
+
+        <div class="day-detail" id="day-detail" style="display:none;">
+            <div class="day-detail-header">
+                <h3 class="day-detail-title" id="day-detail-title"></h3>
+                <button class="btn btn-small" id="day-detail-close">&larr; back</button>
+            </div>
+            <div class="day-detail-slots" id="day-detail-slots"></div>
+        </div>
+
+        <div class="stats-bar" id="stats-bar"></div>
+    </div>
+
+    {% endif %}
+</div>
+
+<script>
+    window.__LOGGED_IN__ = {{ 'true' if logged_in else 'false' }};
+    window.__HAS_CREDITS__ = {{ 'true' if credits > 0 else 'false' }};
+    window.__CREDITS__ = {{ credits }};
+</script>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/tutoring.js') }}"></script>
+{% endblock %}
