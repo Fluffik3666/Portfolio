@@ -76,7 +76,9 @@
         tl.fromTo('#tutoring .about-photo img', { opacity: 0, scale: 1.05 }, { opacity: 1, scale: 1, duration: 1.2 })
           .fromTo('#tutoring .about-heading', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.8 }, '-=0.8')
           .fromTo('#tutoring .about-text p', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, stagger: 0.12 }, '-=0.4')
-          .fromTo('#tutoring .about-links', { opacity: 0, y: 15 }, { opacity: 1, y: 0, duration: 0.5 }, '-=0.2');
+          .fromTo('#tutoring .tutoring-paths', { opacity: 0 }, { opacity: 1, duration: 0.4 }, '-=0.3')
+          .fromTo('#tutoring .tutoring-paths li', { opacity: 0, x: -12 }, { opacity: 1, x: 0, duration: 0.4, stagger: 0.1 }, '-=0.2')
+          .fromTo('#tutoring .about-links', { opacity: 0, y: 15 }, { opacity: 1, y: 0, duration: 0.5 }, '-=0.1');
     }
 
     // ── HERO animations ──

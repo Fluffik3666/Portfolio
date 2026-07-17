@@ -1,4 +1,5 @@
 {% extends "tutoring_base.html" %}
+{% from "_plan_macros.html" import plan_progress %}
 {% block title %}My Account — Sasha Bagrov Tutoring{% endblock %}
 
 {% block content %}
@@ -27,6 +28,15 @@
         <span class="credits-label">session{{ 's' if (user_profile.sessions_remaining or 0) != 1 }} remaining</span>
         <a href="/tutoring/book" class="btn btn-small">book a slot</a>
     </div>
+    {% endif %}
+
+    <!-- Tailored curriculum -->
+    {% if active_plan %}
+    <section class="account-section">
+        <h2 class="section-title">your python curriculum</h2>
+        <p class="section-note">Your booked sessions are lined up against the plan below. Book more to fill the rest.</p>
+        {{ plan_progress(active_plan, sessions_by_lesson) }}
+    </section>
     {% endif %}
 
     <!-- Upcoming Bookings -->

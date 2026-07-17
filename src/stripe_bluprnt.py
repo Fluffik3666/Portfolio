@@ -6,9 +6,11 @@ import stripe
 try:
     from src.firebase_config import verify_token, ADMIN_EMAIL, FIREBASE_WEB_CONFIG
     from src.booking_service import BookingService
+    from src.lesson_plans import get_all_plans, plan_for_session_count, TEACHING_NOTES
 except ImportError:
     from firebase_config import verify_token, ADMIN_EMAIL, FIREBASE_WEB_CONFIG
     from booking_service import BookingService
+    from lesson_plans import get_all_plans, plan_for_session_count, TEACHING_NOTES
 
 blueprint = Blueprint(
     "stripe_bluprnt", __name__,
@@ -67,7 +69,14 @@ def book():
     user_profile = None
     if ctx["logged_in"]:
         user_profile = svc.get_user_profile(session["user_uid"])
-    return render_template("tutoring_book.html", packages=packages, user_profile=user_profile, **ctx)
+    return render_template(
+        "tutoring_book.html",
+        packages=packages,
+        user_profile=user_profile,
+        lesson_plans=get_all_plans(),
+        teaching_notes=TEACHING_NOTES,
+        **ctx,
+    )
 
 
 @blueprint.route("/account")
@@ -78,7 +87,33 @@ def account():
     user_profile = svc.get_user_profile(session["user_uid"])
     bookings = svc.get_user_bookings(session["user_uid"])
     purchases = svc.get_user_purchases(session["user_uid"])
-    return render_template("tutoring_account.html", user_profile=user_profile, bookings=bookings, purchases=purchases, **ctx)
+
+    # Show the curriculum tailored to what they booked. The arc size is the
+    # larger of the sessions they've actually booked (confirmed/completed) and
+    # the sessions they've purchased, so a 10-pack shows the full arc even
+    # before every session is on the calendar.
+    arc_bookings = sorted(
+        [b for b in bookings if b.get("status") in ("confirmed", "completed")],
+        key=lambda b: (b.get("date", ""), b.get("start_time", "")),
+    )
+    purchased = (user_profile or {}).get("total_sessions_purchased", 0) or 0
+    active_plan = plan_for_session_count(max(len(arc_bookings), purchased))
+
+    # Line each lesson up with the booked session that fills it (chronological).
+    sessions_by_lesson = []
+    if active_plan:
+        for i in range(len(active_plan["lessons"])):
+            sessions_by_lesson.append(arc_bookings[i] if i < len(arc_bookings) else None)
+
+    return render_template(
+        "tutoring_account.html",
+        user_profile=user_profile,
+        bookings=bookings,
+        purchases=purchases,
+        active_plan=active_plan,
+        sessions_by_lesson=sessions_by_lesson,
+        **ctx,
+    )
 
 
 @blueprint.route("/auth")

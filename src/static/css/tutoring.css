@@ -1231,12 +1231,217 @@ a:hover { opacity: 0.7; }
     background: rgba(39, 174, 96, 0.08);
 }
 
+/* ══════════════════════════════════
+   CURRICULUM / LESSON PLANS
+   ══════════════════════════════════ */
+.curriculum {
+    margin-top: 3.5rem;
+    padding-top: 3rem;
+    border-top: 1px solid rgba(240, 240, 240, 0.08);
+}
+
+.curriculum-head {
+    margin-bottom: 2rem;
+}
+
+.curriculum-heading {
+    font-family: var(--font-serif);
+    font-size: 2.4rem;
+    font-weight: 300;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.5rem;
+}
+
+.curriculum-sub {
+    font-family: var(--font-sans);
+    font-size: 0.9rem;
+    color: var(--grey);
+    line-height: 1.6;
+    max-width: 560px;
+}
+
+.plan-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    align-items: start;
+}
+
+.plan-card {
+    border: 1px solid rgba(240, 240, 240, 0.12);
+    border-radius: 10px;
+    padding: 1.5rem 1.4rem;
+    height: 100%;
+}
+
+.plan-card-featured {
+    border-color: rgba(240, 240, 240, 0.3);
+    background: rgba(240, 240, 240, 0.02);
+}
+
+.plan-card-active {
+    border-color: rgba(39, 174, 96, 0.3);
+    background: rgba(39, 174, 96, 0.03);
+}
+
+.plan-card-head {
+    margin-bottom: 1.2rem;
+}
+
+.plan-tier {
+    font-family: var(--font-sans);
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--grey);
+}
+
+.plan-name {
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
+    font-weight: 400;
+    margin: 0.3rem 0 0.4rem;
+}
+
+.plan-tagline {
+    font-family: var(--font-sans);
+    font-size: 0.82rem;
+    color: var(--grey);
+    line-height: 1.5;
+}
+
+.plan-lessons {
+    list-style: none;
+    counter-reset: none;
+    margin: 0;
+    padding: 0;
+}
+
+.plan-lesson {
+    display: flex;
+    gap: 0.8rem;
+    padding: 0.7rem 0;
+    border-top: 1px solid rgba(240, 240, 240, 0.07);
+}
+
+.plan-lesson:first-child {
+    border-top: none;
+    padding-top: 0;
+}
+
+.plan-lesson-marker {
+    font-family: var(--font-sans);
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: rgba(240, 240, 240, 0.5);
+    flex-shrink: 0;
+    width: 4.7rem;
+    padding-top: 0.1rem;
+}
+
+.plan-lesson-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.plan-lesson-title {
+    font-family: var(--font-sans);
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.plan-lesson-detail {
+    font-family: var(--font-sans);
+    font-size: 0.8rem;
+    color: var(--grey);
+    line-height: 1.45;
+}
+
+.plan-lesson-project {
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    color: rgba(240, 240, 240, 0.45);
+    font-style: italic;
+    margin-top: 0.1rem;
+}
+
+/* Account page: booked lessons get a green marker + date */
+.plan-lesson-booked .plan-lesson-marker {
+    color: var(--success);
+}
+
+.plan-lesson-date {
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    color: var(--success);
+    margin-top: 0.3rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.plan-lesson-join {
+    border-bottom: 1px solid rgba(39, 174, 96, 0.4);
+}
+
+.plan-lesson-join:hover {
+    opacity: 0.7;
+}
+
+/* ── Teaching notes ── */
+.teaching-notes {
+    margin-top: 2rem;
+    padding: 1.6rem 1.5rem;
+    border: 1px solid rgba(240, 240, 240, 0.1);
+    border-radius: 10px;
+}
+
+.teaching-notes-title {
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 500;
+    margin-bottom: 1.2rem;
+    text-transform: lowercase;
+}
+
+.teaching-notes-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.2rem;
+}
+
+.teaching-note {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.teaching-note-title {
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.teaching-note-detail {
+    font-family: var(--font-sans);
+    font-size: 0.8rem;
+    color: var(--grey);
+    line-height: 1.5;
+}
+
 /* ── Responsive ── */
 @media (max-width: 900px) {
     .tutoring-main { padding: 5.5rem 2rem 3rem; }
     .heading { font-size: 2.5rem; }
     .cal-month-label { font-size: 1.3rem; }
     .flow-step { padding: 1.4rem; }
+    .plan-grid { grid-template-columns: 1fr; }
+    .curriculum-heading { font-size: 2.1rem; }
 }
 
 @media (max-width: 640px) {
@@ -1259,6 +1464,8 @@ a:hover { opacity: 0.7; }
     .cal-urgency { display: none; }
     .stats-bar { flex-direction: column; gap: 0.3rem; text-align: center; }
     .stat-sep { display: none; }
+    .teaching-notes-grid { grid-template-columns: 1fr; }
+    .curriculum-heading { font-size: 1.9rem; }
 }
 
 @media (max-width: 380px) {
