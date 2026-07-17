@@ -14,7 +14,7 @@ html {
 }
 
 body {
-    font-family: var(--font-serif);
+    font-family: var(--font-sans);
     background: var(--bg);
     color: var(--white);
     overflow-x: hidden;
@@ -116,6 +116,7 @@ img {
 }
 
 .hero-greeting {
+    font-family: var(--font-serif);
     font-weight: 300;
     font-size: clamp(2.5rem, 5vw, 4.5rem);
     line-height: 1.2;
@@ -198,6 +199,7 @@ img {
 }
 
 .about-heading {
+    font-family: var(--font-serif);
     font-weight: 300;
     font-size: clamp(2rem, 4vw, 3.5rem);
     margin-bottom: 2rem;
@@ -246,6 +248,7 @@ img {
 }
 
 .section-heading {
+    font-family: var(--font-serif);
     font-weight: 300;
     font-size: clamp(2.5rem, 5vw, 4rem);
     margin-bottom: 3.5rem;
@@ -319,9 +322,9 @@ img {
 }
 
 .project-name {
-    font-family: var(--font-serif);
-    font-size: 1.25rem;
-    font-weight: 400;
+    font-family: var(--font-sans);
+    font-size: 1.15rem;
+    font-weight: 500;
     white-space: nowrap;
     flex-shrink: 0;
 }
@@ -529,48 +532,67 @@ img {
         font-size: 1rem;
     }
 
-    /* Hero — photo behind, content at bottom */
+    /* Hero — full-bleed portrait floating on black, content pinned to bottom */
     .section--hero {
         flex-direction: column;
+        align-items: stretch;
         justify-content: flex-end;
-        padding-bottom: 2.5rem;
+        padding: 0 1.6rem 3rem;
     }
 
     .hero-photo {
         position: absolute;
-        width: 65%;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        top: 0;
         left: 0;
-        height: 65%;
-        top: 8%;
+        align-items: center;
+        justify-content: center;
     }
 
     .hero-photo img {
         height: 100%;
+        width: 100%;
         object-fit: contain;
+        object-position: center 40%;
+    }
+
+    /* Scrim keeps the greeting + nav readable over the photo */
+    .hero-photo::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to bottom,
+            rgba(0,0,0,0) 42%,
+            rgba(0,0,0,0.55) 70%,
+            rgba(0,0,0,0.92) 100%);
+        pointer-events: none;
     }
 
     .hero-content {
         position: relative;
         margin-left: 0;
-        padding: 0 1.5rem;
+        padding: 0;
         z-index: 2;
     }
 
     .hero-greeting {
-        font-size: 2rem;
-        margin-bottom: 1.5rem;
+        font-size: 2.4rem;
+        margin-bottom: 1.2rem;
     }
 
     .nav-link {
-        font-size: 1.2rem;
+        font-size: 1.25rem;
     }
 
     .hero-nav {
-        gap: 0.5rem;
+        gap: 0.7rem;
     }
 
-    /* About — stacked: photo on top, text below */
-    .section--about {
+    /* About / Tutoring — stacked: photo on top, text below */
+    .section--about,
+    .section--tutoring {
         flex-direction: column;
         align-items: stretch;
         min-height: auto;
@@ -579,12 +601,13 @@ img {
     .about-photo {
         position: relative;
         width: 100%;
-        height: 55vh;
+        height: 50vh;
         flex-shrink: 0;
     }
 
     .about-photo img {
-        object-position: center 30%;
+        object-fit: contain;
+        object-position: center;
     }
 
     .about-content {
@@ -652,8 +675,8 @@ img {
 
     .project-desc {
         text-align: left;
-        font-size: 0.8rem;
-        color: rgba(240,240,240,0.35);
+        font-size: 0.85rem;
+        color: rgba(240,240,240,0.55);
     }
 
     .project-arrow {
@@ -693,22 +716,18 @@ img {
 /* ── Very small screens ── */
 @media (max-width: 380px) {
     .hero-greeting {
-        font-size: 1.7rem;
+        font-size: 2rem;
     }
 
     .nav-link {
-        font-size: 1.1rem;
-    }
-
-    .hero-photo {
-        width: 60%;
+        font-size: 1.15rem;
     }
 
     .about-photo {
-        height: 45vh;
+        height: 44vh;
     }
 
     .project-name {
-        font-size: 1rem;
+        font-size: 1.05rem;
     }
 }
