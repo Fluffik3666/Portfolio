@@ -1,31 +1,76 @@
-from flask import Flask, send_from_directory, render_template, request, Response, jsonify
+from flask import Flask, send_from_directory, render_template, request, Response, jsonify, session
 from PIL import Image
 import io
 import os
+import re
 import json
-from src.firebase_config import initialize_firebase
+import cssmin
+import rjsmin
+import stripe
+
+try:
+    from src.firebase_config import initialize_firebase
+    from src.stripe_bluprnt import blueprint
+except ImportError:
+    from firebase_config import initialize_firebase
+    from stripe_bluprnt import blueprint
+
+stripe.api_key = os.getenv("STRIPE_API_KEY")
 
 app = Flask(__name__, template_folder='../src/templates', static_folder='../src/static')
+app.secret_key = os.getenv('SECRET_KEY', 'dev-secret-change-me')
+app.config['SESSION_COOKIE_HTTPONLY'] = True
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+app.register_blueprint(blueprint)
 
-# Initialize Firebase Storage
 storage_bucket = initialize_firebase()
+
+_min_cache = {}
+
+def minify_html(html):
+    html = re.sub(r'<!--.*?-->', '', html, flags=re.DOTALL)
+    html = re.sub(r'>\s+<', '><', html)
+    html = re.sub(r'\s{2,}', ' ', html)
+    return html.strip()
+
+def get_minified(filepath, minifier):
+    mtime = os.path.getmtime(filepath)
+    if filepath in _min_cache and _min_cache[filepath][0] == mtime:
+        return _min_cache[filepath][1]
+    with open(filepath, 'r') as f:
+        content = f.read()
+    minified = minifier(content)
+    _min_cache[filepath] = (mtime, minified)
+    return minified
 
 #! serve our important routes
 @app.route('/')
 def index():
-    return render_template('index.html')
+    html = render_template('index.html', logged_in='user_uid' in session)
+    return minify_html(html)
 
 @app.route('/photos')
 def photos():
-    return render_template('photos.html')
+    html = render_template('photos.html')
+    return minify_html(html)
 
-@app.route('/projects')
-def projects():
-    return render_template('projects.html')
+# Serve minified + obfuscated JS
+@app.route('/content/static/js/<path:filename>')
+def serve_js(filename):
+    filepath = os.path.join(app.static_folder, 'js', filename)
+    if not os.path.exists(filepath):
+        return "Not found", 404
+    minified = get_minified(filepath, rjsmin.jsmin)
+    return Response(minified, mimetype='application/javascript')
 
-@app.route('/skills')
-def skills():
-    return render_template('skills.html')
+# Serve minified CSS
+@app.route('/content/static/css/<path:filename>')
+def serve_css(filename):
+    filepath = os.path.join(app.static_folder, 'css', filename)
+    if not os.path.exists(filepath):
+        return "Not found", 404
+    minified = get_minified(filepath, cssmin.cssmin)
+    return Response(minified, mimetype='text/css')
 
 #! API endpoints
 @app.route('/api/images')
@@ -119,5 +164,7 @@ def serve_optimized_image(image_id):
         return f"Error processing image: {str(e)}", 500
 
 
+
+
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8080) 
+    app.run(host='0.0.0.0', port=8080)
