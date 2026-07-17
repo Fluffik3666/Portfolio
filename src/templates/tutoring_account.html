@@ -1,0 +1,98 @@
+{% extends "tutoring_base.html" %}
+{% block title %}My Account — Sasha Bagrov Tutoring{% endblock %}
+
+{% block content %}
+<div class="account-page">
+    {% if request.args.get('booked') %}
+    <!-- Booking success -->
+    <div class="success-hero">
+        <h1 class="heading">you're booked!</h1>
+        <p class="success-msg">{{ request.args.get('booked') }} session{{ 's' if request.args.get('booked') != '1' }} confirmed. You'll receive a Google Calendar invite with the meeting link shortly.</p>
+        <a href="/tutoring/book" class="btn">book more sessions</a>
+    </div>
+    {% elif request.args.get('purchase') == 'success' %}
+    <div class="success-hero">
+        <h1 class="heading">payment received!</h1>
+        <p class="success-msg">your sessions have been credited. head to the booking page to pick your times.</p>
+        <a href="/tutoring/book" class="btn btn-primary">book now</a>
+    </div>
+    {% else %}
+    <h1 class="heading">my account.</h1>
+    {% endif %}
+
+    <!-- Credits -->
+    {% if user_profile %}
+    <div class="credits-banner large">
+        <span class="credits-count">{{ user_profile.sessions_remaining or 0 }}</span>
+        <span class="credits-label">session{{ 's' if (user_profile.sessions_remaining or 0) != 1 }} remaining</span>
+        <a href="/tutoring/book" class="btn btn-small">book a slot</a>
+    </div>
+    {% endif %}
+
+    <!-- Upcoming Bookings -->
+    <section class="account-section">
+        <h2 class="section-title">upcoming sessions</h2>
+        <div class="bookings-list" id="upcoming-bookings">
+            {% for b in bookings if b.status == 'confirmed' %}
+            <div class="booking-card">
+                <div class="booking-card-top">
+                    <div class="booking-info">
+                        <span class="booking-date">{{ b.date }}</span>
+                        <span class="booking-time">{{ b.start_time }} &mdash; {{ b.end_time }}</span>
+                    </div>
+                    <span class="booking-status status-confirmed">confirmed</span>
+                </div>
+                {% if b.meet_link %}
+                <a href="{{ b.meet_link }}" target="_blank" class="btn btn-small btn-meet">join meeting</a>
+                {% endif %}
+                {% if b.note %}
+                <p class="booking-note">{{ b.note }}</p>
+                {% endif %}
+                <button class="btn btn-small btn-danger cancel-booking-btn" data-booking-id="{{ b.id }}">cancel</button>
+            </div>
+            {% else %}
+            <p class="empty-state">no upcoming sessions. <a href="/tutoring/book">book one</a>.</p>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- Past Bookings -->
+    <section class="account-section">
+        <h2 class="section-title">past sessions</h2>
+        <div class="bookings-list">
+            {% for b in bookings if b.status in ['completed', 'cancelled'] %}
+            <div class="booking-row faded">
+                <div class="booking-info">
+                    <span class="booking-date">{{ b.date }}</span>
+                    <span class="booking-time">{{ b.start_time }} &mdash; {{ b.end_time }}</span>
+                </div>
+                <span class="booking-status status-{{ b.status }}">{{ b.status }}</span>
+            </div>
+            {% else %}
+            <p class="empty-state">no past sessions yet.</p>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- Purchase History -->
+    <section class="account-section">
+        <h2 class="section-title">purchase history</h2>
+        <div class="purchases-list">
+            {% for p in purchases %}
+            <div class="purchase-row">
+                <span class="purchase-package">{{ p.package_id }}</span>
+                <span class="purchase-sessions">{{ p.session_count }} session{{ 's' if p.session_count != 1 }}</span>
+                <span class="purchase-amount">&pound;{{ '%.2f' | format(p.amount_cents / 100) }}</span>
+                <span class="purchase-status status-{{ p.status }}">{{ p.status }}</span>
+            </div>
+            {% else %}
+            <p class="empty-state">no purchases yet. <a href="/tutoring/book">browse packages</a>.</p>
+            {% endfor %}
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/tutoring_account.js') }}"></script>
+{% endblock %}

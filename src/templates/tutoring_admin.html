@@ -1,0 +1,125 @@
+{% extends "tutoring_base.html" %}
+{% block title %}Admin — Tutoring{% endblock %}
+
+{% block content %}
+<div class="admin-page">
+    <h1 class="heading">availability.</h1>
+
+    <!-- Add Availability -->
+    <section class="admin-section">
+        <h2 class="section-title">add available times</h2>
+        <form class="admin-form" id="add-avail-form">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="avail-start">start time</label>
+                    <input type="time" id="avail-start" required>
+                </div>
+                <div class="form-group">
+                    <label for="avail-end">end time</label>
+                    <input type="time" id="avail-end" required>
+                </div>
+                <div class="form-group">
+                    <label for="avail-dur">duration (min)</label>
+                    <input type="number" id="avail-dur" value="60" min="15" step="15">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>days</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="avail-day" value="0"> Mon</label>
+                    <label><input type="checkbox" name="avail-day" value="1"> Tue</label>
+                    <label><input type="checkbox" name="avail-day" value="2"> Wed</label>
+                    <label><input type="checkbox" name="avail-day" value="3"> Thu</label>
+                    <label><input type="checkbox" name="avail-day" value="4"> Fri</label>
+                    <label><input type="checkbox" name="avail-day" value="5"> Sat</label>
+                    <label><input type="checkbox" name="avail-day" value="6"> Sun</label>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">save</button>
+        </form>
+    </section>
+
+    <!-- Current Availability -->
+    <section class="admin-section">
+        <h2 class="section-title">current schedule</h2>
+        {% set day_names = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] %}
+        {% if availability %}
+        <div class="avail-list">
+            {% for a in availability %}
+            <div class="avail-row">
+                <span class="avail-day">{{ day_names[a.day_of_week] }}</span>
+                <span class="avail-time">{{ a.start_time }} &mdash; {{ a.end_time }}</span>
+                <span class="avail-dur">{{ a.duration_minutes }}min</span>
+                <button class="btn btn-small btn-danger delete-avail-btn" data-id="{{ a.id }}">remove</button>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="empty-state">no availability set. add your available times above.</p>
+        {% endif %}
+    </section>
+
+    <!-- Booked Sessions -->
+    <section class="admin-section">
+        <h2 class="section-title">upcoming bookings</h2>
+        {% if bookings %}
+        <div class="bookings-admin-list">
+            {% for b in bookings %}
+            <div class="admin-booking-row">
+                <span class="admin-booking-date">{{ b.date }}</span>
+                <span class="admin-booking-time">{{ b.start_time }} &mdash; {{ b.end_time }}</span>
+                <span class="admin-booking-email">{{ b.user_email }}</span>
+                {% if b.meet_link %}
+                <a href="{{ b.meet_link }}" target="_blank" class="btn btn-small">join</a>
+                {% else %}
+                <span class="admin-booking-no-meet">no link</span>
+                {% endif %}
+            </div>
+            {% if b.note %}
+            <div class="admin-booking-note">{{ b.note }}</div>
+            {% endif %}
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="empty-state">no upcoming bookings.</p>
+        {% endif %}
+    </section>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('add-avail-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        var checked = document.querySelectorAll('input[name="avail-day"]:checked');
+        var days = [];
+        checked.forEach(function(cb) { days.push(parseInt(cb.value)); });
+        if (days.length === 0) { alert('Select at least one day'); return; }
+
+        fetch('/tutoring/admin/availability', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                days_of_week: days,
+                start_time: document.getElementById('avail-start').value,
+                end_time: document.getElementById('avail-end').value,
+                duration_minutes: parseInt(document.getElementById('avail-dur').value),
+            }),
+        })
+        .then(function(r) { return r.json(); })
+        .then(function(res) {
+            if (res.ok) window.location.reload();
+            else alert(res.error);
+        });
+    });
+
+    document.querySelectorAll('.delete-avail-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            if (!confirm('Remove this availability?')) return;
+            fetch('/tutoring/admin/availability/' + this.dataset.id, { method: 'DELETE' })
+                .then(function(r) { return r.json(); })
+                .then(function(res) { if (res.ok) window.location.reload(); });
+        });
+    });
+});
+</script>
+{% endblock %}

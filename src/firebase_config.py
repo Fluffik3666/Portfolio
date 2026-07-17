@@ -1,9 +1,20 @@
 import os
 import firebase_admin
-from firebase_admin import credentials, storage
+from firebase_admin import credentials, storage, firestore, auth
 from dotenv import load_dotenv
 
 load_dotenv()
+
+ADMIN_EMAIL = os.getenv("ADMIN_EMAIL")
+
+FIREBASE_WEB_CONFIG = {
+    "apiKey": os.getenv("FIREBASE_API_KEY"),
+    "authDomain": os.getenv("FIREBASE_AUTH_DOMAIN"),
+    "projectId": os.getenv("FIREBASE_PROJECT_ID"),
+    "storageBucket": os.getenv("FIREBASE_STORAGE_BUCKET"),
+    "messagingSenderId": os.getenv("FIREBASE_MESSAGING_SENDER_ID"),
+    "appId": os.getenv("FIREBASE_APP_ID"),
+}
 
 admin_sdk_config = {
     "type": "service_account",
@@ -31,3 +42,9 @@ def initialize_firebase():
     except Exception as e:
         print(f"Error initializing Firebase: {e}")
         return None
+
+def get_db():
+    return firestore.client()
+
+def verify_token(id_token):
+    return auth.verify_id_token(id_token)
