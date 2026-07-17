@@ -1,4 +1,5 @@
 {% extends "tutoring_base.html" %}
+{% from "_plan_macros.html" import plan_card %}
 {% block title %}Book a Session — Sasha Bagrov{% endblock %}
 
 {% set credits = user_profile.sessions_remaining or 0 if user_profile else 0 %}
@@ -7,7 +8,7 @@
 <div class="book-page">
     <header class="book-header">
         <h1 class="heading">book a session.</h1>
-        <p class="subtitle">1-on-1 programming &amp; coding tutoring. Python, Swift, web development, and more.</p>
+        <p class="subtitle">1-on-1 Python tutoring for beginners &mdash; structured 45-minute lessons. New to code? Start with a taster, or follow a full arc.</p>
     </header>
 
     {% if not logged_in %}
@@ -178,6 +179,35 @@
         <div class="stats-bar" id="stats-bar"></div>
     </div>
 
+    {% endif %}
+
+    <!-- ══ CURRICULUM ══ -->
+    {% if lesson_plans %}
+    <section class="curriculum" id="curriculum">
+        <div class="curriculum-head">
+            <h2 class="curriculum-heading">the curriculum.</h2>
+            <p class="curriculum-sub">Three ways in, all in Python. Pick the depth that fits &mdash; each session is 45 minutes, 1-on-1, online.</p>
+        </div>
+        <div class="plan-grid">
+            {% for plan in lesson_plans %}
+            {{ plan_card(plan, featured=(plan.key == 'foundation')) }}
+            {% endfor %}
+        </div>
+
+        {% if teaching_notes %}
+        <div class="teaching-notes">
+            <h3 class="teaching-notes-title">how the sessions work</h3>
+            <div class="teaching-notes-grid">
+                {% for note in teaching_notes %}
+                <div class="teaching-note">
+                    <span class="teaching-note-title">{{ note.title }}</span>
+                    <span class="teaching-note-detail">{{ note.detail }}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </section>
     {% endif %}
 </div>
 

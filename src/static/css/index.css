@@ -234,6 +234,39 @@ img {
     opacity: 0.6;
 }
 
+/* ── Tutoring paths (curriculum teaser) ── */
+.tutoring-paths {
+    list-style: none;
+    margin-top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    opacity: 0;
+}
+
+.tutoring-paths li {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    padding-left: 0.9rem;
+    border-left: 2px solid rgba(240, 240, 240, 0.18);
+}
+
+.tutoring-path-name {
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--white);
+}
+
+.tutoring-path-desc {
+    font-family: var(--font-sans);
+    font-size: 0.9rem;
+    font-weight: 300;
+    color: var(--grey);
+    line-height: 1.4;
+}
+
 /* ══════════════════════════════════
    WORK
    ══════════════════════════════════ */

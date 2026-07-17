@@ -1,0 +1,55 @@
+{# Reusable renderers for the Python-beginner lesson plans. #}
+
+{# A full plan card: heading + every lesson. Used on the booking page. #}
+{% macro plan_card(plan, featured=False) %}
+<div class="plan-card{% if featured %} plan-card-featured{% endif %}">
+    <div class="plan-card-head">
+        <span class="plan-tier">{{ plan.label }}</span>
+        <h3 class="plan-name">{{ plan.name }}</h3>
+        <p class="plan-tagline">{{ plan.tagline }}</p>
+    </div>
+    <ol class="plan-lessons">
+        {% for lesson in plan.lessons %}
+        <li class="plan-lesson">
+            <span class="plan-lesson-marker">{{ lesson.marker }}</span>
+            <span class="plan-lesson-body">
+                <span class="plan-lesson-title">{{ lesson.title }}</span>
+                <span class="plan-lesson-detail">{{ lesson.detail }}</span>
+                {% if lesson.project %}<span class="plan-lesson-project">Build: {{ lesson.project }}</span>{% endif %}
+            </span>
+        </li>
+        {% endfor %}
+    </ol>
+</div>
+{% endmacro %}
+
+{# The tailored plan on the account page: each lesson shows the booked date
+   that fills it, if any. `sessions_by_lesson[i]` aligns with `plan.lessons[i]`. #}
+{% macro plan_progress(plan, sessions_by_lesson) %}
+<div class="plan-card plan-card-active">
+    <div class="plan-card-head">
+        <span class="plan-tier">your path &middot; {{ plan.label }}</span>
+        <h3 class="plan-name">{{ plan.name }}</h3>
+        <p class="plan-tagline">{{ plan.tagline }}</p>
+    </div>
+    <ol class="plan-lessons">
+        {% for lesson in plan.lessons %}
+        {% set booked = sessions_by_lesson[loop.index0] if sessions_by_lesson and loop.index0 < sessions_by_lesson|length else None %}
+        <li class="plan-lesson{% if booked %} plan-lesson-booked{% endif %}">
+            <span class="plan-lesson-marker">{{ lesson.marker }}</span>
+            <span class="plan-lesson-body">
+                <span class="plan-lesson-title">{{ lesson.title }}</span>
+                <span class="plan-lesson-detail">{{ lesson.detail }}</span>
+                {% if lesson.project %}<span class="plan-lesson-project">Build: {{ lesson.project }}</span>{% endif %}
+                {% if booked %}
+                <span class="plan-lesson-date">
+                    {{ booked.date }} &middot; {{ booked.start_time }}
+                    {% if booked.meet_link %}<a href="{{ booked.meet_link }}" target="_blank" class="plan-lesson-join">join &rarr;</a>{% endif %}
+                </span>
+                {% endif %}
+            </span>
+        </li>
+        {% endfor %}
+    </ol>
+</div>
+{% endmacro %}
