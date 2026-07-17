@@ -7,3 +7,5 @@ stripe==15.3.0
 google-api-python-client==2.172.0
 google-auth==2.40.3
 zipp>=3.19.1 # not directly required, pinned by Snyk to avoid a vulnerability
+protobuf>=4.25.8 # not directly required, pinned by Snyk to avoid a vulnerability
+pyasn1>=0.6.4 # not directly required, pinned by Snyk to avoid a vulnerability
