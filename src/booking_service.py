@@ -1,4 +1,5 @@
 import uuid
+import traceback
 from datetime import datetime, timedelta
 from google.cloud.firestore_v1 import FieldFilter
 from firebase_admin import firestore
@@ -289,9 +290,19 @@ class BookingService:
                     self.db.collection("bookings").document(booking["id"]).update({
                         "meet_link": result.get("meet_link"),
                         "calendar_event_id": result.get("event_id"),
+                        "calendar_html_link": result.get("html_link"),
                     })
                     booking["meet_link"] = result.get("meet_link")
             except Exception as e:
+                # Don't fail the booking, but record why the calendar/Meet step
+                # failed so it's diagnosable instead of silently missing.
+                traceback.print_exc()
+                try:
+                    self.db.collection("bookings").document(booking["id"]).update({
+                        "calendar_error": str(e),
+                    })
+                except Exception:
+                    pass
                 print(f"Calendar event creation failed for {booking['date']}: {e}")
 
         return bookings
