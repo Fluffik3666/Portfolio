@@ -3,116 +3,154 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sasha Bagrov</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"/>
-    <title>Sasha Bagrov - Portfolio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap" rel="stylesheet">
 </head>
-<body data-theme="light">
-    <!-- Page transition overlay -->
-    <div class="page-transition"></div>
+<body>
 
-    <!-- Navigation header (appears after scroll) -->
-    <nav class="main-nav" id="mainNav">
-        <div class="nav-content">
-            <div class="nav-logo">SB</div>
-            <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle menu">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
-            <div class="nav-links">
-                <a href="/" class="nav-link active">
-                    <span>Home</span>
-                    <div class="nav-underline"></div>
-                </a>
-                <a href="/projects" class="nav-link">
-                    <span>Projects</span>
-                    <div class="nav-underline"></div>
-                </a>
-                <a href="/skills" class="nav-link">
-                    <span>Skills</span>
-                    <div class="nav-underline"></div>
-                </a>
-                <a href="/photos" class="nav-link">
-                    <span>Photography</span>
-                    <div class="nav-underline"></div>
-                </a>
-                <a href="/tutoring/book" class="nav-link">
-                    <span>Tutoring</span>
-                    <div class="nav-underline"></div>
-                </a>
-                {% if logged_in %}
-                <a href="/tutoring/account" class="nav-link">
-                    <span>My Sessions</span>
-                    <div class="nav-underline"></div>
-                </a>
-                {% endif %}
-            </div>
-            <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
-                <span class="material-symbols-outlined">dark_mode</span>
-            </button>
+    <!-- Back nav (hidden on hero) -->
+    <a href="#" class="back-nav" id="back-nav" aria-label="Back to home">&larr; home</a>
+
+    <!-- ====== HERO ====== -->
+    <section class="section section--hero active" id="hero">
+        <div class="hero-photo">
+            <img src="{{ url_for('static', filename='images/sb_photos_bw-2.jpg') }}" alt="Sasha Bagrov" />
         </div>
-    </nav>
-
-    <!-- Hero/Intro Section -->
-    <section class="hero-section" id="heroSection">
         <div class="hero-content">
-            <h1 class="hero-main-text">The world needs more</h1>
-            <div class="profession-container">
-                <span class="profession-text" id="professionText">creators</span>
-            </div>
-        </div>
-        <div class="scroll-indicator" id="scrollIndicator">
-            <span class="material-symbols-outlined">keyboard_arrow_down</span>
+            <h1 class="hero-greeting">
+                <span class="line">hi.</span>
+                <span class="line">i'm Sasha.</span>
+            </h1>
+            <nav class="hero-nav">
+                <a href="#about" class="nav-link" data-target="about">about me <span>&rarr;</span></a>
+                <a href="#work" class="nav-link" data-target="work">work <span>&rarr;</span></a>
+                <a href="#photography" class="nav-link" data-target="photography">photography <span>&rarr;</span></a>
+                <a href="#tutoring" class="nav-link" data-target="tutoring">tutoring <span>&rarr;</span></a>
+                {% if logged_in %}
+                <a href="/tutoring/account" class="nav-link nav-link-accent">my sessions <span>&rarr;</span></a>
+                {% endif %}
+            </nav>
         </div>
     </section>
 
-    <!-- About Me Contrast Section -->
-    <section class="about-contrast" data-scroll-section>
-        <div class="about-split">
-            <div class="about-left" data-scroll data-scroll-speed="2">
-                <h2>Who I Am</h2>
-                <div class="about-details">
-                    <p>Sasha Bagrov</p>
-                    <p>Full Stack Developer</p>
-                    <p>Theatre Technician</p>
-                    <p>Photographer</p>
-                    <p>Based in London</p>
+    <!-- ====== ABOUT ====== -->
+    <section class="section section--about" id="about">
+        <div class="about-photo">
+            <img src="{{ url_for('static', filename='images/sb_photos_bw.jpg') }}" alt="Sasha Bagrov" />
+        </div>
+        <div class="about-content">
+            <h2 class="about-heading">i'm Sasha.</h2>
+            <div class="about-text">
+                <p>I'm a developer, photographer, and founder based in London. I'm the CEO of <a href="https://kidshustle.app" target="_blank" rel="noopener">KidsHustle</a> &mdash; a platform helping kids and teens earn money through quick jobs.</p>
+                <p>I build things for the web and Apple platforms, with a stack spanning Python, Swift, and modern web technologies backed by Google Cloud and Kubernetes. I care about clean architecture, developer experience, and shipping things that work.</p>
+                <p>Outside of code, I do theatre tech, love cooking, and I'm usually out with a camera somewhere in London.</p>
+            </div>
+            <div class="about-links">
+                <a href="https://github.com/Fluffik3666" target="_blank" rel="noopener">github</a>
+                <a href="mailto:sasha@urbanmechanics.co.uk">email</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ====== WORK ====== -->
+    <section class="section section--work" id="work">
+        <div class="work-inner">
+            <h2 class="section-heading">work.</h2>
+
+            <!-- Skills -->
+            <div class="work-block">
+                <h3 class="work-subheading">skills</h3>
+                <div class="skills-grid">
+                    <div class="skill-tag">Python</div>
+                    <div class="skill-tag">Swift &amp; SwiftUI</div>
+                    <div class="skill-tag">HTML / CSS / JS</div>
+                    <div class="skill-tag">Google Cloud Platform</div>
+                    <div class="skill-tag">Kubernetes</div>
+                    <div class="skill-tag">Firebase</div>
+                    <div class="skill-tag">GitHub Actions / CI&middot;CD</div>
+                    <div class="skill-tag">OAuth2 &amp; Auth Systems</div>
                 </div>
             </div>
-            <div class="about-right" data-scroll data-scroll-speed="1">
-                <h2>What I Do</h2>
-                <div class="about-details">
-                    <p>I've been coding since I was 9 years old, building everything from iOS apps to web platforms.</p>
-                    <p>My work spans across full-stack development, with a focus on creating meaningful digital experiences.</p>
-                    <p>When I'm not coding, you'll find me in the theatre running tech, or exploring London with my camera.</p>
-                    <p>I believe in open source, clean code, and technology that serves people.</p>
+
+            <!-- Projects -->
+            <div class="work-block">
+                <h3 class="work-subheading">projects</h3>
+                <div class="projects-list">
+                    <a href="https://kidshustle.app" target="_blank" rel="noopener" class="project-row">
+                        <span class="project-name">KidsHustle</span>
+                        <span class="project-desc">Platform for kids and teens to earn money through quick jobs</span>
+                        <span class="project-arrow">&rarr;</span>
+                    </a>
+                    <a href="https://pollify.co.uk" target="_blank" rel="noopener" class="project-row">
+                        <span class="project-name">Pollify</span>
+                        <span class="project-desc">Privacy-focused, open-source poll creation</span>
+                        <span class="project-arrow">&rarr;</span>
+                    </a>
+                    <a href="https://apps.apple.com/gb/app/animeatlas/id6739979715" target="_blank" rel="noopener" class="project-row">
+                        <span class="project-name">AnimeAtlas</span>
+                        <span class="project-desc">Native iOS SwiftUI anime tracker &mdash; on the App Store</span>
+                        <span class="project-arrow">&rarr;</span>
+                    </a>
+                    <a href="https://www.afishalondontickets.com/" target="_blank" rel="noopener" class="project-row">
+                        <span class="project-name">Kassa Notifications</span>
+                        <span class="project-desc">Real-time Stripe purchase alerts for iOS</span>
+                        <span class="project-arrow">&rarr;</span>
+                    </a>
+                    <a href="https://www.afishalondontickets.com/" target="_blank" rel="noopener" class="project-row">
+                        <span class="project-name">Afisha Ticket Scanner</span>
+                        <span class="project-desc">iOS + macOS scanning system with CloudKit &amp; SwiftData</span>
+                        <span class="project-arrow">&rarr;</span>
+                    </a>
+                    <a href="https://seurt.vercel.app/" target="_blank" rel="noopener" class="project-row">
+                        <span class="project-name">Seurt</span>
+                        <span class="project-desc">Secure, token-based chat with retro 8-bit aesthetic</span>
+                        <span class="project-arrow">&rarr;</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- GitHub Repos -->
+            <div class="work-block">
+                <h3 class="work-subheading">open source</h3>
+                <div class="github-list" id="github-repos">
+                    <div class="loading-repos">loading repositories...</div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Contact Section -->
-    <section class="contact-section" data-scroll-section>
-        <h2>Let's Connect</h2>
-        <div class="contact-grid">
-            <a href="https://github.com/Fluffik3666" class="contact-card">
-                <span class="material-symbols-outlined">code</span>
-                <h3>Github</h3>
-                <p>Check out my repositories</p>
-            </a>
-            <a href="mailto:sasha@urbanmechanics.co.uk" class="contact-card">
-                <span class="material-symbols-outlined">mail</span>
-                <h3>Email</h3>
-                <p>Let's talk</p>
-            </a>
+    <!-- ====== PHOTOGRAPHY ====== -->
+    <section class="section section--photography" id="photography">
+        <div class="photography-inner">
+            <h2 class="section-heading">photography.</h2>
+            <p class="photography-subtitle">mostly London, mostly wandering.</p>
+            <div class="photo-grid" id="photo-grid">
+                <p class="loading-repos">loading photos...</p>
+            </div>
         </div>
     </section>
 
-    <footer>
-        <p>&copy; 2025 Sasha Bagrov. All rights reserved.</p>
-    </footer>
+    <!-- ====== TUTORING ====== -->
+    <section class="section section--tutoring" id="tutoring">
+        <div class="about-photo">
+            <img src="{{ url_for('static', filename='images/sb_photos_bw.jpg') }}" alt="Sasha Bagrov" />
+        </div>
+        <div class="about-content">
+            <h2 class="about-heading">tutoring.</h2>
+            <div class="about-text">
+                <p>I offer 1-on-1 programming tutoring sessions covering Python, Swift, cloud infrastructure, and more. Whether you're just starting out or levelling up, I'll tailor each session to where you are.</p>
+                <p>Sessions are 45 minutes, conducted online. Buy a single session or save with a multi-session package.</p>
+            </div>
+            <div class="about-links">
+                <a href="/tutoring/book">book a session <span>&rarr;</span></a>
+            </div>
+        </div>
+    </section>
 
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js"></script>
     <script src="{{ url_for('static', filename='js/index.js') }}"></script>
     <script>
         window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };

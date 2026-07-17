@@ -1,285 +1,455 @@
-// Profession animation
-const professions = [
-    'creators',
-    'innovators',
-    'dreamers',
-    'builders',
-    'artists',
-    'thinkers',
-    'makers',
-    'visionaries'
-];
+// ── Portfolio ──
+(function () {
+    const sections = document.querySelectorAll('.section');
+    const backNav = document.getElementById('back-nav');
+    const navLinks = document.querySelectorAll('.nav-link');
+    let currentSection = 'hero';
 
-let currentProfessionIndex = 0;
-let professionInterval;
+    // ── Language colors for GitHub ──
+    const langColors = {
+        JavaScript: '#f1e05a', Python: '#3572A5', Swift: '#F05138',
+        HTML: '#e34c26', CSS: '#563d7c', TypeScript: '#3178c6',
+        Shell: '#89e051', Go: '#00ADD8', Rust: '#dea584',
+        Java: '#b07219', Ruby: '#701516', Kotlin: '#A97BFF',
+        Dart: '#00B4AB', 'C++': '#f34b7d', C: '#555555',
+        'Jupyter Notebook': '#DA5B0B', Dockerfile: '#384d54'
+    };
 
-function animateProfession() {
-    const professionElement = document.getElementById('professionText');
-    if (!professionElement) return;
+    // ── Section navigation ──
+    function showSection(id) {
+        if (currentSection === id) return;
 
-    // Fly out current profession
-    professionElement.style.animation = 'flyOut 0.6s cubic-bezier(0.645, 0.045, 0.355, 1) forwards';
+        const outgoing = document.getElementById(currentSection);
+        const incoming = document.getElementById(id);
 
-    setTimeout(() => {
-        // Change profession
-        currentProfessionIndex = (currentProfessionIndex + 1) % professions.length;
-        professionElement.textContent = professions[currentProfessionIndex];
+        // Fade out current
+        gsap.to(outgoing, {
+            opacity: 0,
+            duration: 0.4,
+            ease: 'power2.in',
+            onComplete() {
+                outgoing.classList.remove('active');
+                outgoing.style.opacity = '';
+                window.scrollTo(0, 0);
 
-        // Fly in new profession
-        professionElement.style.animation = 'flyIn 0.6s cubic-bezier(0.645, 0.045, 0.355, 1) forwards';
-    }, 600);
-}
+                // Show incoming
+                incoming.classList.add('active');
+                currentSection = id;
+                animateSection(id);
 
-// Start profession animation if on home page
-if (document.getElementById('professionText')) {
-    professionInterval = setInterval(animateProfession, 2000);
-}
-
-// Dreamy smooth scrolling (desktop only)
-let isScrolling = false;
-let targetScroll = window.pageYOffset;
-let currentScroll = window.pageYOffset;
-const scrollSpeed = 0.08; // Lower = slower/dreamier
-
-// Check if device is mobile/touch
-const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
-                 ('ontouchstart' in window) ||
-                 (navigator.maxTouchPoints > 0);
-
-function dreamyScroll() {
-    if (Math.abs(targetScroll - currentScroll) < 0.5) {
-        currentScroll = targetScroll;
-    } else {
-        currentScroll += (targetScroll - currentScroll) * scrollSpeed;
-    }
-
-    window.scrollTo(0, currentScroll);
-
-    if (isScrolling || currentScroll !== targetScroll) {
-        requestAnimationFrame(dreamyScroll);
-    }
-}
-
-// Only apply custom scrolling on desktop
-if (!isMobile) {
-    window.addEventListener('wheel', (e) => {
-        e.preventDefault();
-        targetScroll += e.deltaY;
-        targetScroll = Math.max(0, Math.min(targetScroll, document.body.scrollHeight - window.innerHeight));
-
-        if (!isScrolling) {
-            isScrolling = true;
-            requestAnimationFrame(dreamyScroll);
-        }
-    }, { passive: false });
-}
-
-// Navigation visibility on scroll
-const nav = document.getElementById('mainNav');
-const scrollIndicator = document.getElementById('scrollIndicator');
-let lastScroll = 0;
-
-function handleScroll() {
-    const currentScrollPos = isMobile ? window.pageYOffset : (currentScroll || window.pageYOffset);
-
-    // Show nav after scrolling past hero section
-    if (nav && !nav.classList.contains('visible')) {
-        if (currentScrollPos > window.innerHeight * 0.7) {
-            nav.classList.add('visible');
-        }
-    }
-
-    // Hide scroll indicator when scrolling starts
-    if (scrollIndicator && currentScrollPos > 50) {
-        scrollIndicator.classList.add('hidden');
-    } else if (scrollIndicator && currentScrollPos <= 50) {
-        scrollIndicator.classList.remove('hidden');
-    }
-
-    lastScroll = currentScrollPos;
-}
-
-// Scroll indicator click
-if (scrollIndicator) {
-    scrollIndicator.addEventListener('click', () => {
-        if (isMobile) {
-            window.scrollTo({ top: window.innerHeight, behavior: 'smooth' });
-        } else {
-            targetScroll = window.innerHeight;
-        }
-    });
-}
-
-// Throttle scroll events
-let ticking = false;
-window.addEventListener('scroll', () => {
-    if (!ticking) {
-        window.requestAnimationFrame(() => {
-            handleScroll();
-            ticking = false;
-        });
-        ticking = true;
-    }
-});
-
-// Intersection Observer for scroll animations
-const observerOptions = {
-    threshold: 0.1,
-    rootMargin: '0px 0px -100px 0px'
-};
-
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry, index) => {
-        if (entry.isIntersecting) {
-            setTimeout(() => {
-                entry.target.classList.add('visible');
-            }, index * 100);
-        }
-    });
-}, observerOptions);
-
-// Observe all elements with data-scroll attribute
-document.querySelectorAll('[data-scroll]').forEach((el) => {
-    observer.observe(el);
-});
-
-// Observe about section elements
-document.querySelectorAll('.about-left, .about-right').forEach((el) => {
-    observer.observe(el);
-});
-
-// Observe contact cards
-document.querySelectorAll('.contact-card').forEach((el, index) => {
-    const cardObserver = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-                setTimeout(() => {
-                    entry.target.classList.add('visible');
-                }, index * 150);
+                // Toggle back nav
+                if (id === 'hero') {
+                    backNav.classList.remove('visible');
+                } else {
+                    backNav.classList.add('visible');
+                }
             }
         });
-    }, observerOptions);
-    cardObserver.observe(el);
-});
+    }
 
-// Observe project and skill cards
-document.querySelectorAll('.project-card, .skill-card').forEach((el, index) => {
-    const cardObserver = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-                setTimeout(() => {
-                    entry.target.classList.add('visible');
-                }, index * 100);
+    // ── Animate each section on entry ──
+    function animateSection(id) {
+        const section = document.getElementById(id);
+
+        switch (id) {
+            case 'hero':
+                animateHero();
+                break;
+            case 'about':
+                animateAbout();
+                break;
+            case 'work':
+                animateWork();
+                break;
+            case 'photography':
+                fetchPhotos();
+                animatePhotography();
+                break;
+            case 'tutoring':
+                animateTutoring();
+                break;
+        }
+    }
+
+    // ── HERO animations ──
+    function animateHero() {
+        const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+        tl.fromTo('.hero-photo img',
+            { opacity: 0, x: -40 },
+            { opacity: 1, x: 0, duration: 1.2 }
+        )
+        .fromTo('.hero-greeting .line',
+            { opacity: 0, y: 30 },
+            { opacity: 1, y: 0, duration: 0.8, stagger: 0.15 },
+            '-=0.7'
+        )
+        .fromTo('.nav-link',
+            { opacity: 0, y: 20 },
+            { opacity: 1, y: 0, duration: 0.6, stagger: 0.1 },
+            '-=0.4'
+        );
+    }
+
+    // ── ABOUT animations ──
+    function animateAbout() {
+        const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+        tl.fromTo('.about-photo img',
+            { opacity: 0, scale: 1.05 },
+            { opacity: 1, scale: 1, duration: 1.2 }
+        )
+        .fromTo('.about-heading',
+            { opacity: 0, y: 30 },
+            { opacity: 1, y: 0, duration: 0.8 },
+            '-=0.8'
+        )
+        .fromTo('.about-text p',
+            { opacity: 0, y: 20 },
+            { opacity: 1, y: 0, duration: 0.6, stagger: 0.12 },
+            '-=0.4'
+        )
+        .fromTo('.about-links',
+            { opacity: 0, y: 15 },
+            { opacity: 1, y: 0, duration: 0.5 },
+            '-=0.2'
+        );
+    }
+
+    // ── WORK animations ──
+    function animateWork() {
+        const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+        tl.fromTo('.section--work .section-heading',
+            { opacity: 0, y: 30 },
+            { opacity: 1, y: 0, duration: 0.8 }
+        )
+        .fromTo('.work-subheading',
+            { opacity: 0, y: 20 },
+            { opacity: 1, y: 0, duration: 0.5, stagger: 0.1 },
+            '-=0.4'
+        )
+        .fromTo('.skill-tag',
+            { opacity: 0, y: 15, scale: 0.95 },
+            { opacity: 1, y: 0, scale: 1, duration: 0.4, stagger: 0.05, ease: 'back.out(1.4)' },
+            '-=0.3'
+        )
+        .fromTo('.project-row',
+            { opacity: 0, x: -15 },
+            { opacity: 1, x: 0, duration: 0.4, stagger: 0.06 },
+            '-=0.2'
+        );
+
+        // Animate repo rows if already loaded
+        const repoRows = document.querySelectorAll('.repo-row');
+        if (repoRows.length > 0) {
+            gsap.fromTo(repoRows,
+                { opacity: 0, x: -15 },
+                { opacity: 1, x: 0, duration: 0.35, stagger: 0.05, delay: 0.5 }
+            );
+        }
+    }
+
+    // ── PHOTOGRAPHY animations ──
+    function animatePhotography() {
+        const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+        tl.fromTo('.section--photography .section-heading',
+            { opacity: 0, y: 30 },
+            { opacity: 1, y: 0, duration: 0.8 }
+        )
+        .fromTo('.photography-subtitle',
+            { opacity: 0, y: 15 },
+            { opacity: 1, y: 0, duration: 0.5 },
+            '-=0.4'
+        );
+    }
+
+    // ── TUTORING animations ──
+    function animateTutoring() {
+        const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+        tl.fromTo('#tutoring .about-photo img',
+            { opacity: 0, scale: 1.05 },
+            { opacity: 1, scale: 1, duration: 1.2 }
+        )
+        .fromTo('#tutoring .about-heading',
+            { opacity: 0, y: 30 },
+            { opacity: 1, y: 0, duration: 0.8 },
+            '-=0.8'
+        )
+        .fromTo('#tutoring .about-text p',
+            { opacity: 0, y: 20 },
+            { opacity: 1, y: 0, duration: 0.6, stagger: 0.12 },
+            '-=0.4'
+        )
+        .fromTo('#tutoring .about-links',
+            { opacity: 0, y: 15 },
+            { opacity: 1, y: 0, duration: 0.5 },
+            '-=0.2'
+        );
+    }
+
+    // ── JS Masonry: absolute positioning, no reflow ──
+    function getMasonryCols() {
+        const w = window.innerWidth;
+        if (w <= 380) return 1;
+        if (w <= 640) return 2;
+        if (w <= 900) return 2;
+        return 3;
+    }
+
+    const GAP = 12;
+
+    function populatePhotoGrid(grid, entries) {
+        grid.innerHTML = '';
+        grid.style.position = 'relative';
+
+        const cols = getMasonryCols();
+        const gridWidth = grid.clientWidth;
+        const colWidth = (gridWidth - GAP * (cols - 1)) / cols;
+        const colHeights = new Array(cols).fill(0);
+
+        entries.forEach(entry => {
+            const div = document.createElement('div');
+            div.className = 'photo-item';
+            div.style.position = 'absolute';
+            div.style.width = colWidth + 'px';
+            div.style.opacity = '0';
+
+            const img = document.createElement('img');
+            img.alt = entry.alt;
+            img.src = entry.src;
+            img.style.width = '100%';
+            img.style.display = 'block';
+            img.style.borderRadius = '4px';
+            div.appendChild(img);
+            grid.appendChild(div);
+
+            // When image loads, calculate its position and fade in
+            const place = () => {
+                const shortest = colHeights.indexOf(Math.min(...colHeights));
+                const x = shortest * (colWidth + GAP);
+                const y = colHeights[shortest];
+
+                const ratio = img.naturalHeight / (img.naturalWidth || 1);
+                const itemHeight = colWidth * ratio;
+
+                div.style.left = x + 'px';
+                div.style.top = y + 'px';
+
+                colHeights[shortest] += itemHeight + GAP;
+
+                // Update grid container height
+                grid.style.height = Math.max(...colHeights) + 'px';
+
+                gsap.to(div, {
+                    opacity: 1,
+                    duration: 0.7,
+                    ease: 'power2.out'
+                });
+            };
+
+            if (img.complete && img.naturalHeight > 0) {
+                place();
+            } else {
+                img.addEventListener('load', place, { once: true });
+                img.addEventListener('error', () => { div.remove(); }, { once: true });
             }
         });
-    }, observerOptions);
-    cardObserver.observe(el);
-});
 
-// Dark mode toggle
-const themeToggle = document.getElementById('themeToggle');
-const html = document.documentElement;
-const body = document.body;
+        photosLoaded = true;
 
-// Check for saved theme preference or default to light mode
-const currentTheme = localStorage.getItem('theme') || 'light';
-body.setAttribute('data-theme', currentTheme);
-
-// Update icon based on theme
-function updateThemeIcon() {
-    const icon = themeToggle?.querySelector('.material-symbols-outlined');
-    if (icon) {
-        icon.textContent = body.getAttribute('data-theme') === 'dark' ? 'light_mode' : 'dark_mode';
-    }
-}
-
-updateThemeIcon();
-
-if (themeToggle) {
-    themeToggle.addEventListener('click', () => {
-        const currentTheme = body.getAttribute('data-theme');
-        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-
-        body.setAttribute('data-theme', newTheme);
-        localStorage.setItem('theme', newTheme);
-        updateThemeIcon();
-    });
-}
-
-// Page transitions
-const pageTransition = document.querySelector('.page-transition');
-
-// Handle link clicks for smooth transitions
-document.querySelectorAll('a[href^="/"], a[href^="./"], a[href^="../"]').forEach(link => {
-    // Skip external links and anchors
-    if (link.hostname !== window.location.hostname || link.getAttribute('href').startsWith('#')) {
-        return;
+        // Recalculate on resize
+        let resizeTimer;
+        const resizeHandler = () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(() => relayoutGrid(grid), 200);
+        };
+        window.addEventListener('resize', resizeHandler);
+        grid._resizeHandler = resizeHandler;
     }
 
-    link.addEventListener('click', (e) => {
-        e.preventDefault();
-        const href = link.getAttribute('href');
+    // Relayout existing items on resize
+    function relayoutGrid(grid) {
+        const items = grid.querySelectorAll('.photo-item');
+        if (!items.length) return;
 
-        // Trigger transition
-        if (pageTransition) {
-            pageTransition.classList.add('active');
+        const cols = getMasonryCols();
+        const gridWidth = grid.clientWidth;
+        const colWidth = (gridWidth - GAP * (cols - 1)) / cols;
+        const colHeights = new Array(cols).fill(0);
 
-            setTimeout(() => {
-                window.location.href = href;
-            }, 500);
-        } else {
-            window.location.href = href;
+        items.forEach(div => {
+            const img = div.querySelector('img');
+            if (!img || !img.naturalHeight) return;
+
+            div.style.width = colWidth + 'px';
+
+            const shortest = colHeights.indexOf(Math.min(...colHeights));
+            const x = shortest * (colWidth + GAP);
+            const y = colHeights[shortest];
+
+            const ratio = img.naturalHeight / (img.naturalWidth || 1);
+            const itemHeight = colWidth * ratio;
+
+            div.style.left = x + 'px';
+            div.style.top = y + 'px';
+
+            colHeights[shortest] += itemHeight + GAP;
+        });
+
+        grid.style.height = Math.max(...colHeights) + 'px';
+    }
+
+    // ── Fetch photos from Firebase Storage API ──
+    let photosLoaded = false;
+    async function fetchPhotos() {
+        if (photosLoaded) return;
+        const grid = document.getElementById('photo-grid');
+
+        try {
+            const res = await fetch('/api/images');
+            if (!res.ok) throw new Error('API error');
+            const data = await res.json();
+
+            if (!data.images || data.images.length === 0) {
+                await fetchPhotosByIncrement(grid);
+                return;
+            }
+
+            populatePhotoGrid(grid, data.images.map(img => ({
+                src: `/images/${img.id}?w=600&q=80`,
+                alt: img.title
+            })));
+        } catch {
+            await fetchPhotosByIncrement(grid);
         }
-    });
-});
-
-// Remove transition on page load
-window.addEventListener('load', () => {
-    if (pageTransition) {
-        pageTransition.classList.remove('active');
     }
-});
 
-// Parallax effect for elements with data-scroll-speed
-function handleParallax() {
-    const scrolled = isMobile ? window.pageYOffset : (currentScroll || window.pageYOffset);
+    // Fallback: increment counter until 404
+    async function fetchPhotosByIncrement(grid) {
+        const ids = [];
+        let id = 1;
 
-    document.querySelectorAll('[data-scroll-speed]').forEach((el) => {
-        const speed = parseFloat(el.getAttribute('data-scroll-speed'));
-        const yPos = -(scrolled * speed / 10);
-        el.style.transform = `translateY(${yPos}px)`;
-    });
-}
+        while (true) {
+            try {
+                const res = await fetch(`/images/${id}?w=1&q=10`, { method: 'HEAD' });
+                if (!res.ok) break;
+                ids.push(id);
+                id++;
+            } catch {
+                break;
+            }
+        }
 
-window.addEventListener('scroll', handleParallax);
+        if (ids.length === 0) {
+            grid.innerHTML = '<p class="loading-repos">no photos found.</p>';
+            return;
+        }
 
-// Mobile menu toggle
-const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-const navLinks = document.querySelector('.nav-links');
+        populatePhotoGrid(grid, ids.map(i => ({
+            src: `/images/${i}?w=600&q=80`,
+            alt: `Photo ${i}`
+        })));
+    }
 
-if (mobileMenuBtn) {
-    mobileMenuBtn.addEventListener('click', () => {
-        navLinks.classList.toggle('active');
-        mobileMenuBtn.classList.toggle('active');
-    });
+    // ── GitHub repos ──
+    async function fetchGitHubRepos() {
+        const container = document.getElementById('github-repos');
+        try {
+            const res = await fetch('https://api.github.com/users/Fluffik3666/repos?sort=updated&per_page=30');
+            if (!res.ok) throw new Error('GitHub API error');
+            const repos = await res.json();
 
-    // Close menu when clicking a link
-    document.querySelectorAll('.nav-link').forEach(link => {
-        link.addEventListener('click', () => {
-            navLinks.classList.remove('active');
-            mobileMenuBtn.classList.remove('active');
+            // Filter out forks and empty repos, take top ones
+            const filtered = repos
+                .filter(r => !r.fork && r.description)
+                .slice(0, 8);
+
+            if (filtered.length === 0) {
+                container.innerHTML = '<p class="loading-repos">no public repositories found.</p>';
+                return;
+            }
+
+            container.innerHTML = filtered.map(repo => `
+                <a href="${repo.html_url}" target="_blank" rel="noopener" class="repo-row">
+                    <span class="repo-name">${repo.name}</span>
+                    ${repo.description ? `<span class="repo-desc">${repo.description}</span>` : '<span class="repo-desc"></span>'}
+                    <span class="repo-meta">
+                        ${repo.language ? `<span class="repo-lang"><span class="lang-dot" style="background:${langColors[repo.language] || '#ccc'}"></span>${repo.language}</span>` : ''}
+                        ${repo.stargazers_count > 0 ? `<span>${repo.stargazers_count} stars</span>` : ''}
+                    </span>
+                </a>
+            `).join('');
+
+        } catch (e) {
+            // Show repos without descriptions too as fallback
+            try {
+                const res = await fetch('https://api.github.com/users/Fluffik3666/repos?sort=updated&per_page=12');
+                const repos = await res.json();
+                const filtered = repos.filter(r => !r.fork).slice(0, 8);
+
+                container.innerHTML = filtered.map(repo => `
+                    <a href="${repo.html_url}" target="_blank" rel="noopener" class="repo-row">
+                        <span class="repo-name">${repo.name}</span>
+                        ${repo.description ? `<span class="repo-desc">${repo.description}</span>` : '<span class="repo-desc"></span>'}
+                        <span class="repo-meta">
+                            ${repo.language ? `<span class="repo-lang"><span class="lang-dot" style="background:${langColors[repo.language] || '#ccc'}"></span>${repo.language}</span>` : ''}
+                        </span>
+                    </a>
+                `).join('');
+            } catch {
+                container.innerHTML = '<p class="loading-repos">could not load repositories.</p>';
+            }
+        }
+    }
+
+    // ── Lightbox ──
+    function setupLightbox() {
+        const lightbox = document.createElement('div');
+        lightbox.className = 'lightbox';
+        lightbox.innerHTML = '<img src="" alt="Photo" />';
+        document.body.appendChild(lightbox);
+
+        const lbImg = lightbox.querySelector('img');
+
+        document.addEventListener('click', (e) => {
+            const photoImg = e.target.closest('.photo-item img');
+            if (photoImg) {
+                // Swap to high-quality version for lightbox
+                const src = photoImg.src;
+                lbImg.src = src.replace(/w=\d+/, 'w=1200').replace(/q=\d+/, 'q=95');
+                lightbox.classList.add('open');
+            }
+        });
+
+        lightbox.addEventListener('click', () => {
+            lightbox.classList.remove('open');
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') lightbox.classList.remove('open');
+        });
+    }
+
+    // ── Event listeners ──
+    navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            if (!link.dataset.target) return;
+            e.preventDefault();
+            showSection(link.dataset.target);
         });
     });
 
-    // Close menu when clicking outside
-    document.addEventListener('click', (e) => {
-        if (!e.target.closest('.nav-content')) {
-            navLinks.classList.remove('active');
-            mobileMenuBtn.classList.remove('active');
-        }
+    backNav.addEventListener('click', (e) => {
+        e.preventDefault();
+        showSection('hero');
     });
-}
 
-// Initial calls
-handleScroll();
-handleParallax();
+    // ── Init ──
+    document.addEventListener('DOMContentLoaded', () => {
+        animateHero();
+        fetchGitHubRepos();
+        setupLightbox();
+    });
+})();
