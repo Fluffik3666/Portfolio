@@ -27,25 +27,65 @@ storage_bucket = initialize_firebase()
 
 _min_cache = {}
 
-# Preserve the contents of these blocks verbatim while collapsing surrounding
-# markup, so we never mangle inline JS (e.g. `//` comments) or pre-formatted text.
-_PRESERVE_RE = re.compile(
-    r'<(script|style|pre|textarea)\b[^>]*>.*?</\1>',
+# <pre>/<textarea> content is whitespace-significant, so keep it verbatim.
+_VERBATIM_RE = re.compile(
+    r'<(pre|textarea)\b[^>]*>.*?</\1>',
     flags=re.DOTALL | re.IGNORECASE,
 )
+_STYLE_RE = re.compile(
+    r'(<style\b[^>]*>)(.*?)(</style>)',
+    flags=re.DOTALL | re.IGNORECASE,
+)
+_SCRIPT_RE = re.compile(
+    r'(<script\b[^>]*>)(.*?)(</script>)',
+    flags=re.DOTALL | re.IGNORECASE,
+)
+_TYPE_RE = re.compile(r'type\s*=\s*["\']?([^"\'>\s]+)', flags=re.IGNORECASE)
+# Only these script types are JavaScript we can safely run through the JS
+# minifier; anything else (e.g. application/json, text/template) is left alone.
+_JS_TYPES = {'', 'text/javascript', 'application/javascript', 'module'}
 
 def minify_html(html):
     stash = []
 
-    def _protect(match):
-        stash.append(match.group(0))
+    def _stash(text):
+        stash.append(text)
         return f'\x00{len(stash) - 1}\x00'
 
-    html = _PRESERVE_RE.sub(_protect, html)
+    # Protect whitespace-significant blocks before we touch anything else.
+    html = _VERBATIM_RE.sub(lambda m: _stash(m.group(0)), html)
+
+    # Minify inline CSS, then stash it so markup collapsing can't touch it.
+    def _minify_style(match):
+        open_tag, body, close_tag = match.groups()
+        try:
+            body = cssmin.cssmin(body)
+        except Exception:
+            pass
+        return _stash(open_tag + body + close_tag)
+
+    html = _STYLE_RE.sub(_minify_style, html)
+
+    # Minify inline JS (skip external and non-JS scripts), then stash it.
+    def _minify_script(match):
+        open_tag, body, close_tag = match.groups()
+        script_type = _TYPE_RE.search(open_tag)
+        is_js = (script_type.group(1).lower() if script_type else '') in _JS_TYPES
+        if 'src=' not in open_tag.lower() and is_js and body.strip():
+            try:
+                body = rjsmin.jsmin(body)
+            except Exception:
+                pass
+        return _stash(open_tag + body + close_tag)
+
+    html = _SCRIPT_RE.sub(_minify_script, html)
+
+    # Collapse the remaining markup.
     html = re.sub(r'<!--(?!\[if).*?-->', '', html, flags=re.DOTALL)
     html = re.sub(r'>\s+<', '><', html)
     html = re.sub(r'\s{2,}', ' ', html)
     html = html.strip()
+
     html = re.sub(r'\x00(\d+)\x00', lambda m: stash[int(m.group(1))], html)
     return html
 
