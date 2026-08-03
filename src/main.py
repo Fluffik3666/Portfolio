@@ -1,4 +1,4 @@
-from flask import Flask, send_from_directory, render_template, request, Response, jsonify, session
+from flask import Flask, render_template, request, Response, jsonify, session
 from PIL import Image
 import io
 import os
@@ -27,50 +27,78 @@ storage_bucket = initialize_firebase()
 
 _min_cache = {}
 
+# Preserve the contents of these blocks verbatim while collapsing surrounding
+# markup, so we never mangle inline JS (e.g. `//` comments) or pre-formatted text.
+_PRESERVE_RE = re.compile(
+    r'<(script|style|pre|textarea)\b[^>]*>.*?</\1>',
+    flags=re.DOTALL | re.IGNORECASE,
+)
+
 def minify_html(html):
-    html = re.sub(r'<!--.*?-->', '', html, flags=re.DOTALL)
+    stash = []
+
+    def _protect(match):
+        stash.append(match.group(0))
+        return f'\x00{len(stash) - 1}\x00'
+
+    html = _PRESERVE_RE.sub(_protect, html)
+    html = re.sub(r'<!--(?!\[if).*?-->', '', html, flags=re.DOTALL)
     html = re.sub(r'>\s+<', '><', html)
     html = re.sub(r'\s{2,}', ' ', html)
-    return html.strip()
+    html = html.strip()
+    html = re.sub(r'\x00(\d+)\x00', lambda m: stash[int(m.group(1))], html)
+    return html
 
 def get_minified(filepath, minifier):
     mtime = os.path.getmtime(filepath)
     if filepath in _min_cache and _min_cache[filepath][0] == mtime:
         return _min_cache[filepath][1]
-    with open(filepath, 'r') as f:
+    with open(filepath, 'r', encoding='utf-8') as f:
         content = f.read()
     minified = minifier(content)
     _min_cache[filepath] = (mtime, minified)
     return minified
 
+# Minify every HTML page we render (works locally and on Vercel's Python runtime).
+@app.after_request
+def minify_html_response(response):
+    if response.mimetype == 'text/html' and not response.direct_passthrough:
+        try:
+            response.set_data(minify_html(response.get_data(as_text=True)))
+        except (UnicodeDecodeError, RuntimeError):
+            pass
+    return response
+
 #! serve our important routes
 @app.route('/')
 def index():
-    html = render_template('index.html', logged_in='user_uid' in session)
-    return minify_html(html)
+    return render_template('index.html', logged_in='user_uid' in session)
 
 @app.route('/photos')
 def photos():
-    html = render_template('photos.html')
-    return minify_html(html)
+    return render_template('photos.html')
 
-# Serve minified + obfuscated JS
-@app.route('/content/static/js/<path:filename>')
+# Serve minified JS at the real static path so it works behind Vercel too.
+@app.route('/static/js/<path:filename>')
 def serve_js(filename):
     filepath = os.path.join(app.static_folder, 'js', filename)
     if not os.path.exists(filepath):
         return "Not found", 404
     minified = get_minified(filepath, rjsmin.jsmin)
-    return Response(minified, mimetype='application/javascript')
+    resp = Response(minified, mimetype='application/javascript')
+    resp.headers['Cache-Control'] = 'public, max-age=3600'
+    return resp
 
-# Serve minified CSS
-@app.route('/content/static/css/<path:filename>')
+# Serve minified CSS at the real static path so it works behind Vercel too.
+@app.route('/static/css/<path:filename>')
 def serve_css(filename):
     filepath = os.path.join(app.static_folder, 'css', filename)
     if not os.path.exists(filepath):
         return "Not found", 404
     minified = get_minified(filepath, cssmin.cssmin)
-    return Response(minified, mimetype='text/css')
+    resp = Response(minified, mimetype='text/css')
+    resp.headers['Cache-Control'] = 'public, max-age=3600'
+    return resp
 
 #! API endpoints
 @app.route('/api/images')
@@ -110,12 +138,6 @@ def list_images():
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-
-#! serve our static files
-#! routes go /content/static/<path>
-@app.route('/content/static/<path:filename>')
-def serve_static(filename):
-    return send_from_directory(app.static_folder, filename)
 
 @app.route('/images/<int:image_id>')
 def serve_optimized_image(image_id):
