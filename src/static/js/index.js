@@ -98,6 +98,11 @@
             { opacity: 0, y: 20 },
             { opacity: 1, y: 0, duration: 0.6, stagger: 0.1 },
             '-=0.4'
+        )
+        .fromTo('.hero-press',
+            { opacity: 0, y: 15 },
+            { opacity: 1, y: 0, duration: 0.5 },
+            '-=0.2'
         );
     }
 
