@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, Response, jsonify, session
 from PIL import Image
+import hashlib
 import io
 import os
 import re
@@ -26,6 +27,47 @@ app.register_blueprint(blueprint)
 storage_bucket = initialize_firebase()
 
 _min_cache = {}
+_asset_version_cache = {}
+
+def asset_version(filename):
+    """Short content hash for a static file, or None if it can't be read.
+
+    Appended to static URLs as ?v= so a cached stylesheet can never be paired
+    with newer markup that expects different rules.
+    """
+    filepath = os.path.join(app.static_folder, filename)
+    try:
+        mtime = os.path.getmtime(filepath)
+    except OSError:
+        return None
+    cached = _asset_version_cache.get(filepath)
+    if cached and cached[0] == mtime:
+        return cached[1]
+    try:
+        with open(filepath, 'rb') as f:
+            digest = hashlib.blake2b(f.read(), digest_size=6).hexdigest()
+    except OSError:
+        return None
+    _asset_version_cache[filepath] = (mtime, digest)
+    return digest
+
+# Stamp every url_for('static', ...) with the file's hash, so templates don't
+# have to remember to do it.
+@app.url_defaults
+def add_asset_version(endpoint, values):
+    if endpoint != 'static' or 'filename' not in values or 'v' in values:
+        return
+    version = asset_version(values['filename'])
+    if version:
+        values['v'] = version
+
+def cache_headers(resp):
+    """Cache hashed URLs hard; anything unversioned only briefly."""
+    if request.args.get('v'):
+        resp.headers['Cache-Control'] = 'public, max-age=31536000, immutable'
+    else:
+        resp.headers['Cache-Control'] = 'public, max-age=3600'
+    return resp
 
 # <pre>/<textarea> content is whitespace-significant, so keep it verbatim.
 _VERBATIM_RE = re.compile(
@@ -126,8 +168,7 @@ def serve_js(filename):
         return "Not found", 404
     minified = get_minified(filepath, rjsmin.jsmin)
     resp = Response(minified, mimetype='application/javascript')
-    resp.headers['Cache-Control'] = 'public, max-age=3600'
-    return resp
+    return cache_headers(resp)
 
 # Serve minified CSS at the real static path so it works behind Vercel too.
 @app.route('/static/css/<path:filename>')
@@ -137,8 +178,7 @@ def serve_css(filename):
         return "Not found", 404
     minified = get_minified(filepath, cssmin.cssmin)
     resp = Response(minified, mimetype='text/css')
-    resp.headers['Cache-Control'] = 'public, max-age=3600'
-    return resp
+    return cache_headers(resp)
 
 #! API endpoints
 @app.route('/api/images')
