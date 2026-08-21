@@ -163,6 +163,41 @@ img {
     margin-top: 0.4rem;
 }
 
+/* ── Hero press credit ── */
+.hero-press {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 2.4rem;
+    width: fit-content;
+    opacity: 0;
+}
+
+.hero-press-label {
+    font-size: 0.72rem;
+    font-weight: 400;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--grey);
+    transition: color 0.3s ease;
+}
+
+.hero-press-logo {
+    height: 38px;
+    width: auto;
+    display: block;
+    opacity: 0.85;
+    transition: opacity 0.3s ease;
+}
+
+.hero-press:hover .hero-press-label {
+    color: var(--white);
+}
+
+.hero-press:hover .hero-press-logo {
+    opacity: 1;
+}
+
 /* ══════════════════════════════════
    ABOUT
    ══════════════════════════════════ */
@@ -232,6 +267,77 @@ img {
 
 .about-links a:hover {
     opacity: 0.6;
+}
+
+/* ── Featured in (press) ── */
+.featured-in {
+    margin-top: 2.5rem;
+    opacity: 0;
+}
+
+.featured-in-label {
+    font-family: var(--font-sans);
+    font-size: 0.72rem;
+    font-weight: 400;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--grey);
+    margin-bottom: 0.9rem;
+}
+
+.featured-in-card {
+    display: flex;
+    align-items: center;
+    gap: 1.1rem;
+    padding: 1rem 1.2rem;
+    border: 1px solid rgba(240, 240, 240, 0.14);
+    border-radius: 4px;
+    transition: border-color 0.3s ease, background 0.3s ease;
+}
+
+.featured-in-card:hover {
+    border-color: rgba(240, 240, 240, 0.4);
+    background: rgba(240, 240, 240, 0.04);
+}
+
+.featured-in-logo {
+    width: 74px;
+    flex-shrink: 0;
+    display: block;
+}
+
+.featured-in-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    min-width: 0;
+}
+
+.featured-in-title {
+    font-size: 0.95rem;
+    font-weight: 400;
+    line-height: 1.45;
+    color: var(--white);
+}
+
+.featured-in-meta {
+    font-size: 0.78rem;
+    font-weight: 300;
+    letter-spacing: 0.04em;
+    color: var(--grey);
+}
+
+.featured-in-arrow {
+    margin-left: auto;
+    font-size: 1.1rem;
+    color: var(--grey);
+    flex-shrink: 0;
+    transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.featured-in-card:hover .featured-in-arrow {
+    transform: translateX(4px);
+    color: var(--white);
 }
 
 /* ── Tutoring paths (curriculum teaser) ── */
@@ -623,6 +729,19 @@ img {
         gap: 0.7rem;
     }
 
+    .hero-press {
+        margin-top: 1.5rem;
+        gap: 0.6rem;
+    }
+
+    .hero-press-label {
+        font-size: 0.65rem;
+    }
+
+    .hero-press-logo {
+        height: 30px;
+    }
+
     /* About / Tutoring — stacked: photo on top, text below */
     .section--about,
     .section--tutoring {
@@ -666,6 +785,27 @@ img {
 
     .about-links a {
         font-size: 1rem;
+    }
+
+    .featured-in {
+        margin-top: 2rem;
+    }
+
+    .featured-in-card {
+        gap: 0.85rem;
+        padding: 0.9rem 1rem;
+    }
+
+    .featured-in-logo {
+        width: 58px;
+    }
+
+    .featured-in-title {
+        font-size: 0.88rem;
+    }
+
+    .featured-in-meta {
+        font-size: 0.72rem;
     }
 
     /* Work */
