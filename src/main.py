@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, Response, jsonify, session
+from flask import Flask, render_template, request, Response, jsonify, session, send_file
 from PIL import Image
 import hashlib
 import io
@@ -179,6 +179,10 @@ def serve_css(filename):
     minified = get_minified(filepath, cssmin.cssmin)
     resp = Response(minified, mimetype='text/css')
     return cache_headers(resp)
+
+@app.route('/cv')
+def serve_cv():
+    return send_file('../src/static/media/cv.pdf', as_attachment=False)
 
 #! API endpoints
 @app.route('/api/images')
