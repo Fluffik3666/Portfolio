@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, Response, jsonify, session, send_file
+from flask import Flask, render_template, request, Response, jsonify, session, send_file, url_for
 from PIL import Image
 import hashlib
 import io
@@ -182,7 +182,8 @@ def serve_css(filename):
 
 @app.route('/cv')
 def serve_cv():
-    return send_file('../src/static/media/cv.pdf', as_attachment=False)
+    url = url_for('static', filename='media/cv.pdf')
+    return send_file(url, as_attachment=False)
 
 #! API endpoints
 @app.route('/api/images')
