@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, Response, jsonify, session
+from flask import Flask, render_template, request, Response, jsonify, session, send_from_directory
 from PIL import Image
 import hashlib
 import io
@@ -178,6 +178,17 @@ def serve_css(filename):
         return "Not found", 404
     minified = get_minified(filepath, cssmin.cssmin)
     resp = Response(minified, mimetype='text/css')
+    return cache_headers(resp)
+
+@app.route('/cv')
+def serve_cv():
+    resp = send_from_directory(
+        app.static_folder,
+        'media/cv.pdf',
+        mimetype='application/pdf',
+        as_attachment=False,
+        download_name='Sasha-Bagrov-CV.pdf',
+    )
     return cache_headers(resp)
 
 #! API endpoints
