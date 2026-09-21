@@ -34,14 +34,24 @@
                 <a href="/tutoring/account" class="nav-link nav-link-accent">my sessions <span>&rarr;</span></a>
                 {% endif %}
             </nav>
-            <a class="hero-press"
-               href="https://tech.eu/2026/08/21/at-14-sasha-bagrov-is-building-a-safer-marketplace-for-teenage-odd-jobs/"
-               target="_blank" rel="noopener">
-                <span class="hero-press-label">featured in</span>
-                <img class="hero-press-logo"
-                     src="{{ url_for('static', filename='images/press/tech-eu.svg') }}"
-                     alt="Tech.eu" />
-            </a>
+            <div class="hero-credits">
+                <a class="hero-press"
+                   href="https://tech.eu/2026/08/21/at-14-sasha-bagrov-is-building-a-safer-marketplace-for-teenage-odd-jobs/"
+                   target="_blank" rel="noopener">
+                    <span class="hero-press-label">featured in</span>
+                    <img class="hero-press-logo"
+                         src="{{ url_for('static', filename='images/press/tech-eu.svg') }}"
+                         alt="Tech.eu" />
+                </a>
+                <a class="hero-press"
+                   href="https://yfl.lovable.app/"
+                   target="_blank" rel="noopener">
+                    <span class="hero-press-label">member of</span>
+                    <img class="hero-press-logo hero-press-logo--yfl"
+                         src="{{ url_for('static', filename='images/press/yfl.png') }}"
+                         alt="Young Founders of London" />
+                </a>
+            </div>
         </div>
     </section>
 
@@ -55,6 +65,7 @@
             <div class="about-text">
                 <p>I'm a developer, photographer, and founder based in London. I'm the CEO of <a href="https://kidshustle.app" target="_blank" rel="noopener">KidsHustle</a> &mdash; a platform helping kids and teens earn money through quick jobs.</p>
                 <p>I build things for the web and Apple platforms, with a stack spanning Python, Swift, and modern web technologies backed by Google Cloud and Kubernetes. I care about clean architecture, developer experience, and shipping things that work.</p>
+                <p>I'm also part of <a href="https://yfl.lovable.app/" target="_blank" rel="noopener">Young Founders of London</a> &mdash; a curated community of the city's most ambitious student entrepreneurs.</p>
                 <p>Outside of code, I do theatre tech, love cooking, and I'm usually out with a camera somewhere in London.</p>
             </div>
             <div class="featured-in">
@@ -68,6 +79,22 @@
                     <span class="featured-in-body">
                         <span class="featured-in-title">At 14, Sasha Bagrov is building a safer marketplace for teenage odd jobs</span>
                         <span class="featured-in-meta">21 August 2026</span>
+                    </span>
+                    <span class="featured-in-arrow">&rarr;</span>
+                </a>
+            </div>
+
+            <div class="featured-in featured-in--secondary">
+                <h3 class="featured-in-label">member of</h3>
+                <a class="featured-in-card"
+                   href="https://yfl.lovable.app/"
+                   target="_blank" rel="noopener">
+                    <img class="featured-in-logo"
+                         src="{{ url_for('static', filename='images/press/yfl.png') }}"
+                         alt="Young Founders of London" />
+                    <span class="featured-in-body">
+                        <span class="featured-in-title">Young Founders of London</span>
+                        <span class="featured-in-meta">London's smartest student founders in one room</span>
                     </span>
                     <span class="featured-in-arrow">&rarr;</span>
                 </a>
@@ -132,6 +159,18 @@
                     <a href="https://seurt.vercel.app/" target="_blank" rel="noopener" class="project-row">
                         <span class="project-name">Seurt</span>
                         <span class="project-desc">Secure, token-based chat with retro 8-bit aesthetic</span>
+                        <span class="project-arrow">&rarr;</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Community -->
+            <div class="work-block">
+                <h3 class="work-subheading">community</h3>
+                <div class="projects-list">
+                    <a href="https://yfl.lovable.app/" target="_blank" rel="noopener" class="project-row">
+                        <span class="project-name">Young Founders of London</span>
+                        <span class="project-desc">Member &mdash; curated community of London's student entrepreneurs</span>
                         <span class="project-arrow">&rarr;</span>
                     </a>
                 </div>

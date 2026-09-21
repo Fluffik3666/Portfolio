@@ -101,7 +101,7 @@
         )
         .fromTo('.hero-press',
             { opacity: 0, y: 15 },
-            { opacity: 1, y: 0, duration: 0.5 },
+            { opacity: 1, y: 0, duration: 0.5, stagger: 0.1 },
             '-=0.2'
         );
     }
@@ -126,7 +126,7 @@
         )
         .fromTo('#about .featured-in',
             { opacity: 0, y: 20 },
-            { opacity: 1, y: 0, duration: 0.5 },
+            { opacity: 1, y: 0, duration: 0.5, stagger: 0.12 },
             '-=0.2'
         )
         .fromTo('.about-links',
