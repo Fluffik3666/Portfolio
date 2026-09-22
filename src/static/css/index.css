@@ -262,21 +262,15 @@ img {
 .section--about .about-content {
     max-height: 100%;
     overflow-y: auto;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(240, 240, 240, 0.22) transparent;
+    scrollbar-width: none;      /* Firefox */
+    -ms-overflow-style: none;   /* legacy Edge */
 }
 
+/* Scrolls, but the bar itself stays out of the layout */
 .section--about .about-content::-webkit-scrollbar {
-    width: 6px;
-}
-
-.section--about .about-content::-webkit-scrollbar-thumb {
-    background: rgba(240, 240, 240, 0.22);
-    border-radius: 3px;
-}
-
-.section--about .about-content::-webkit-scrollbar-thumb:hover {
-    background: rgba(240, 240, 240, 0.4);
+    width: 0;
+    height: 0;
+    display: none;
 }
 
 .about-heading {
