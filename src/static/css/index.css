@@ -189,6 +189,10 @@ img {
     transition: color 0.3s ease;
 }
 
+.hero-press-link {
+    display: block;
+}
+
 .hero-press-logo {
     height: 38px;
     width: auto;
@@ -202,11 +206,17 @@ img {
     height: 34px;
 }
 
+/* Solid square tile — set smaller so it doesn't outweigh the flat wordmarks */
+.hero-press-logo--nbs {
+    height: 30px;
+}
+
 .hero-press:hover .hero-press-label {
     color: var(--white);
 }
 
-.hero-press:hover .hero-press-logo {
+/* Scoped to the link, not the group, so one logo lights up at a time */
+.hero-press-link:hover .hero-press-logo {
     opacity: 1;
 }
 
@@ -300,6 +310,12 @@ img {
     text-transform: uppercase;
     color: var(--grey);
     margin-bottom: 0.9rem;
+}
+
+.featured-in-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
 }
 
 .featured-in-card {
@@ -768,6 +784,10 @@ img {
 
     .hero-press-logo--yfl {
         height: 26px;
+    }
+
+    .hero-press-logo--nbs {
+        height: 24px;
     }
 
     /* About / Tutoring — stacked: photo on top, text below */
