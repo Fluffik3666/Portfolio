@@ -189,6 +189,10 @@ img {
     transition: color 0.3s ease;
 }
 
+.hero-press-link {
+    display: block;
+}
+
 .hero-press-logo {
     height: 38px;
     width: auto;
@@ -202,21 +206,29 @@ img {
     height: 34px;
 }
 
+/* Solid square tile — set smaller so it doesn't outweigh the flat wordmarks */
+.hero-press-logo--nbs {
+    height: 30px;
+}
+
 .hero-press:hover .hero-press-label {
     color: var(--white);
 }
 
-.hero-press:hover .hero-press-logo {
+/* Scoped to the link, not the group, so one logo lights up at a time */
+.hero-press-link:hover .hero-press-logo {
     opacity: 1;
 }
 
 /* ══════════════════════════════════
    ABOUT
    ══════════════════════════════════ */
+/* Locked to the viewport so the photo stays put — the text column scrolls
+   on its own below, rather than the whole section scrolling the photo away. */
 .section--about {
     align-items: center;
+    height: 100vh;
     overflow: hidden;
-    overflow-y: auto;
 }
 
 .about-photo {
@@ -243,6 +255,22 @@ img {
     margin-left: 50%;
     padding: 4rem;
     max-width: 550px;
+}
+
+/* max-height rather than height: stays vertically centred while it fits,
+   and only becomes a scroll container once it outgrows the viewport. */
+.section--about .about-content {
+    max-height: 100%;
+    overflow-y: auto;
+    scrollbar-width: none;      /* Firefox */
+    -ms-overflow-style: none;   /* legacy Edge */
+}
+
+/* Scrolls, but the bar itself stays out of the layout */
+.section--about .about-content::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    display: none;
 }
 
 .about-heading {
@@ -300,6 +328,12 @@ img {
     text-transform: uppercase;
     color: var(--grey);
     margin-bottom: 0.9rem;
+}
+
+.featured-in-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
 }
 
 .featured-in-card {
@@ -770,12 +804,27 @@ img {
         height: 26px;
     }
 
+    .hero-press-logo--nbs {
+        height: 24px;
+    }
+
     /* About / Tutoring — stacked: photo on top, text below */
     .section--about,
     .section--tutoring {
         flex-direction: column;
         align-items: stretch;
         min-height: auto;
+    }
+
+    /* Stacked, so the page scrolls as one — undo the split-scroll layout */
+    .section--about {
+        height: auto;
+        overflow: visible;
+    }
+
+    .section--about .about-content {
+        max-height: none;
+        overflow-y: visible;
     }
 
     .about-photo {

@@ -28,29 +28,39 @@
                 <a href="#about" class="nav-link" data-target="about">about me <span>&rarr;</span></a>
                 <a href="#work" class="nav-link" data-target="work">work <span>&rarr;</span></a>
                 <a href="#photography" class="nav-link" data-target="photography">photography <span>&rarr;</span></a>
-                <a href="#tutoring" class="nav-link" data-target="tutoring">tutoring <span>&rarr;</span></a>
                 <a href="/cv" class="nav-link" target="_blank" rel="noopener">cv <span>&rarr;</span></a>
                 {% if logged_in %}
                 <a href="/tutoring/account" class="nav-link nav-link-accent">my sessions <span>&rarr;</span></a>
                 {% endif %}
             </nav>
             <div class="hero-credits">
-                <a class="hero-press"
-                   href="https://tech.eu/2026/08/21/at-14-sasha-bagrov-is-building-a-safer-marketplace-for-teenage-odd-jobs/"
-                   target="_blank" rel="noopener">
+                <div class="hero-press">
                     <span class="hero-press-label">featured in</span>
-                    <img class="hero-press-logo"
-                         src="{{ url_for('static', filename='images/press/tech-eu.svg') }}"
-                         alt="Tech.eu" />
-                </a>
-                <a class="hero-press"
-                   href="https://yfl.lovable.app/"
-                   target="_blank" rel="noopener">
+                    <a class="hero-press-link"
+                       href="https://tech.eu/2026/08/21/at-14-sasha-bagrov-is-building-a-safer-marketplace-for-teenage-odd-jobs/"
+                       target="_blank" rel="noopener">
+                        <img class="hero-press-logo"
+                             src="{{ url_for('static', filename='images/press/tech-eu.svg') }}"
+                             alt="Tech.eu" />
+                    </a>
+                    <a class="hero-press-link"
+                       href="https://www.the-nbs.fr/p/un-ado-cree-le-uber-des-petits-boulots-pour-enfants"
+                       target="_blank" rel="noopener">
+                        <img class="hero-press-logo hero-press-logo--nbs"
+                             src="{{ url_for('static', filename='images/press/nbs.png') }}"
+                             alt="NBS" />
+                    </a>
+                </div>
+                <div class="hero-press">
                     <span class="hero-press-label">member of</span>
-                    <img class="hero-press-logo hero-press-logo--yfl"
-                         src="{{ url_for('static', filename='images/press/yfl.png') }}"
-                         alt="Young Founders of London" />
-                </a>
+                    <a class="hero-press-link"
+                       href="https://yfl.lovable.app/"
+                       target="_blank" rel="noopener">
+                        <img class="hero-press-logo hero-press-logo--yfl"
+                             src="{{ url_for('static', filename='images/press/yfl.png') }}"
+                             alt="Young Founders of London" />
+                    </a>
+                </div>
             </div>
         </div>
     </section>
@@ -70,18 +80,32 @@
             </div>
             <div class="featured-in">
                 <h3 class="featured-in-label">featured in</h3>
-                <a class="featured-in-card"
-                   href="https://tech.eu/2026/08/21/at-14-sasha-bagrov-is-building-a-safer-marketplace-for-teenage-odd-jobs/"
-                   target="_blank" rel="noopener">
-                    <img class="featured-in-logo"
-                         src="{{ url_for('static', filename='images/press/tech-eu.svg') }}"
-                         alt="Tech.eu" />
-                    <span class="featured-in-body">
-                        <span class="featured-in-title">At 14, Sasha Bagrov is building a safer marketplace for teenage odd jobs</span>
-                        <span class="featured-in-meta">21 August 2026</span>
-                    </span>
-                    <span class="featured-in-arrow">&rarr;</span>
-                </a>
+                <div class="featured-in-cards">
+                    <a class="featured-in-card"
+                       href="https://tech.eu/2026/08/21/at-14-sasha-bagrov-is-building-a-safer-marketplace-for-teenage-odd-jobs/"
+                       target="_blank" rel="noopener">
+                        <img class="featured-in-logo"
+                             src="{{ url_for('static', filename='images/press/tech-eu.svg') }}"
+                             alt="Tech.eu" />
+                        <span class="featured-in-body">
+                            <span class="featured-in-title">At 14, Sasha Bagrov is building a safer marketplace for teenage odd jobs</span>
+                            <span class="featured-in-meta">21 August 2026</span>
+                        </span>
+                        <span class="featured-in-arrow">&rarr;</span>
+                    </a>
+                    <a class="featured-in-card"
+                       href="https://www.the-nbs.fr/p/un-ado-cree-le-uber-des-petits-boulots-pour-enfants"
+                       target="_blank" rel="noopener">
+                        <img class="featured-in-logo"
+                             src="{{ url_for('static', filename='images/press/nbs.png') }}"
+                             alt="NBS" />
+                        <span class="featured-in-body">
+                            <span class="featured-in-title" lang="fr">Un ado cr&eacute;e le Uber des petits boulots pour enfants</span>
+                            <span class="featured-in-meta">French tech newsletter</span>
+                        </span>
+                        <span class="featured-in-arrow">&rarr;</span>
+                    </a>
+                </div>
             </div>
 
             <div class="featured-in featured-in--secondary">
