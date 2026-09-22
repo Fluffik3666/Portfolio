@@ -223,10 +223,12 @@ img {
 /* ══════════════════════════════════
    ABOUT
    ══════════════════════════════════ */
+/* Locked to the viewport so the photo stays put — the text column scrolls
+   on its own below, rather than the whole section scrolling the photo away. */
 .section--about {
     align-items: center;
+    height: 100vh;
     overflow: hidden;
-    overflow-y: auto;
 }
 
 .about-photo {
@@ -253,6 +255,28 @@ img {
     margin-left: 50%;
     padding: 4rem;
     max-width: 550px;
+}
+
+/* max-height rather than height: stays vertically centred while it fits,
+   and only becomes a scroll container once it outgrows the viewport. */
+.section--about .about-content {
+    max-height: 100%;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(240, 240, 240, 0.22) transparent;
+}
+
+.section--about .about-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.section--about .about-content::-webkit-scrollbar-thumb {
+    background: rgba(240, 240, 240, 0.22);
+    border-radius: 3px;
+}
+
+.section--about .about-content::-webkit-scrollbar-thumb:hover {
+    background: rgba(240, 240, 240, 0.4);
 }
 
 .about-heading {
@@ -796,6 +820,17 @@ img {
         flex-direction: column;
         align-items: stretch;
         min-height: auto;
+    }
+
+    /* Stacked, so the page scrolls as one — undo the split-scroll layout */
+    .section--about {
+        height: auto;
+        overflow: visible;
+    }
+
+    .section--about .about-content {
+        max-height: none;
+        overflow-y: visible;
     }
 
     .about-photo {
