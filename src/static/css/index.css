@@ -99,6 +99,15 @@ img {
     overflow: hidden;
 }
 
+/* The responsive <picture> is a format-selection wrapper, not a layout box.
+   display:contents keeps the <img> a direct flex child of its container, so
+   the percentage heights below still resolve against .hero-photo/.about-photo
+   rather than against an auto-height inline element. */
+.hero-photo picture,
+.about-photo picture {
+    display: contents;
+}
+
 .hero-photo img {
     height: 85%;
     width: auto;

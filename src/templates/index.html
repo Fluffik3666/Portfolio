@@ -7,7 +7,14 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap" rel="stylesheet">
+    <!-- The hero photo is the largest thing on screen; start it before the
+         parser reaches the <img>, and let the browser pick the format. -->
+    <link rel="preload" as="image" type="image/avif"
+          href="{{ url_for('static', filename='images/derived/sb_photos_bw-2-900.avif') }}"
+          imagesrcset="{{ photo_sources('sb_photos_bw-2', 'avif') }}"
+          imagesizes="50vw" fetchpriority="high">
 </head>
 <body>
 
@@ -17,7 +24,17 @@
     <!-- ====== HERO ====== -->
     <section class="section section--hero active" id="hero">
         <div class="hero-photo">
-            <img src="{{ url_for('static', filename='images/sb_photos_bw-2.jpg') }}" alt="Sasha Bagrov" />
+            <picture>
+                <source type="image/avif" sizes="50vw"
+                        srcset="{{ photo_sources('sb_photos_bw-2', 'avif') }}">
+                <source type="image/webp" sizes="50vw"
+                        srcset="{{ photo_sources('sb_photos_bw-2', 'webp') }}">
+                <img src="{{ photo_fallback('sb_photos_bw-2', 900) }}"
+                     srcset="{{ photo_sources('sb_photos_bw-2', 'jpg') }}"
+                     sizes="50vw" width="3580" height="5997"
+                     alt="Sasha Bagrov"
+                     decoding="async" fetchpriority="high" />
+            </picture>
         </div>
         <div class="hero-content">
             <h1 class="hero-greeting">
@@ -68,7 +85,17 @@
     <!-- ====== ABOUT ====== -->
     <section class="section section--about" id="about">
         <div class="about-photo">
-            <img src="{{ url_for('static', filename='images/sb_photos_bw.jpg') }}" alt="Sasha Bagrov" />
+            <picture>
+                <source type="image/avif" sizes="45vw"
+                        srcset="{{ photo_sources('sb_photos_bw', 'avif') }}">
+                <source type="image/webp" sizes="45vw"
+                        srcset="{{ photo_sources('sb_photos_bw', 'webp') }}">
+                <img src="{{ photo_fallback('sb_photos_bw', 1400) }}"
+                     srcset="{{ photo_sources('sb_photos_bw', 'jpg') }}"
+                     sizes="45vw" width="3360" height="4646"
+                     alt="Sasha Bagrov"
+                     loading="lazy" decoding="async" />
+            </picture>
         </div>
         <div class="about-content">
             <h2 class="about-heading">i'm Sasha.</h2>
@@ -224,7 +251,17 @@
     <!-- ====== TUTORING ====== -->
     <section class="section section--tutoring" id="tutoring">
         <div class="about-photo">
-            <img src="{{ url_for('static', filename='images/sb_photos_bw.jpg') }}" alt="Sasha Bagrov" />
+            <picture>
+                <source type="image/avif" sizes="45vw"
+                        srcset="{{ photo_sources('sb_photos_bw', 'avif') }}">
+                <source type="image/webp" sizes="45vw"
+                        srcset="{{ photo_sources('sb_photos_bw', 'webp') }}">
+                <img src="{{ photo_fallback('sb_photos_bw', 1400) }}"
+                     srcset="{{ photo_sources('sb_photos_bw', 'jpg') }}"
+                     sizes="45vw" width="3360" height="4646"
+                     alt="Sasha Bagrov"
+                     loading="lazy" decoding="async" />
+            </picture>
         </div>
         <div class="about-content">
             <h2 class="about-heading">tutoring.</h2>
@@ -252,8 +289,10 @@
         </div>
     </section>
 
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js"></script>
-    <script src="{{ url_for('static', filename='js/index.js') }}"></script>
+    <!-- defer keeps both off the parser's critical path; execution order is
+         preserved, and both still run before DOMContentLoaded fires. -->
+    <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js"></script>
+    <script defer src="{{ url_for('static', filename='js/index.js') }}"></script>
     <script>
         window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
     </script>
