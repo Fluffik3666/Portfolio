@@ -1,10 +1,13 @@
 {
     "version": 2,
+    "regions": ["lhr1"],
     "builds": [
       {
         "src": "src/main.py",
         "use": "@vercel/python",
-        "config": { "includeFiles": "src/static/**" }
+        "config": {
+          "excludeFiles": "{src/static/images/**,new/**,venv/**,.venv/**,**/__pycache__/**,.env}"
+        }
       },
       {
         "src": "src/static/images/**",
@@ -13,8 +16,18 @@
     ],
     "routes": [
       {
+        "src": "/static/images/derived/(.*)",
+        "dest": "/src/static/images/derived/$1",
+        "headers": {
+          "Cache-Control": "public, max-age=31536000, s-maxage=31536000, immutable"
+        }
+      },
+      {
         "src": "/static/images/(.*)",
-        "dest": "/src/static/images/$1"
+        "dest": "/src/static/images/$1",
+        "headers": {
+          "Cache-Control": "public, max-age=604800, s-maxage=31536000, stale-while-revalidate=604800"
+        }
       },
       {
         "src": "/(.*)",
