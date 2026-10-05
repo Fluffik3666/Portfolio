@@ -12,9 +12,11 @@ import stripe
 try:
     from src.firebase_config import initialize_firebase
     from src.stripe_bluprnt import blueprint
+    from src import work_data
 except ImportError:
     from firebase_config import initialize_firebase
     from stripe_bluprnt import blueprint
+    import work_data
 
 stripe.api_key = os.getenv("STRIPE_API_KEY")
 
@@ -147,6 +149,46 @@ _TYPE_RE = re.compile(r'type\s*=\s*["\']?([^"\'>\s]+)', flags=re.IGNORECASE)
 # minifier; anything else (e.g. application/json, text/template) is left alone.
 _JS_TYPES = {'', 'text/javascript', 'application/javascript', 'module'}
 
+# cssmin strips the whitespace around `+` everywhere, including inside calc().
+# `calc(var(--a)+var(--b))` is invalid -- calc requires whitespace around + and
+# the browser drops the whole declaration -- so put it back. Only `+` is
+# affected; cssmin already leaves `-` alone, and touching that would corrupt
+# negative values. A `+` inside calc() is always an operator, so this is safe,
+# and restricting it to balanced calc() spans keeps selector combinators and
+# :nth-child(2n+1) untouched.
+def _restore_calc_spacing(css):
+    out = []
+    i = 0
+    lowered = css.lower()
+    while True:
+        start = lowered.find('calc(', i)
+        if start == -1:
+            out.append(css[i:])
+            return ''.join(out)
+        open_paren = start + len('calc(') - 1
+        depth = 0
+        end = None
+        for j in range(open_paren, len(css)):
+            if css[j] == '(':
+                depth += 1
+            elif css[j] == ')':
+                depth -= 1
+                if depth == 0:
+                    end = j
+                    break
+        if end is None:
+            out.append(css[i:])
+            return ''.join(out)
+        out.append(css[i:open_paren + 1])
+        out.append(css[open_paren + 1:end].replace('+', ' + '))
+        out.append(')')
+        i = end + 1
+
+
+def minify_css(text):
+    return _restore_calc_spacing(cssmin.cssmin(text))
+
+
 def minify_html(html):
     stash = []
 
@@ -161,7 +203,7 @@ def minify_html(html):
     def _minify_style(match):
         open_tag, body, close_tag = match.groups()
         try:
-            body = cssmin.cssmin(body)
+            body = minify_css(body)
         except Exception:
             pass
         return _stash(open_tag + body + close_tag)
@@ -237,7 +279,18 @@ def page_cache_headers(resp, personalised=False):
 @app.route('/')
 def index():
     logged_in = 'user_uid' in session
-    resp = Response(render_template('index.html', logged_in=logged_in))
+    resp = Response(render_template(
+        'index.html',
+        logged_in=logged_in,
+        timeline=work_data.timeline(),
+        acts=work_data.acts(),
+        skill_groups=work_data.SKILL_GROUPS,
+        skill_names=work_data.skill_names(),
+        skill_projects=work_data.skill_projects(),
+        work=work_data.WORK,
+        languages=work_data.LANGUAGES,
+        education=work_data.EDUCATION,
+    ))
     return page_cache_headers(resp, personalised=logged_in)
 
 @app.route('/photos')
@@ -260,7 +313,7 @@ def serve_css(filename):
     filepath = os.path.join(app.static_folder, 'css', filename)
     if not os.path.exists(filepath):
         return "Not found", 404
-    minified = get_minified(filepath, cssmin.cssmin)
+    minified = get_minified(filepath, minify_css)
     resp = Response(minified, mimetype='text/css')
     return cache_headers(resp)
 
