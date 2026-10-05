@@ -26,23 +26,15 @@ OG_IMAGE = '/static/images/og/og-card.jpg'
 OG_IMAGE_W, OG_IMAGE_H = 1200, 630
 OG_IMAGE_ALT = 'Sasha Bagrov — developer, founder and photographer, London'
 
-# Pages worth indexing, in sitemap order. Anything not listed here is either
-# private (the tutoring account area) or an API.
+# Pages worth indexing, in sitemap order. Anything not listed here is an API.
 SITEMAP = [
     {'path': '/', 'priority': '1.0', 'changefreq': 'monthly'},
     {'path': '/photos', 'priority': '0.8', 'changefreq': 'monthly'},
-    {'path': '/tutoring/book', 'priority': '0.7', 'changefreq': 'monthly'},
     {'path': '/cv', 'priority': '0.6', 'changefreq': 'monthly'},
 ]
 
 ROBOTS_DISALLOW = [
     '/api/',
-    '/tutoring/api/',
-    '/tutoring/account',
-    '/tutoring/admin',
-    '/tutoring/auth',
-    '/tutoring/checkout',
-    '/tutoring/webhook',
 ]
 
 PROFILES = [
@@ -135,26 +127,6 @@ def gallery_schema():
         ),
         'url': absolute('/photos'),
         'author': {'@id': f'{SITE_URL}/#person'},
-    }
-
-
-def tutoring_schema():
-    return {
-        '@context': 'https://schema.org',
-        '@type': 'Service',
-        'name': 'One-to-one Python tutoring',
-        'serviceType': 'Programming tutoring',
-        'description': (
-            'Structured 45-minute online Python lessons for beginners, taught '
-            'one to one.'
-        ),
-        'url': absolute('/tutoring/book'),
-        'provider': {'@id': f'{SITE_URL}/#person'},
-        'areaServed': {'@type': 'Country', 'name': 'United Kingdom'},
-        'availableChannel': {
-            '@type': 'ServiceChannel',
-            'serviceUrl': absolute('/tutoring/book'),
-        },
     }
 
 
