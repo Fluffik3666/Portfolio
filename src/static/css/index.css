@@ -440,11 +440,12 @@ img {
    WORK
    ══════════════════════════════════ */
 .section--work {
-    padding: 6rem 2.5rem 4rem;
+    --work-gutter: 2.5rem;
+    padding: 6rem var(--work-gutter) 4rem;
 }
 
 .work-inner {
-    max-width: 900px;
+    max-width: 980px;
     margin: 0 auto;
     width: 100%;
 }
@@ -454,11 +455,43 @@ img {
     font-weight: 300;
     font-size: clamp(2.5rem, 5vw, 4rem);
     margin-bottom: 3.5rem;
-    opacity: 0;
+}
+
+/* Work sets its own, because its intro line sits right under the heading
+   rather than a section's worth of space below it. */
+.section--work .section-heading {
+    margin-bottom: 0.8rem;
+}
+
+.work-intro {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--grey);
+    max-width: 38ch;
+    margin-bottom: 2rem;
+}
+
+.work-intro-call {
+    display: block;
+    margin-top: 0.5rem;
+    color: rgba(240,240,240,0.75);
+    letter-spacing: 0.02em;
 }
 
 .work-block {
     margin-bottom: 4rem;
+}
+
+.work-block-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.work-block-head .work-subheading {
+    margin-bottom: 0;
 }
 
 .work-subheading {
@@ -469,94 +502,972 @@ img {
     letter-spacing: 0.15em;
     color: rgba(240,240,240,0.4);
     margin-bottom: 1.5rem;
-    opacity: 0;
 }
 
-/* Skills */
-.skills-grid {
+.work-hint {
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    color: rgba(240,240,240,0.3);
+    font-variant-numeric: tabular-nums;
+}
+
+/* ══════════════════════════════════
+   THE SHOW
+   ══════════════════════════════════
+   A tall scroll container holding a sticky stage. Height is what buys the
+   scroll distance for the cues; the JS maps scroll progress onto the playhead,
+   moving between cues and then holding on each. */
+.show {
+    position: relative;
+    height: 560vh;
+    /* Bleeds through the section gutter so the sticky stage can be full
+       width. Must stay in step with .section--work's padding. */
+    margin: 0 calc(-1 * var(--work-gutter));
+}
+
+.show-pin {
+    position: sticky;
+    top: 0;
+    height: 100vh;
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.6rem;
+    align-items: center;
+    overflow: hidden;
 }
 
-.skill-tag {
-    font-family: var(--font-sans);
-    padding: 0.4rem 1rem;
-    border: 1px solid rgba(240,240,240,0.12);
-    border-radius: 4px;
-    font-size: 0.82rem;
-    font-weight: 400;
-    color: var(--grey);
-    letter-spacing: 0.01em;
-    opacity: 0;
-    transition: border-color 0.3s ease, color 0.3s ease;
+.show-inner {
+    width: 100%;
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 0 var(--work-gutter);
+    display: grid;
+    grid-template-rows: auto auto 1fr;
+    gap: clamp(1.2rem, 3.5vh, 2.6rem);
+    align-content: center;
+    max-height: 100vh;
 }
 
-.skill-tag:hover {
-    border-color: rgba(240,240,240,0.4);
-    color: var(--white);
-}
-
-/* Projects — list layout */
-.projects-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-}
-
-.project-row {
+/* ── The live readout ── */
+.show-meter {
     display: flex;
     align-items: baseline;
-    justify-content: space-between;
-    gap: 2rem;
-    padding: 1.1rem 0;
-    border-bottom: 1px solid rgba(240,240,240,0.06);
-    transition: background 0.3s ease;
-    opacity: 0;
+    flex-wrap: wrap;
+    gap: 0.6rem 2.4rem;
 }
 
-.project-row:first-child {
-    border-top: 1px solid rgba(240,240,240,0.06);
+.show-when {
+    font-family: var(--font-serif);
+    font-size: clamp(1.6rem, 4vw, 2.8rem);
+    font-weight: 300;
+    line-height: 1;
+    color: var(--white);
+    min-width: 7ch;
 }
 
-.project-row:hover {
-    background: rgba(240,240,240,0.02);
+.show-stat {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.45rem;
 }
 
-.project-name {
-    font-family: var(--font-sans);
-    font-size: 1.15rem;
-    font-weight: 500;
-    white-space: nowrap;
-    flex-shrink: 0;
-}
-
-.project-desc {
-    font-family: var(--font-sans);
-    font-size: 0.85rem;
-    color: var(--grey);
-    line-height: 1.5;
-    flex: 1;
+.show-num {
+    font-family: var(--font-serif);
+    font-size: clamp(1.3rem, 3vw, 2rem);
+    font-weight: 300;
+    line-height: 1;
+    color: var(--white);
+    font-variant-numeric: tabular-nums;
+    min-width: 1.2ch;
     text-align: right;
 }
 
-.project-arrow {
-    font-size: 0.9rem;
-    color: rgba(240,240,240,0.3);
-    flex-shrink: 0;
-    transition: color 0.3s ease, transform 0.3s ease;
+.show-unit {
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    color: rgba(240,240,240,0.38);
 }
 
-.project-row:hover .project-arrow {
+/* ── The compact score ── */
+.stage {
+    --stage-label: 5.5rem;
+    --stage-gap: 1rem;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.5rem, 1.4vh, 0.9rem);
+    padding: clamp(0.6rem, 2vh, 1.2rem) 0;
+    border-top: 1px solid rgba(240,240,240,0.08);
+    border-bottom: 1px solid rgba(240,240,240,0.08);
+}
+
+.stage-lane {
+    display: grid;
+    grid-template-columns: var(--stage-label) 1fr;
+    gap: var(--stage-gap);
+    align-items: center;
+}
+
+/* Shares the bars' coordinate space, so a percentage means the same thing to
+   the playhead as it does to them. */
+.stage-track {
+    position: absolute;
+    left: calc(var(--stage-label) + var(--stage-gap));
+    right: 0;
+    top: 0;
+    bottom: 0;
+    pointer-events: none;
+}
+
+.stage-lane-label {
+    font-size: 0.55rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: rgba(240,240,240,0.22);
+    text-align: right;
+    transition: color 0.5s ease;
+}
+
+/* A lane with something running in it steps forward */
+.stage-lane.is-live .stage-lane-label {
+    color: rgba(240,240,240,0.6);
+}
+
+.stage-rows {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(3px, 0.7vh, 6px);
+}
+
+.stage-row {
+    position: relative;
+    height: clamp(5px, 1.1vh, 9px);
+}
+
+.stage-bar {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.stage-bar-fill {
+    display: block;
+    width: 100%;
+    height: 2px;
+    background: rgba(240,240,240,0.5);
+    transform-origin: left center;
+    transform: scaleX(var(--draw, 0));
+    transition: background 0.4s ease;
+}
+
+/* The head of a strand. A cue can land exactly on a start date, where the line
+   still has zero length -- without this the stage reads as empty while the
+   counter says one thing is running. */
+.stage-bar::before {
+    content: '';
+    position: absolute;
+    left: -1px;
+    top: 50%;
+    width: 4px;
+    height: 4px;
+    margin-top: -2px;
+    border-radius: 50%;
+    background: rgba(240,240,240,0.5);
+    opacity: 0;
+    transition: opacity 0.35s ease, background 0.4s ease;
+}
+
+.stage-row.is-live .stage-bar::before,
+.stage-row.is-past .stage-bar::before {
+    opacity: 1;
+}
+
+.stage-row.is-live .stage-bar::before {
+    background: var(--white);
+}
+
+.stage-row.is-past .stage-bar::before {
+    background: rgba(240,240,240,0.22);
+}
+
+.stage-bar--approx .stage-bar-fill {
+    background: none;
+    height: 0;
+    border-top: 2px dotted rgba(240,240,240,0.42);
+}
+
+/* Currently running at the playhead */
+.stage-row.is-live .stage-bar-fill {
+    background: var(--white);
+}
+
+.stage-row.is-live .stage-bar--approx .stage-bar-fill,
+.stage-row.is-live .stage-bar--approx {
+    background: none;
+    border-top-color: var(--white);
+}
+
+.stage-row.is-past .stage-bar-fill {
+    background: rgba(240,240,240,0.22);
+}
+
+.stage-row.is-past .stage-bar--approx .stage-bar-fill {
+    background: none;
+    border-top-color: rgba(240,240,240,0.18);
+}
+
+.stage-playhead {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    will-change: left;
+    background: linear-gradient(to bottom,
+        rgba(240,240,240,0.45), rgba(240,240,240,0.12));
+    z-index: 2;
+    pointer-events: none;
+}
+
+/* ── The cue sheet ── */
+.show-script {
+    position: relative;
+    min-height: clamp(7rem, 18vh, 9.5rem);
+}
+
+.act {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.act.is-live {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.act-cue {
+    display: flex;
+    align-items: baseline;
+    gap: 0.8rem;
+    margin-bottom: 0.2rem;
+}
+
+.act-cue-label {
+    font-size: 0.62rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    color: rgba(240,240,240,0.45);
+}
+
+.act-cue-when {
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    color: rgba(240,240,240,0.25);
+}
+
+.act-line {
+    font-size: clamp(0.95rem, 1.9vw, 1.2rem);
+    line-height: 1.55;
+    color: rgba(240,240,240,0.78);
+    max-width: 54ch;
+}
+
+.act-line:last-child {
     color: var(--white);
+}
+
+/* The one cue everything else is standby for */
+.act--climax .act-cue-label {
+    color: var(--white);
+}
+
+.act--climax .act-line:last-child {
+    font-family: var(--font-serif);
+    font-size: clamp(1.4rem, 3.2vw, 2.1rem);
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+}
+
+/* ── GO ──
+   Fired once, as the climax cue lands: the whole score flashes to white and
+   settles back. */
+.stage.is-go .stage-bar-fill {
+    background: var(--white);
+    transition: background 0.12s ease;
+}
+
+.stage.is-go .stage-bar--approx .stage-bar-fill {
+    background: none;
+    border-top-color: var(--white);
+}
+
+.stage.is-go .stage-playhead {
+    background: var(--white);
+    box-shadow: 0 0 18px 2px rgba(240,240,240,0.35);
+}
+
+/* ── Cue progress ── */
+.show-cues {
+    position: absolute;
+    right: var(--work-gutter);
+    top: 50%;
+    transform: translateY(-50%);
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.show-cue {
+    width: 1px;
+    height: 14px;
+    background: rgba(240,240,240,0.14);
+    transition: background 0.4s ease, height 0.4s ease;
+}
+
+.show-cue.is-live {
+    background: var(--white);
+    height: 22px;
+}
+
+.work-handoff {
+    font-size: 0.8rem;
+    letter-spacing: 0.04em;
+    color: rgba(240,240,240,0.3);
+    margin: 5rem 0 2.5rem;
+}
+
+/* ── Reduced motion ──
+   No sticky stage and no scroll scrubbing: the cues simply stack and read as
+   prose, with the score drawn at today. */
+@media (prefers-reduced-motion: reduce) {
+    .show {
+        height: auto;
+        margin: 0;
+    }
+
+    .show-pin {
+        position: static;
+        height: auto;
+        display: block;
+    }
+
+    .show-inner {
+        max-height: none;
+        padding: 0;
+    }
+
+    .show-script {
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+        margin-top: 2rem;
+    }
+
+    .act {
+        position: static;
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    .show-cues {
+        display: none;
+    }
+}
+
+/* ══════════════════════════════════
+   TIMELINE
+   ══════════════════════════════════
+   Drawn like a score, not a Gantt chart: hairlines, no fills, no rounded
+   chrome. --name-col is the fixed label gutter; the track beside it is the
+   percentage coordinate space every bar and the playhead share. */
+.tl {
+    --name-col: 11.5rem;
+    --gutter: 1.2rem;
+    --row-h: 1.75rem;
+    position: relative;
+    margin-bottom: 2.5rem;
+}
+
+/* ── Axis head ── */
+.tl-head {
+    margin-left: calc(var(--name-col) + var(--gutter));
+    position: relative;
+}
+
+.tl-milestones {
+    position: relative;
+    height: 3.5rem;
+}
+
+/* A milestone is a zero-width anchor on the axis: the tick sits exactly on the
+   date, and the label is placed around it. */
+.tl-ms {
+    position: absolute;
+    bottom: 0;
+    width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    pointer-events: none;
+}
+
+.tl-ms::after {
+    content: '';
+    width: 1px;
+    height: 0.5rem;
+    background: linear-gradient(to bottom, rgba(240,240,240,0.28), rgba(240,240,240,0.08));
+}
+
+.tl-ms-label {
+    position: absolute;
+    /* Pin the static position to the anchor point. Without this the flex
+       parent centres the label and the transforms below have nothing
+       predictable to work against. */
+    left: 0;
+    bottom: 0.75rem;
+    font-size: 0.65rem;
+    letter-spacing: 0.04em;
+    color: rgba(240,240,240,0.42);
+    white-space: nowrap;
+    transform: translateX(-50%);
+}
+
+/* Near either end a centred label would hang off the figure, so it is anchored
+   to the tick instead of straddling it. */
+.tl-ms--start .tl-ms-label {
+    transform: none;
+}
+
+.tl-ms--end .tl-ms-label {
+    transform: translateX(-100%);
+}
+
+/* Lifted clear of the neighbour it would otherwise overlap */
+.tl-ms--stacked .tl-ms-label {
+    bottom: 1.85rem;
+}
+
+.tl-ms--stacked::after {
+    height: 1.6rem;
+}
+
+.tl-years {
+    position: relative;
+    height: 1.4rem;
+    border-bottom: 1px solid rgba(240,240,240,0.12);
+}
+
+.tl-year {
+    position: absolute;
+    bottom: 0.3rem;
+    font-family: var(--font-serif);
+    font-size: 0.95rem;
+    color: rgba(240,240,240,0.45);
+    font-variant-numeric: tabular-nums;
+    padding-left: 0.35rem;
+    border-left: 1px solid rgba(240,240,240,0.12);
+    line-height: 1;
+    padding-bottom: 0.1rem;
+}
+
+/* ── Lanes ── */
+.tl-body {
+    position: relative;
+    padding-top: 0.9rem;
+}
+
+.tl-lane {
+    margin-bottom: 1.1rem;
+    transition: opacity 0.35s ease;
+}
+
+/* Isolating one lane pushes the rest back rather than hiding them -- the
+   point of the piece is that the other strands are still running. */
+.tl-lane.is-muted {
+    opacity: 0.25;
+}
+
+.tl-lane-label {
+    font-family: var(--font-sans);
+    font-size: 0.62rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: rgba(240,240,240,0.3);
+    margin-bottom: 0.4rem;
+    width: var(--name-col);
+    text-align: right;
+    cursor: pointer;
+    transition: color 0.25s ease;
+}
+
+.tl-lane-label:hover {
+    color: rgba(240,240,240,0.65);
+}
+
+.tl-row {
+    display: grid;
+    grid-template-columns: var(--name-col) 1fr;
+    gap: var(--gutter);
+    align-items: center;
+    height: var(--row-h);
+}
+
+.tl-row-name {
+    font-family: var(--font-sans);
+    background: none;
+    border: 0;
+    padding: 0;
+    text-align: right;
+    font-size: 0.78rem;
+    line-height: 1.2;
+    color: rgba(240,240,240,0.5);
+    cursor: pointer;
+    transition: color 0.25s ease, opacity 0.4s ease;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.tl-row-name:hover,
+.tl-row.is-selected .tl-row-name {
+    color: var(--white);
+}
+
+/* Not yet begun at the playhead: present but not yet part of the story.
+   Dimmed with colour, not opacity -- the intro tween animates opacity on this
+   same element and an inline style would win. */
+.tl-row.is-future .tl-row-name {
+    color: rgba(240,240,240,0.15);
+}
+
+.tl-track {
+    position: relative;
+    height: 100%;
+}
+
+/* ── Bars ── */
+.tl-bar {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 1.4rem;
+    background: none;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+/* The painted rule is thin; the button around it stays a comfortable target. */
+.tl-bar-fill {
+    display: block;
+    width: 100%;
+    height: 2px;
+    background: rgba(240,240,240,0.55);
+    transform-origin: left center;
+    transform: scaleX(var(--draw, 1));
+    transition: background 0.25s ease;
+}
+
+/* A dot marks the start, so a short span still reads as an event */
+.tl-bar::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 5px;
+    height: 5px;
+    margin-top: -2.5px;
+    margin-left: -1px;
+    border-radius: 50%;
+    background: rgba(240,240,240,0.55);
+    transition: background 0.25s ease, transform 0.25s ease;
+}
+
+/* Approximate spans are dotted -- the CV has no date for these, and the
+   drawing should say so rather than imply a precision it doesn't have. */
+.tl-bar--approx .tl-bar-fill {
+    background: none;
+    border-top: 2px dotted rgba(240,240,240,0.45);
+    height: 0;
+}
+
+/* Still running: the line runs off into an arrowhead instead of stopping */
+.tl-bar.is-ongoing::after {
+    content: '';
+    position: absolute;
+    right: -5px;
+    top: 50%;
+    margin-top: -3px;
+    border-left: 5px solid rgba(240,240,240,0.55);
+    border-top: 3px solid transparent;
+    border-bottom: 3px solid transparent;
+    opacity: var(--tip, 1);
+    transition: border-color 0.25s ease;
+}
+
+/* Finished: still on the page, but history rather than headline */
+.tl-row.is-past .tl-bar-fill {
+    background: rgba(240,240,240,0.26);
+}
+
+.tl-row.is-past .tl-bar--approx .tl-bar-fill {
+    background: none;
+    border-top-color: rgba(240,240,240,0.22);
+}
+
+.tl-row.is-past .tl-bar::before {
+    background: rgba(240,240,240,0.26);
+}
+
+/* Hasn't happened yet at the playhead: the start dot would otherwise float
+   on its own next to an undrawn line. */
+.tl-bar::before {
+    opacity: var(--tip-dot, 1);
+}
+
+.tl-row.is-future .tl-bar::before {
+    opacity: 0;
+}
+
+.tl-bar:hover .tl-bar-fill,
+.tl-row.is-selected .tl-bar-fill {
+    background: var(--white);
+}
+
+.tl-bar--approx:hover .tl-bar-fill,
+.tl-row.is-selected .tl-bar--approx .tl-bar-fill {
+    background: none;
+    border-top-color: var(--white);
+}
+
+.tl-bar:hover::before,
+.tl-row.is-selected .tl-bar::before {
+    background: var(--white);
+    transform: scale(1.3);
+}
+
+.tl-bar:hover.is-ongoing::after,
+.tl-row.is-selected .tl-bar.is-ongoing::after {
+    border-left-color: var(--white);
+}
+
+.tl-bar:focus-visible,
+.tl-row-name:focus-visible,
+.tl-range:focus-visible {
+    outline: 1px solid rgba(240,240,240,0.55);
+    outline-offset: 3px;
+}
+
+/* ── Playhead ── */
+.tl-playhead {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: calc(var(--name-col) + var(--gutter));
+    width: 1px;
+    pointer-events: none;
+    z-index: 3;
+}
+
+.tl-playhead::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom,
+        rgba(240,240,240,0.5),
+        rgba(240,240,240,0.14));
+}
+
+/* ── Scrubber ── */
+.tl-controls {
+    margin-left: calc(var(--name-col) + var(--gutter));
+    margin-top: 1.6rem;
+}
+
+.tl-range {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 1.6rem;
+    background: none;
+    cursor: ew-resize;
+    display: block;
+}
+
+.tl-range::-webkit-slider-runnable-track {
+    height: 1px;
+    background: rgba(240,240,240,0.14);
+}
+
+.tl-range::-moz-range-track {
+    height: 1px;
+    background: rgba(240,240,240,0.14);
+}
+
+.tl-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--white);
+    margin-top: -4px;
+    transition: transform 0.2s ease;
+}
+
+.tl-range::-moz-range-thumb {
+    width: 9px;
+    height: 9px;
+    border: 0;
+    border-radius: 50%;
+    background: var(--white);
+}
+
+.tl-range:hover::-webkit-slider-thumb,
+.tl-range:focus::-webkit-slider-thumb {
+    transform: scale(1.25);
+}
+
+.tl-readout {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+    margin-top: 0.7rem;
+    font-size: 0.85rem;
+    color: var(--grey);
+}
+
+.tl-readout-date {
+    font-family: var(--font-serif);
+    font-size: 1.25rem;
+    color: var(--white);
+    font-variant-numeric: tabular-nums;
+    min-width: 8.5ch;
+}
+
+.tl-readout-sep {
+    color: rgba(240,240,240,0.25);
+}
+
+#tl-count {
+    color: var(--white);
+    font-variant-numeric: tabular-nums;
+}
+
+.tl-legend {
+    display: flex;
+    gap: 1.2rem;
+    margin-top: 0.9rem;
+    font-size: 0.68rem;
+    color: rgba(240,240,240,0.3);
+}
+
+.tl-legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.tl-legend-swatch {
+    width: 16px;
+    height: 2px;
+    background: rgba(240,240,240,0.5);
+}
+
+.tl-legend-swatch--approx {
+    background: none;
+    height: 0;
+    border-top: 2px dotted rgba(240,240,240,0.45);
+}
+
+/* ══════════════════════════════════
+   DETAIL
+   ══════════════════════════════════ */
+.tl-detail {
+    border-top: 1px solid rgba(240,240,240,0.1);
+    padding-top: 2rem;
+    margin-bottom: 4rem;
+    min-height: 15rem;
+}
+
+.detail {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+/* A class selector outranks the UA's [hidden] rule, so restate it. */
+.detail[hidden] {
+    display: none;
+}
+
+.detail-title {
+    font-family: var(--font-serif);
+    font-weight: 300;
+    font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+}
+
+.detail-meta {
+    margin-top: 0.4rem;
+    font-size: 0.78rem;
+    color: rgba(240,240,240,0.4);
+    letter-spacing: 0.02em;
+}
+
+.detail-dot {
+    padding: 0 0.3rem;
+    color: rgba(240,240,240,0.25);
+}
+
+.detail-summary {
+    font-size: 1rem;
+    line-height: 1.65;
+    color: rgba(240,240,240,0.82);
+    max-width: 56ch;
+}
+
+.detail-bullets {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    max-width: 62ch;
+}
+
+.detail-bullets li {
+    position: relative;
+    padding-left: 1.1rem;
+    font-size: 0.88rem;
+    line-height: 1.6;
+    color: rgba(240,240,240,0.65);
+}
+
+.detail-bullets li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.65em;
+    width: 5px;
+    height: 1px;
+    background: rgba(240,240,240,0.35);
+}
+
+.detail-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+}
+
+.detail-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.4rem;
+}
+
+.detail-links a {
+    font-size: 0.85rem;
+    color: rgba(240,240,240,0.75);
+    border-bottom: 1px solid rgba(240,240,240,0.15);
+    padding-bottom: 1px;
+    transition: color 0.25s ease, border-color 0.25s ease;
+}
+
+.detail-links a span {
+    display: inline-block;
+    transition: transform 0.25s ease;
+}
+
+.detail-links a:hover {
+    color: var(--white);
+    border-color: var(--white);
+}
+
+.detail-links a:hover span {
     transform: translateX(3px);
 }
 
-/* GitHub repos — compact list */
+/* ══════════════════════════════════
+   STACK
+   ══════════════════════════════════ */
+.stack-groups {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+}
+
+.stack-group {
+    display: grid;
+    grid-template-columns: 7.5rem 1fr;
+    align-items: start;
+    gap: 1rem;
+}
+
+.stack-group-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(240,240,240,0.28);
+    padding-top: 0.45rem;
+}
+
+.stack-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.chip {
+    display: inline-flex;
+    align-items: center;
+    font-family: var(--font-sans);
+    padding: 0.35rem 0.85rem;
+    border: 1px solid rgba(240,240,240,0.12);
+    border-radius: 4px;
+    font-size: 0.8rem;
+    color: var(--grey);
+    letter-spacing: 0.01em;
+}
+
+/* Nothing using this tool is running at the playhead. The chip holds its space
+   so the grid never reflows while scrubbing -- only its ink changes, and the
+   transition is what reads as the tool coming into play. */
+.chip[data-projects] {
+    border-color: rgba(240,240,240,0.05);
+    color: rgba(240,240,240,0.14);
+    transition: border-color 0.45s ease, color 0.45s ease;
+}
+
+.chip[data-projects].is-live {
+    border-color: rgba(240,240,240,0.24);
+    color: rgba(240,240,240,0.88);
+}
+
+.chip--inline {
+    padding: 0.25rem 0.6rem;
+    font-size: 0.72rem;
+    border-color: rgba(240,240,240,0.1);
+}
+
+/* ══════════════════════════════════
+   OPEN SOURCE
+   ══════════════════════════════════ */
 .github-list {
     display: flex;
     flex-direction: column;
-    gap: 0;
 }
 
 .repo-row {
@@ -567,7 +1478,6 @@ img {
     padding: 0.85rem 0;
     border-bottom: 1px solid rgba(240,240,240,0.06);
     transition: background 0.3s ease;
-    opacity: 0;
 }
 
 .repo-row:first-child {
@@ -625,6 +1535,61 @@ img {
     color: var(--grey);
     font-size: 0.85rem;
     font-style: italic;
+}
+
+/* ── Languages / education / cv ── */
+.work-block--meta {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    padding-top: 2.5rem;
+    border-top: 1px solid rgba(240,240,240,0.08);
+}
+
+.meta-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.meta-list li {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+}
+
+.meta-key {
+    font-size: 0.9rem;
+    color: rgba(240,240,240,0.8);
+}
+
+.meta-val {
+    font-size: 0.75rem;
+    color: rgba(240,240,240,0.35);
+}
+
+.meta-cv {
+    font-size: 0.9rem;
+    color: rgba(240,240,240,0.8);
+    border-bottom: 1px solid rgba(240,240,240,0.2);
+    padding-bottom: 2px;
+    width: fit-content;
+    transition: color 0.25s ease, border-color 0.25s ease;
+}
+
+.meta-cv span {
+    display: inline-block;
+    transition: transform 0.25s ease;
+}
+
+.meta-cv:hover {
+    color: var(--white);
+    border-color: var(--white);
+}
+
+.meta-cv:hover span {
+    transform: translateX(3px);
 }
 
 /* ══════════════════════════════════
@@ -721,8 +1686,12 @@ img {
         padding: 2rem;
     }
 
-    .project-desc {
-        font-size: 0.8rem;
+    .tl {
+        --name-col: 9rem;
+    }
+
+    .stack-group {
+        grid-template-columns: 6.5rem 1fr;
     }
 }
 
@@ -905,9 +1874,27 @@ img {
         padding: 4.5rem 1.2rem 3rem;
     }
 
+    .section--work {
+        --work-gutter: 1.2rem;
+    }
+
+    .stage {
+        --stage-label: 4rem;
+        --stage-gap: 0.7rem;
+    }
+
+    .stage-lane-label {
+        font-size: 0.5rem;
+        letter-spacing: 0.12em;
+    }
+
     .section-heading {
         font-size: 2.2rem;
         margin-bottom: 2rem;
+    }
+
+    .section--work .section-heading {
+        margin-bottom: 0.6rem;
     }
 
     .work-block {
@@ -918,33 +1905,94 @@ img {
         margin-bottom: 1rem;
     }
 
-    .skills-grid {
-        gap: 0.5rem;
+    .work-intro {
+        font-size: 0.9rem;
+        margin-bottom: 2.5rem;
     }
 
-    .skill-tag {
-        font-size: 0.78rem;
-        padding: 0.35rem 0.8rem;
+    /* The name gutter costs more than it is worth at this width: names move
+       above their own track, one strand per block. */
+    .tl {
+        --name-col: 0rem;
+        --gutter: 0rem;
+        --row-h: 2.6rem;
     }
 
-    .project-row {
-        flex-direction: column;
-        gap: 0.2rem;
-        padding: 0.9rem 0;
+    /* Name sits directly on top of its own track. The gap above a row has to
+       stay bigger than the gap inside it, or each name reads as belonging to
+       the bar below it instead of its own. */
+    .tl-row {
+        display: block;
+        height: auto;
+        padding: 0 0 0.9rem;
     }
 
-    .project-name {
+    .tl-row-name {
+        display: block;
+        width: 100%;
+        text-align: left;
+        font-size: 0.75rem;
+        margin-bottom: 0.15rem;
+    }
+
+    .tl-lane {
+        margin-bottom: 1.4rem;
+    }
+
+    .tl-lane-label {
+        width: auto;
+        text-align: left;
+        margin-bottom: 0.6rem;
+    }
+
+    .tl-track {
+        height: 0.7rem;
+    }
+
+    .tl-milestones {
+        height: 3.2rem;
+    }
+
+    .tl-ms-label {
+        font-size: 0.56rem;
+        letter-spacing: 0;
+    }
+
+    .tl-year {
+        font-size: 0.8rem;
+    }
+
+    .tl-readout {
+        flex-wrap: wrap;
+        gap: 0.4rem;
+    }
+
+    .tl-readout-date {
         font-size: 1.1rem;
     }
 
-    .project-desc {
-        text-align: left;
-        font-size: 0.85rem;
-        color: rgba(240,240,240,0.55);
+    .detail-summary {
+        font-size: 0.92rem;
     }
 
-    .project-arrow {
-        display: none;
+    /* Group label sits above its chips instead of beside them */
+    .stack-group {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+
+    .stack-group-label {
+        padding-top: 0;
+    }
+
+    .chip {
+        font-size: 0.78rem;
+        padding: 0.35rem 0.75rem;
+    }
+
+    .work-block--meta {
+        grid-template-columns: 1fr;
+        gap: 1.8rem;
     }
 
     .repo-row {
@@ -991,7 +2039,24 @@ img {
         height: 44vh;
     }
 
-    .project-name {
-        font-size: 1.05rem;
+    .tl-row-name {
+        font-size: 0.72rem;
+    }
+}
+
+/* ══════════════════════════════════
+   REDUCED MOTION
+   ══════════════════════════════════ */
+/* JS checks the same query and skips its tweens; this covers the CSS
+   transitions, which are decorative everywhere they appear. */
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    *, *::before, *::after {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
     }
 }

@@ -1,9 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-GB">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sasha Bagrov</title>
+{% from '_head.html' import head %}{{ head(seo) }}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -162,68 +160,208 @@
     <section class="section section--work" id="work">
         <div class="work-inner">
             <h2 class="section-heading">work.</h2>
+            <p class="work-intro">
+                five strands, three years, mostly running at the same time.
+                <span class="work-intro-call">scroll to call the show.</span>
+            </p>
 
-            <!-- Skills -->
-            <div class="work-block">
-                <h3 class="work-subheading">skills</h3>
-                <div class="skills-grid">
-                    <div class="skill-tag">Python</div>
-                    <div class="skill-tag">Swift &amp; SwiftUI</div>
-                    <div class="skill-tag">HTML / CSS / JS</div>
-                    <div class="skill-tag">Google Cloud Platform</div>
-                    <div class="skill-tag">Kubernetes</div>
-                    <div class="skill-tag">Firebase</div>
-                    <div class="skill-tag">GitHub Actions / CI&middot;CD</div>
-                    <div class="skill-tag">OAuth2 &amp; Auth Systems</div>
+            <!-- ── The show ──
+                 A sticky stage with the cue sheet scrolling through it. The
+                 scroll position drives the playhead, cue by cue, holding on
+                 each one the way a show is actually called. -->
+            <div class="show" id="show">
+                <div class="show-pin">
+                    <div class="show-inner">
+
+                        <div class="show-meter">
+                            <span class="show-when" id="show-when">march 2023</span>
+                            <span class="show-stat">
+                                <span class="show-num" id="show-running">1</span>
+                                <span class="show-unit">running at once</span>
+                            </span>
+                            <span class="show-stat">
+                                <span class="show-num" id="show-play">19</span>
+                                <span class="show-unit">technologies in play</span>
+                            </span>
+                        </div>
+
+                        <!-- Compact score: no names, just the shape of the
+                             years. The named, clickable version comes after. -->
+                        <div class="stage" id="stage" aria-hidden="true">
+                            <!-- Sits exactly over the bar track, so the
+                                 playhead's percentage matches the bars'. -->
+                            <div class="stage-track">
+                                <div class="stage-playhead" id="stage-playhead"></div>
+                            </div>
+                            {% for lane in timeline.lanes %}
+                            <div class="stage-lane">
+                                <span class="stage-lane-label">{{ lane.label }}</span>
+                                <div class="stage-rows">
+                                    {% for e in lane.entries %}
+                                    <div class="stage-row" data-slug="{{ e.slug }}"
+                                         data-start="{{ e.start }}"
+                                         data-end="{{ e.end if e.end is not none else '' }}">
+                                        <span class="stage-bar stage-bar--{{ e.precision }}"
+                                              style="left:{{ e.left_pct }}%;width:{{ e.width_pct }}%">
+                                            <span class="stage-bar-fill"></span>
+                                        </span>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="show-script">
+                            {% for act in acts %}
+                            <article class="act{{ ' act--climax' if act.climax }}{{ ' is-live' if loop.first }}"
+                                     data-act="{{ loop.index0 }}" data-at="{{ act.at }}">
+                                <p class="act-cue">
+                                    <span class="act-cue-label">{{ act.cue }}</span>
+                                    <span class="act-cue-when">{{ act.when }}</span>
+                                </p>
+                                {% for line in act.lines %}
+                                <p class="act-line">{{ line }}</p>
+                                {% endfor %}
+                            </article>
+                            {% endfor %}
+                        </div>
+
+                        <ol class="show-cues" aria-hidden="true">
+                            {% for act in acts %}
+                            <li class="show-cue{{ ' is-live' if loop.first }}" data-cue="{{ loop.index0 }}"></li>
+                            {% endfor %}
+                        </ol>
+
+                    </div>
                 </div>
             </div>
 
-            <!-- Projects -->
-            <div class="work-block">
-                <h3 class="work-subheading">projects</h3>
-                <div class="projects-list">
-                    <a href="https://kidshustle.app" target="_blank" rel="noopener" class="project-row">
-                        <span class="project-name">KidsHustle</span>
-                        <span class="project-desc">Platform for kids and teens to earn money through quick jobs</span>
-                        <span class="project-arrow">&rarr;</span>
-                    </a>
-                    <a href="https://pollify.co.uk" target="_blank" rel="noopener" class="project-row">
-                        <span class="project-name">Pollify</span>
-                        <span class="project-desc">Privacy-focused, open-source poll creation</span>
-                        <span class="project-arrow">&rarr;</span>
-                    </a>
-                    <a href="https://apps.apple.com/gb/app/animeatlas/id6739979715" target="_blank" rel="noopener" class="project-row">
-                        <span class="project-name">AnimeAtlas</span>
-                        <span class="project-desc">Native iOS SwiftUI anime tracker &mdash; on the App Store</span>
-                        <span class="project-arrow">&rarr;</span>
-                    </a>
-                    <a href="https://www.afishalondontickets.com/" target="_blank" rel="noopener" class="project-row">
-                        <span class="project-name">Kassa Notifications</span>
-                        <span class="project-desc">Real-time Stripe purchase alerts for iOS</span>
-                        <span class="project-arrow">&rarr;</span>
-                    </a>
-                    <a href="https://www.afishalondontickets.com/" target="_blank" rel="noopener" class="project-row">
-                        <span class="project-name">Afisha Ticket Scanner</span>
-                        <span class="project-desc">iOS + macOS scanning system with CloudKit &amp; SwiftData</span>
-                        <span class="project-arrow">&rarr;</span>
-                    </a>
-                    <a href="https://seurt.vercel.app/" target="_blank" rel="noopener" class="project-row">
-                        <span class="project-name">Seurt</span>
-                        <span class="project-desc">Secure, token-based chat with retro 8-bit aesthetic</span>
-                        <span class="project-arrow">&rarr;</span>
-                    </a>
+            <!-- ── Walk the set ── -->
+            <p class="work-handoff">that's the show. here's the set &mdash;</p>
+
+            <!-- ── The timeline ──
+                 Positions are percentages of the axis, precomputed server-side.
+                 The playhead is an <input type="range"> so it is keyboard- and
+                 screen-reader-operable for free. -->
+            <figure class="tl" id="tl"
+                    data-axis-start="{{ timeline.axis_start }}"
+                    data-axis-span="{{ timeline.axis_span }}"
+                    data-now="{{ timeline.now }}">
+
+                <div class="tl-head">
+                    <div class="tl-years">
+                        {% for y in timeline.years %}
+                        <span class="tl-year" style="left:{{ y.left_pct }}%">{{ y.year }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="tl-milestones">
+                        {% for m in timeline.milestones %}
+                        <span class="tl-ms tl-ms--{{ m.anchor }}{{ ' tl-ms--stacked' if m.stacked }}" style="left:{{ m.left_pct }}%">
+                            <span class="tl-ms-label">{{ m.label }}</span>
+                        </span>
+                        {% endfor %}
+                    </div>
                 </div>
+
+                <div class="tl-body">
+                    <div class="tl-playhead" id="tl-playhead" aria-hidden="true"></div>
+
+                    {% for lane in timeline.lanes %}
+                    <div class="tl-lane" data-lane="{{ lane.slug }}">
+                        <h3 class="tl-lane-label">{{ lane.label }}</h3>
+                        {% for e in lane.entries %}
+                        <div class="tl-row" data-slug="{{ e.slug }}"
+                             data-start="{{ e.start }}"
+                             data-end="{{ e.end if e.end is not none else '' }}"
+                             data-ongoing="{{ 'true' if e.ongoing else 'false' }}">
+                            <button type="button" class="tl-row-name" data-select="{{ e.slug }}">
+                                {{ e.title }}
+                            </button>
+                            <div class="tl-track">
+                                <button type="button"
+                                        class="tl-bar tl-bar--{{ e.precision }}{{ ' is-ongoing' if e.ongoing }}"
+                                        data-select="{{ e.slug }}"
+                                        style="left:{{ e.left_pct }}%;width:{{ e.width_pct }}%"
+                                        aria-label="{{ e.title }}, {{ e.period }}{{ ', approximate dates' if e.precision == 'approx' }}">
+                                    <span class="tl-bar-fill"></span>
+                                </button>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <figcaption class="tl-controls">
+                    <input type="range" class="tl-range" id="tl-range"
+                           min="0" max="1000" value="1000" step="1"
+                           aria-label="Scrub through time">
+                    <p class="tl-readout">
+                        <span class="tl-readout-date" id="tl-date">October 2026</span>
+                        <span class="tl-readout-sep">—</span>
+                        <span class="tl-readout-count"><span id="tl-count">7</span> running at once</span>
+                    </p>
+                    <p class="tl-legend">
+                        <span class="tl-legend-item"><span class="tl-legend-swatch"></span>dated</span>
+                        <span class="tl-legend-item"><span class="tl-legend-swatch tl-legend-swatch--approx"></span>approximate</span>
+                    </p>
+                </figcaption>
+            </figure>
+
+            <!-- ── Detail for the selected strand ── -->
+            <div class="tl-detail" id="tl-detail">
+                {% for e in work %}
+                <article class="detail{{ ' is-active' if loop.first }}" data-detail="{{ e.slug }}"
+                         {% if not loop.first %}hidden{% endif %}>
+                    <header class="detail-head">
+                        <h3 class="detail-title">{{ e.title }}</h3>
+                        <p class="detail-meta">{{ e.role }} <span class="detail-dot">&middot;</span> {{ e.period }}</p>
+                    </header>
+                    <p class="detail-summary">{{ e.summary }}</p>
+                    {% if e.bullets %}
+                    <ul class="detail-bullets">
+                        {% for bullet in e.bullets %}
+                        <li>{{ bullet }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                    {% if e.stack %}
+                    <div class="detail-stack">
+                        {% for slug in e.stack %}
+                        <span class="chip chip--inline">{{ skill_names[slug] }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    {% if e.links %}
+                    <div class="detail-links">
+                        {% for label, href in e.links %}
+                        <a href="{{ href }}" target="_blank" rel="noopener">{{ label }} <span>&rarr;</span></a>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </article>
+                {% endfor %}
             </div>
 
-            <!-- Community -->
-            <div class="work-block">
-                <h3 class="work-subheading">community</h3>
-                <div class="projects-list">
-                    <a href="https://yfl.lovable.app/" target="_blank" rel="noopener" class="project-row">
-                        <span class="project-name">Young Founders of London</span>
-                        <span class="project-desc">Member &mdash; curated community of London's student entrepreneurs</span>
-                        <span class="project-arrow">&rarr;</span>
-                    </a>
+            <!-- ── The stack, lighting up as it enters play ── -->
+            <div class="work-block" id="stack-block">
+                <div class="work-block-head">
+                    <h3 class="work-subheading">the stack it took</h3>
+                    <span class="work-hint"><span id="stack-live">0</span> of {{ skill_names|length }} in play <span id="stack-when">now</span></span>
+                </div>
+                <div class="stack-groups">
+                    {% for group in skill_groups %}
+                    <div class="stack-group">
+                        <span class="stack-group-label">{{ group.label }}</span>
+                        <div class="stack-chips">
+                            {% for slug, name in group.skills %}
+                            <span class="chip" data-skill="{{ slug }}"
+                                  data-projects="{{ skill_projects[slug]|join(' ') }}">{{ name }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endfor %}
                 </div>
             </div>
 
@@ -232,6 +370,31 @@
                 <h3 class="work-subheading">open source</h3>
                 <div class="github-list" id="github-repos">
                     <div class="loading-repos">loading repositories...</div>
+                </div>
+            </div>
+
+            <!-- Elsewhere -->
+            <div class="work-block work-block--meta">
+                <div class="meta-col">
+                    <h3 class="work-subheading">languages</h3>
+                    <ul class="meta-list">
+                        {% for name, level in languages %}
+                        <li><span class="meta-key">{{ name }}</span><span class="meta-val">{{ level }}</span></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="meta-col">
+                    <h3 class="work-subheading">education</h3>
+                    <ul class="meta-list">
+                        <li>
+                            <span class="meta-key">{{ education.name }}</span>
+                            <span class="meta-val">{{ education.place }} &middot; {{ education.period }}</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="meta-col">
+                    <h3 class="work-subheading">the long version</h3>
+                    <a class="meta-cv" href="/cv" target="_blank" rel="noopener">full cv <span>&rarr;</span></a>
                 </div>
             </div>
         </div>
@@ -292,6 +455,7 @@
     <!-- defer keeps both off the parser's critical path; execution order is
          preserved, and both still run before DOMContentLoaded fires. -->
     <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/ScrollTrigger.min.js"></script>
     <script defer src="{{ url_for('static', filename='js/index.js') }}"></script>
     <script>
         window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };

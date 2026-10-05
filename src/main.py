@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, Response, jsonify, session, s
 from PIL import Image
 import hashlib
 import io
+from datetime import datetime, timezone
 import os
 import re
 import json
@@ -12,9 +13,13 @@ import stripe
 try:
     from src.firebase_config import initialize_firebase
     from src.stripe_bluprnt import blueprint
+    from src import work_data
+    from src import seo as seo_mod
 except ImportError:
     from firebase_config import initialize_firebase
     from stripe_bluprnt import blueprint
+    import work_data
+    import seo as seo_mod
 
 stripe.api_key = os.getenv("STRIPE_API_KEY")
 
@@ -126,6 +131,15 @@ def photo_fallback(name, width):
         'static', filename='images/derived/{}-{}.jpg'.format(name, width)
     )
 
+app.jinja_env.globals['seo_site'] = {
+    'name': seo_mod.SITE_NAME,
+    'author': seo_mod.AUTHOR,
+    'locale': seo_mod.LOCALE,
+    'twitter_card': seo_mod.TWITTER_CARD,
+    'image_w': seo_mod.OG_IMAGE_W,
+    'image_h': seo_mod.OG_IMAGE_H,
+    'image_alt': seo_mod.OG_IMAGE_ALT,
+}
 app.jinja_env.globals['photo_sources'] = photo_sources
 app.jinja_env.globals['photo_fallback'] = photo_fallback
 
@@ -147,6 +161,46 @@ _TYPE_RE = re.compile(r'type\s*=\s*["\']?([^"\'>\s]+)', flags=re.IGNORECASE)
 # minifier; anything else (e.g. application/json, text/template) is left alone.
 _JS_TYPES = {'', 'text/javascript', 'application/javascript', 'module'}
 
+# cssmin strips the whitespace around `+` everywhere, including inside calc().
+# `calc(var(--a)+var(--b))` is invalid -- calc requires whitespace around + and
+# the browser drops the whole declaration -- so put it back. Only `+` is
+# affected; cssmin already leaves `-` alone, and touching that would corrupt
+# negative values. A `+` inside calc() is always an operator, so this is safe,
+# and restricting it to balanced calc() spans keeps selector combinators and
+# :nth-child(2n+1) untouched.
+def _restore_calc_spacing(css):
+    out = []
+    i = 0
+    lowered = css.lower()
+    while True:
+        start = lowered.find('calc(', i)
+        if start == -1:
+            out.append(css[i:])
+            return ''.join(out)
+        open_paren = start + len('calc(') - 1
+        depth = 0
+        end = None
+        for j in range(open_paren, len(css)):
+            if css[j] == '(':
+                depth += 1
+            elif css[j] == ')':
+                depth -= 1
+                if depth == 0:
+                    end = j
+                    break
+        if end is None:
+            out.append(css[i:])
+            return ''.join(out)
+        out.append(css[i:open_paren + 1])
+        out.append(css[open_paren + 1:end].replace('+', ' + '))
+        out.append(')')
+        i = end + 1
+
+
+def minify_css(text):
+    return _restore_calc_spacing(cssmin.cssmin(text))
+
+
 def minify_html(html):
     stash = []
 
@@ -161,7 +215,7 @@ def minify_html(html):
     def _minify_style(match):
         open_tag, body, close_tag = match.groups()
         try:
-            body = cssmin.cssmin(body)
+            body = minify_css(body)
         except Exception:
             pass
         return _stash(open_tag + body + close_tag)
@@ -237,12 +291,94 @@ def page_cache_headers(resp, personalised=False):
 @app.route('/')
 def index():
     logged_in = 'user_uid' in session
-    resp = Response(render_template('index.html', logged_in=logged_in))
+    resp = Response(render_template(
+        'index.html',
+        logged_in=logged_in,
+        seo=seo_mod.page(
+            '/',
+            'Sasha Bagrov — Developer, Founder & Photographer in London',
+            'London developer, founder and photographer. Founder of '
+            'KidsHustle, a regulated UK marketplace for teenage work. '
+            'Python, Swift, GCP and Kubernetes.',
+            og_type='profile',
+            schema=[seo_mod.person_schema(), seo_mod.website_schema()],
+        ),
+        timeline=work_data.timeline(),
+        acts=work_data.acts(),
+        skill_groups=work_data.SKILL_GROUPS,
+        skill_names=work_data.skill_names(),
+        skill_projects=work_data.skill_projects(),
+        work=work_data.WORK,
+        languages=work_data.LANGUAGES,
+        education=work_data.EDUCATION,
+    ))
     return page_cache_headers(resp, personalised=logged_in)
 
 @app.route('/photos')
 def photos():
-    return page_cache_headers(Response(render_template('photos.html')))
+    return page_cache_headers(Response(render_template(
+        'photos.html',
+        seo=seo_mod.page(
+            '/photos',
+            'Photography — Sasha Bagrov',
+            'Photography by Sasha Bagrov: black-and-white and colour work '
+            'shot around London on a Canon EOS R8.',
+            schema=[seo_mod.gallery_schema()],
+        ),
+    )))
+
+
+#! SEO endpoints
+@app.route('/robots.txt')
+def robots():
+    resp = Response(seo_mod.robots_txt(), mimetype='text/plain')
+    resp.headers['Cache-Control'] = 'public, max-age=86400, s-maxage=604800'
+    return resp
+
+
+@app.route('/sitemap.xml')
+def sitemap():
+    # Templates are the closest honest proxy for when the pages last changed.
+    newest = 0
+    for folder in (app.template_folder, app.static_folder):
+        for root, _dirs, files in os.walk(folder):
+            for name in files:
+                try:
+                    newest = max(newest, os.path.getmtime(os.path.join(root, name)))
+                except OSError:
+                    continue
+    lastmod = datetime.fromtimestamp(newest, tz=timezone.utc).strftime('%Y-%m-%d') \
+        if newest else None
+    resp = Response(seo_mod.sitemap_xml(lastmod), mimetype='application/xml')
+    resp.headers['Cache-Control'] = 'public, max-age=86400, s-maxage=604800'
+    return resp
+
+
+@app.route('/site.webmanifest')
+def site_webmanifest():
+    resp = jsonify(seo_mod.webmanifest())
+    resp.headers['Cache-Control'] = 'public, max-age=604800'
+    return resp
+
+
+# Served from the repo root path crawlers and browsers probe directly. On
+# Vercel these are intercepted by vercel.json and served off the CDN; this
+# keeps them working locally and as a fallback.
+@app.route('/favicon.ico')
+def favicon():
+    return cache_headers(send_from_directory(
+        app.static_folder, 'images/icons/favicon.ico',
+        mimetype='image/x-icon',
+    ))
+
+
+@app.route('/apple-touch-icon.png')
+@app.route('/apple-touch-icon-precomposed.png')
+def apple_touch_icon():
+    return cache_headers(send_from_directory(
+        app.static_folder, 'images/icons/apple-touch-icon.png',
+        mimetype='image/png',
+    ))
 
 # Serve minified JS at the real static path so it works behind Vercel too.
 @app.route('/static/js/<path:filename>')
@@ -260,7 +396,7 @@ def serve_css(filename):
     filepath = os.path.join(app.static_folder, 'css', filename)
     if not os.path.exists(filepath):
         return "Not found", 404
-    minified = get_minified(filepath, cssmin.cssmin)
+    minified = get_minified(filepath, minify_css)
     resp = Response(minified, mimetype='text/css')
     return cache_headers(resp)
 

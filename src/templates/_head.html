@@ -1,0 +1,53 @@
+{#
+  Shared <head> metadata. Every page passes a `seo` dict built by src/seo.py,
+  so a page's title, canonical URL, share card and structured data are all
+  decided in one place and can't drift apart.
+#}
+{%- macro head(seo) -%}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ seo.title }}</title>
+    <meta name="description" content="{{ seo.description }}">
+    <link rel="canonical" href="{{ seo.canonical }}">
+    {%- if seo.index %}
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+    {%- else %}
+    <meta name="robots" content="noindex, nofollow">
+    {%- endif %}
+    <meta name="author" content="{{ seo_site.author }}">
+    <meta name="theme-color" content="#000000">
+    <meta name="color-scheme" content="dark">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="{{ seo.og_type }}">
+    <meta property="og:site_name" content="{{ seo_site.name }}">
+    <meta property="og:locale" content="{{ seo_site.locale }}">
+    <meta property="og:title" content="{{ seo.title }}">
+    <meta property="og:description" content="{{ seo.description }}">
+    <meta property="og:url" content="{{ seo.canonical }}">
+    <meta property="og:image" content="{{ seo.image }}">
+    <meta property="og:image:width" content="{{ seo_site.image_w }}">
+    <meta property="og:image:height" content="{{ seo_site.image_h }}">
+    <meta property="og:image:alt" content="{{ seo_site.image_alt }}">
+
+    <!-- Twitter / X -->
+    <meta name="twitter:card" content="{{ seo_site.twitter_card }}">
+    <meta name="twitter:title" content="{{ seo.title }}">
+    <meta name="twitter:description" content="{{ seo.description }}">
+    <meta name="twitter:image" content="{{ seo.image }}">
+    <meta name="twitter:image:alt" content="{{ seo_site.image_alt }}">
+
+    <!-- Icons -->
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" sizes="32x32"
+          href="{{ url_for('static', filename='images/icons/icon-32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16"
+          href="{{ url_for('static', filename='images/icons/icon-16.png') }}">
+    <link rel="apple-touch-icon" sizes="180x180"
+          href="{{ url_for('static', filename='images/icons/apple-touch-icon.png') }}">
+    <link rel="manifest" href="/site.webmanifest">
+
+    {%- for block in seo.schema %}
+    <script type="application/ld+json">{{ block | tojson }}</script>
+    {%- endfor %}
+{%- endmacro -%}
