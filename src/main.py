@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, Response, jsonify, session, send_from_directory, url_for
+from flask import Flask, render_template, request, Response, jsonify, redirect, send_from_directory, url_for
 from PIL import Image
 import hashlib
 import io
@@ -8,26 +8,17 @@ import re
 import json
 import cssmin
 import rjsmin
-import stripe
 
 try:
     from src.firebase_config import initialize_firebase
-    from src.stripe_bluprnt import blueprint
     from src import work_data
     from src import seo as seo_mod
 except ImportError:
     from firebase_config import initialize_firebase
-    from stripe_bluprnt import blueprint
     import work_data
     import seo as seo_mod
 
-stripe.api_key = os.getenv("STRIPE_API_KEY")
-
 app = Flask(__name__, template_folder='../src/templates', static_folder='../src/static')
-app.secret_key = os.getenv('SECRET_KEY', 'dev-secret-change-me')
-app.config['SESSION_COOKIE_HTTPONLY'] = True
-app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
-app.register_blueprint(blueprint)
 
 storage_bucket = initialize_firebase()
 
@@ -265,35 +256,25 @@ def minify_html_response(response):
             pass
     return response
 
-def page_cache_headers(resp, personalised=False):
+def page_cache_headers(resp):
     """Let the CDN serve public pages so the function stays off the hot path.
 
     These pages are static markup, so the edge can hold them for a day and
     keep serving a stale copy for a week while it revalidates in the
     background -- a visitor then pays neither the cold start nor the
     round trip to the function's region.
-
-    A page rendered for a signed-in user is per-user markup and must never
-    land in a shared cache. Vary: Cookie keeps anonymous visitors (who send
-    no session cookie, and are the ones a cold start actually hurts) on a
-    single shared entry.
     """
-    if personalised:
-        resp.headers['Cache-Control'] = 'private, no-store'
-    else:
-        resp.headers['Cache-Control'] = (
-            'public, max-age=0, s-maxage=86400, stale-while-revalidate=604800'
-        )
-        resp.headers['Vary'] = 'Cookie, Accept-Encoding'
+    resp.headers['Cache-Control'] = (
+        'public, max-age=0, s-maxage=86400, stale-while-revalidate=604800'
+    )
+    resp.headers['Vary'] = 'Accept-Encoding'
     return resp
 
 #! serve our important routes
 @app.route('/')
 def index():
-    logged_in = 'user_uid' in session
     resp = Response(render_template(
         'index.html',
-        logged_in=logged_in,
         seo=seo_mod.page(
             '/',
             'Sasha Bagrov — Developer, Founder & Photographer in London',
@@ -312,7 +293,15 @@ def index():
         languages=work_data.LANGUAGES,
         education=work_data.EDUCATION,
     ))
-    return page_cache_headers(resp, personalised=logged_in)
+    return page_cache_headers(resp)
+
+# The tutoring section is retired. Its booking page was public and indexed, so
+# send anything still pointing at it to the homepage rather than a dead end.
+@app.route('/tutoring')
+@app.route('/tutoring/<path:_subpath>')
+def tutoring_retired(_subpath=None):
+    return redirect(url_for('index'), code=301)
+
 
 @app.route('/photos')
 def photos():

@@ -44,9 +44,6 @@
                 <a href="#work" class="nav-link" data-target="work">work <span>&rarr;</span></a>
                 <a href="#photography" class="nav-link" data-target="photography">photography <span>&rarr;</span></a>
                 <a href="/cv" class="nav-link" target="_blank" rel="noopener">cv <span>&rarr;</span></a>
-                {% if logged_in %}
-                <a href="/tutoring/account" class="nav-link nav-link-accent">my sessions <span>&rarr;</span></a>
-                {% endif %}
             </nav>
             <div class="hero-credits">
                 <div class="hero-press">
@@ -407,47 +404,6 @@
             <p class="photography-subtitle">mostly London, mostly wandering.</p>
             <div class="photo-grid" id="photo-grid">
                 <p class="loading-repos">loading photos...</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- ====== TUTORING ====== -->
-    <section class="section section--tutoring" id="tutoring">
-        <div class="about-photo">
-            <picture>
-                <source type="image/avif" sizes="45vw"
-                        srcset="{{ photo_sources('sb_photos_bw', 'avif') }}">
-                <source type="image/webp" sizes="45vw"
-                        srcset="{{ photo_sources('sb_photos_bw', 'webp') }}">
-                <img src="{{ photo_fallback('sb_photos_bw', 1400) }}"
-                     srcset="{{ photo_sources('sb_photos_bw', 'jpg') }}"
-                     sizes="45vw" width="3360" height="4646"
-                     alt="Sasha Bagrov"
-                     loading="lazy" decoding="async" />
-            </picture>
-        </div>
-        <div class="about-content">
-            <h2 class="about-heading">tutoring.</h2>
-            <div class="about-text">
-                <p>I teach 1-on-1 Python tutoring for beginners &mdash; structured 45-minute lessons, online. No experience needed; you'll be writing real code in the first five minutes.</p>
-                <p>Pick the depth that fits:</p>
-            </div>
-            <ul class="tutoring-paths">
-                <li>
-                    <span class="tutoring-path-name">Taster</span>
-                    <span class="tutoring-path-desc">1 lesson &mdash; your first code in 45 minutes</span>
-                </li>
-                <li>
-                    <span class="tutoring-path-name">Foundation Arc</span>
-                    <span class="tutoring-path-desc">5 lessons &mdash; the core building blocks, a project each</span>
-                </li>
-                <li>
-                    <span class="tutoring-path-name">Full Curriculum</span>
-                    <span class="tutoring-path-desc">10 lessons &mdash; setup all the way to a capstone project</span>
-                </li>
-            </ul>
-            <div class="about-links">
-                <a href="/tutoring/book">book a session <span>&rarr;</span></a>
             </div>
         </div>
     </section>
