@@ -1,6 +1,5 @@
 {% extends "tutoring_base.html" %}
 {% from "_plan_macros.html" import plan_card %}
-{% block title %}Book a Session — Sasha Bagrov{% endblock %}
 
 {% set credits = user_profile.sessions_remaining or 0 if user_profile else 0 %}
 

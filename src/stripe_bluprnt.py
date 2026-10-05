@@ -7,10 +7,12 @@ try:
     from src.firebase_config import verify_token, ADMIN_EMAIL, FIREBASE_WEB_CONFIG
     from src.booking_service import BookingService
     from src.lesson_plans import get_all_plans, plan_for_session_count, TEACHING_NOTES
+    from src import seo as seo_mod
 except ImportError:
     from firebase_config import verify_token, ADMIN_EMAIL, FIREBASE_WEB_CONFIG
     from booking_service import BookingService
     from lesson_plans import get_all_plans, plan_for_session_count, TEACHING_NOTES
+    import seo as seo_mod
 
 blueprint = Blueprint(
     "stripe_bluprnt", __name__,
@@ -61,6 +63,21 @@ def _user_context():
 
 # ── Page Routes ──
 
+_PRIVATE_SEO = {
+    "/tutoring/account": ("My Account — Sasha Bagrov Tutoring",
+                          "Your booked Python tutoring sessions."),
+    "/tutoring/auth": ("Login — Sasha Bagrov Tutoring",
+                       "Sign in to manage your Python tutoring sessions."),
+    "/tutoring/admin": ("Admin — Tutoring", "Tutoring administration."),
+}
+
+
+def _private_seo(path):
+    """Metadata for a signed-in page: titled, but never indexed."""
+    title, description = _PRIVATE_SEO[path]
+    return seo_mod.page(path, title, description, index=False)
+
+
 @blueprint.route("/book")
 def book():
     svc = get_booking_service()
@@ -71,6 +88,14 @@ def book():
         user_profile = svc.get_user_profile(session["user_uid"])
     return render_template(
         "tutoring_book.html",
+        seo=seo_mod.page(
+            "/tutoring/book",
+            "Python Tutoring for Beginners — Sasha Bagrov",
+            "One-to-one beginner Python tutoring, online. Structured "
+            "45-minute lessons: a taster, a five-lesson foundation arc, or "
+            "the full ten-lesson curriculum.",
+            schema=[seo_mod.tutoring_schema()],
+        ),
         packages=packages,
         user_profile=user_profile,
         lesson_plans=get_all_plans(),
@@ -107,6 +132,7 @@ def account():
 
     return render_template(
         "tutoring_account.html",
+        seo=_private_seo("/tutoring/account"),
         user_profile=user_profile,
         bookings=bookings,
         purchases=purchases,
@@ -118,7 +144,11 @@ def account():
 
 @blueprint.route("/auth")
 def auth_page():
-    return render_template("tutoring_auth.html", **_user_context())
+    return render_template(
+        "tutoring_auth.html",
+        seo=_private_seo("/tutoring/auth"),
+        **_user_context(),
+    )
 
 
 @blueprint.route("/admin")
@@ -127,7 +157,13 @@ def admin_page():
     svc = get_booking_service()
     availability = svc.get_availability()
     bookings = svc.get_all_confirmed_bookings()
-    return render_template("tutoring_admin.html", availability=availability, bookings=bookings, **_user_context())
+    return render_template(
+        "tutoring_admin.html",
+        seo=_private_seo("/tutoring/admin"),
+        availability=availability,
+        bookings=bookings,
+        **_user_context(),
+    )
 
 
 # ── Auth API ──
