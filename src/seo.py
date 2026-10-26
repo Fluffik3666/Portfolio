@@ -41,6 +41,7 @@ PROFILES = [
     'https://github.com/Fluffik3666',
     'https://kidshustle.app',
     'https://yfl.lovable.app/',
+    'https://foundhaus.app/',
     'https://apps.apple.com/gb/app/animeatlas/id6739979715',
 ]
 

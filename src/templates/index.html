@@ -72,6 +72,13 @@
                              src="{{ url_for('static', filename='images/press/yfl.png') }}"
                              alt="Young Founders of London" />
                     </a>
+                    <a class="hero-press-link"
+                       href="https://foundhaus.app/"
+                       target="_blank" rel="noopener">
+                        <img class="hero-press-logo hero-press-logo--foundhaus"
+                             src="{{ url_for('static', filename='images/press/foundhaus.svg') }}"
+                             alt="Foundhaus" />
+                    </a>
                 </div>
             </div>
         </div>
@@ -97,7 +104,7 @@
             <div class="about-text">
                 <p>I'm a developer, photographer, and founder based in London. I'm the CEO of <a href="https://kidshustle.app" target="_blank" rel="noopener">KidsHustle</a> &mdash; a platform helping kids and teens earn money through quick jobs.</p>
                 <p>I build things for the web and Apple platforms, with a stack spanning Python, Swift, and modern web technologies backed by Google Cloud and Kubernetes. I care about clean architecture, developer experience, and shipping things that work.</p>
-                <p>I'm also part of <a href="https://yfl.lovable.app/" target="_blank" rel="noopener">Young Founders of London</a> &mdash; a curated community of the city's most ambitious student entrepreneurs.</p>
+                <p>I'm also part of <a href="https://yfl.lovable.app/" target="_blank" rel="noopener">Young Founders of London</a> &mdash; a curated community of the city's most ambitious student entrepreneurs &mdash; and a founding member of <a href="https://foundhaus.app/" target="_blank" rel="noopener">Foundhaus</a>, a private network of people building in London.</p>
                 <p>Outside of code, I do theatre tech, love cooking, and I'm usually out with a camera somewhere in London.</p>
             </div>
             <div class="featured-in">
@@ -132,18 +139,32 @@
 
             <div class="featured-in featured-in--secondary">
                 <h3 class="featured-in-label">member of</h3>
-                <a class="featured-in-card"
-                   href="https://yfl.lovable.app/"
-                   target="_blank" rel="noopener">
-                    <img class="featured-in-logo"
-                         src="{{ url_for('static', filename='images/press/yfl.png') }}"
-                         alt="Young Founders of London" />
-                    <span class="featured-in-body">
-                        <span class="featured-in-title">Young Founders of London</span>
-                        <span class="featured-in-meta">London's smartest student founders in one room</span>
-                    </span>
-                    <span class="featured-in-arrow">&rarr;</span>
-                </a>
+                <div class="featured-in-cards">
+                    <a class="featured-in-card"
+                       href="https://yfl.lovable.app/"
+                       target="_blank" rel="noopener">
+                        <img class="featured-in-logo"
+                             src="{{ url_for('static', filename='images/press/yfl.png') }}"
+                             alt="Young Founders of London" />
+                        <span class="featured-in-body">
+                            <span class="featured-in-title">Young Founders of London</span>
+                            <span class="featured-in-meta">London's smartest student founders in one room</span>
+                        </span>
+                        <span class="featured-in-arrow">&rarr;</span>
+                    </a>
+                    <a class="featured-in-card"
+                       href="https://foundhaus.app/"
+                       target="_blank" rel="noopener">
+                        <img class="featured-in-logo featured-in-logo--mark"
+                             src="{{ url_for('static', filename='images/press/foundhaus-mark.svg') }}"
+                             alt="Foundhaus" />
+                        <span class="featured-in-body">
+                            <span class="featured-in-title">Foundhaus</span>
+                            <span class="featured-in-meta">London's first 500 &middot; founding member</span>
+                        </span>
+                        <span class="featured-in-arrow">&rarr;</span>
+                    </a>
+                </div>
             </div>
 
             <div class="about-links">

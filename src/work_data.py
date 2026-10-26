@@ -381,6 +381,24 @@ WORK = [
         'links': [('yfl.lovable.app', 'https://yfl.lovable.app/')],
     },
     {
+        'slug': 'foundhaus',
+        'title': 'Foundhaus',
+        'role': 'Founding Member',
+        'period': 'Oct 2026 — now',
+        'lane': 'community',
+        'start': _t(2026, 10),
+        'end': None,
+        'precision': 'month',
+        'summary': 'A private, invite-only network of founders, engineers, '
+                   'designers, operators and investors building in London.',
+        'bullets': [
+            'One of the hand-picked founding 500, the only cohort admitted '
+            'by application — after it, entry is by member vouch or invite.',
+        ],
+        'stack': [],
+        'links': [('foundhaus.app', 'https://foundhaus.app/')],
+    },
+    {
         'slug': 'perse',
         'title': 'Perse Coding Team Challenge',
         'role': 'Competition',
@@ -634,11 +652,11 @@ ACTS = [
         'at': None,  # resolved to "now" at render time
         'when': 'now',
         'lines': [
-            'seven still running. tech.eu ran the story in august; i was '
+            'eight still running. tech.eu ran the story in august; i was '
             'fourteen.',
             'standby for the next one.',
         ],
-        'expect': {'running': 7},
+        'expect': {'running': 8},
     },
 ]
 

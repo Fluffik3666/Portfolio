@@ -220,6 +220,12 @@ img {
     height: 30px;
 }
 
+/* Single-line lockup, so its box is only as tall as the wordmark — sized by
+   the letters rather than the box, to read alongside the stacked logos */
+.hero-press-logo--foundhaus {
+    height: 13px;
+}
+
 .hero-press:hover .hero-press-label {
     color: var(--white);
 }
@@ -367,6 +373,14 @@ img {
     object-fit: contain;
     flex-shrink: 0;
     display: block;
+}
+
+/* A bare symbol fills the box edge to edge and shouts over the wordmarks
+   next to it. Padding insets the artwork without shrinking the box, so the
+   cards stay the same height and their text stays on one edge. */
+.featured-in-logo--mark {
+    box-sizing: border-box;
+    padding: 9px 0;
 }
 
 .featured-in-body {
@@ -1753,6 +1767,10 @@ img {
         height: 24px;
     }
 
+    .hero-press-logo--foundhaus {
+        height: 11px;
+    }
+
     /* About — stacked: photo on top, text below */
     .section--about {
         flex-direction: column;
@@ -1824,6 +1842,10 @@ img {
     .featured-in-logo {
         width: 76px;
         height: 44px;
+    }
+
+    .featured-in-logo--mark {
+        padding: 7px 0;
     }
 
     .featured-in-title {
