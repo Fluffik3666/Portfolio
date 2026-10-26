@@ -127,6 +127,7 @@ app.jinja_env.globals['seo_site'] = {
     'author': seo_mod.AUTHOR,
     'locale': seo_mod.LOCALE,
     'twitter_card': seo_mod.TWITTER_CARD,
+    'twitter_handle': seo_mod.TWITTER_HANDLE,
     'image_w': seo_mod.OG_IMAGE_W,
     'image_h': seo_mod.OG_IMAGE_H,
     'image_alt': seo_mod.OG_IMAGE_ALT,

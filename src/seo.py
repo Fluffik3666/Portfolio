@@ -21,6 +21,7 @@ SITE_NAME = 'Sasha Bagrov'
 AUTHOR = 'Sasha Bagrov'
 LOCALE = 'en_GB'
 TWITTER_CARD = 'summary_large_image'
+TWITTER_HANDLE = '@sashabagrov'
 
 OG_IMAGE = '/static/images/og/og-card.jpg'
 OG_IMAGE_W, OG_IMAGE_H = 1200, 630
@@ -39,6 +40,7 @@ ROBOTS_DISALLOW = [
 
 PROFILES = [
     'https://github.com/Fluffik3666',
+    'https://x.com/sashabagrov',
     'https://kidshustle.app',
     'https://yfl.lovable.app/',
     'https://foundhaus.app/',
