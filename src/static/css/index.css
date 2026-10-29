@@ -172,6 +172,37 @@ img {
     margin-top: 0.4rem;
 }
 
+/* The booking line. A rule and a little air are enough to say "this one is
+   different" without a filled button, which the rest of the page gives no
+   precedent for. Fades in as a block after the four nav lines have landed. */
+.nav-book {
+    margin-top: 0.9rem;
+    padding-left: 1rem;
+    border-left: 1px solid rgba(240, 240, 240, 0.28);
+    opacity: 0;
+    transition: border-color 0.3s ease;
+}
+
+.nav-book:hover {
+    border-color: var(--white);
+}
+
+/* The group fades in as one, so the link inside skips the nav stagger */
+.nav-book .nav-link {
+    opacity: 1;
+}
+
+/* Same micro-label as "featured in" below it */
+.nav-book-note {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 0.72rem;
+    font-weight: 400;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--grey);
+}
+
 /* ── Hero press credit ── */
 .hero-credits {
     display: flex;
@@ -381,6 +412,40 @@ img {
 .featured-in-logo--mark {
     box-sizing: border-box;
     padding: 9px 0;
+}
+
+/* The same card the credits use, one shade brighter and lighting up fully on
+   hover — this one is an invitation rather than a fact. */
+.featured-in-card--book {
+    border-color: rgba(240, 240, 240, 0.32);
+}
+
+.featured-in-card--book:hover {
+    border-color: var(--white);
+}
+
+/* Takes the logo slot, so this card's text starts on the same edge as the
+   credits stacked above it. */
+.book-badge {
+    width: 96px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 0.25rem;
+    font-family: var(--font-serif);
+    font-size: 2.1rem;
+    line-height: 1;
+    color: var(--white);
+}
+
+.book-badge-unit {
+    font-family: var(--font-sans);
+    font-size: 0.72rem;
+    font-weight: 400;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--grey);
 }
 
 .featured-in-body {
@@ -1742,6 +1807,16 @@ img {
         gap: 0.7rem;
     }
 
+    .nav-book {
+        margin-top: 0.7rem;
+        padding-left: 0.8rem;
+    }
+
+    .nav-book-note {
+        margin-top: 0.4rem;
+        font-size: 0.65rem;
+    }
+
     .hero-credits {
         margin-top: 1.5rem;
         gap: 0.8rem 1.4rem;
@@ -1842,6 +1917,15 @@ img {
     .featured-in-logo {
         width: 76px;
         height: 44px;
+    }
+
+    .book-badge {
+        width: 76px;
+        font-size: 1.7rem;
+    }
+
+    .book-badge-unit {
+        font-size: 0.65rem;
     }
 
     .featured-in-logo--mark {
