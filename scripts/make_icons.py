@@ -115,7 +115,7 @@ def write_og(face):
               font=load_font(SANS_CANDIDATES, 27), fill=(150, 150, 150))
     draw.text((x, 424), 'London',
               font=load_font(SANS_CANDIDATES, 27), fill=(150, 150, 150))
-    draw.text((x, 520), 'alexanderbagrov.com',
+    draw.text((x, 520), 'sashabagrov.com',
               font=load_font(SANS_CANDIDATES, 23), fill=(110, 110, 110))
 
     path = os.path.join(OG_DIR, 'og-card.jpg')
