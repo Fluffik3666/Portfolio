@@ -271,6 +271,25 @@ def page_cache_headers(resp):
     resp.headers['Vary'] = 'Accept-Encoding'
     return resp
 
+# The site moved from alexanderbagrov.com to sashabagrov.com. Anything still
+# asking for the old host -- an inbound link, a bookmark, a search result that
+# hasn't been recrawled -- is sent to the same path here, permanently, so the
+# standing those URLs built up transfers rather than being lost to a dead
+# domain. Runs before routing, so it covers every path including /cv,
+# /robots.txt and /sitemap.xml.
+@app.before_request
+def redirect_legacy_host():
+    if not seo_mod.is_legacy_host(request.host):
+        return None
+    # full_path tacks on a bare '?' when there is no query string.
+    path = request.full_path if request.query_string else request.path
+    resp = redirect(f'{seo_mod.SITE_URL}{path}', code=301)
+    # Browsers cache a 301 indefinitely unless told otherwise; a day is long
+    # enough to spare the function the repeat traffic and short enough that
+    # the rule stays changeable.
+    resp.headers['Cache-Control'] = 'public, max-age=86400'
+    return resp
+
 #! serve our important routes
 @app.route('/')
 def index():

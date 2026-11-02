@@ -15,7 +15,17 @@ except ImportError:
 
 # The canonical origin. Overridable so preview deployments can describe
 # themselves honestly rather than claiming to be production.
-SITE_URL = os.getenv('SITE_URL', 'https://alexanderbagrov.com').rstrip('/')
+SITE_URL = os.getenv('SITE_URL', 'https://sashabagrov.com').rstrip('/')
+
+# Hosts the site used to live on. Anything still arriving on one is sent to
+# SITE_URL with a permanent redirect, so the inbound links and the search
+# ranking built up against the old name follow the site here instead of
+# stopping at a domain that no longer serves it. Preview hosts aren't listed,
+# so a deployment on *.vercel.app still answers for itself.
+LEGACY_HOSTS = frozenset({
+    'alexanderbagrov.com',
+    'www.alexanderbagrov.com',
+})
 
 SITE_NAME = 'Sasha Bagrov'
 AUTHOR = 'Sasha Bagrov'
@@ -46,6 +56,14 @@ PROFILES = [
     'https://foundhaus.app/',
     'https://apps.apple.com/gb/app/animeatlas/id6739979715',
 ]
+
+
+def is_legacy_host(host):
+    """True if `host` is a domain the site has moved away from.
+
+    Takes the raw Host header, so it tolerates a port and any casing.
+    """
+    return (host or '').split(':')[0].lower() in LEGACY_HOSTS
 
 
 def absolute(path):
