@@ -187,8 +187,12 @@ img {
     border-color: var(--white);
 }
 
-/* The group fades in as one, so the link inside skips the nav stagger */
+/* A step below the nav rather than level with it: at nav scale this is the
+   longest line in the column, so it read as the biggest thing on the page.
+   The rule and the label are what mark it out, not its size. Opacity is set
+   because the group fades in as one, so the link skips the nav stagger. */
 .nav-book .nav-link {
+    font-size: clamp(1rem, 1.5vw, 1.2rem);
     opacity: 1;
 }
 
@@ -204,12 +208,15 @@ img {
 }
 
 /* ── Hero press credit ── */
+/* Stacked rather than side by side. On one line the two groups ran most of
+   the way across the viewport, which pulled the eye sideways across a column
+   that otherwise reads straight down. */
 .hero-credits {
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 1rem 2.2rem;
-    margin-top: 2.4rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.9rem;
+    margin-top: 2.2rem;
 }
 
 .hero-press {
@@ -221,6 +228,9 @@ img {
 }
 
 .hero-press-label {
+    /* Both labels reserve the width of the longer one, so the logo rows
+       start on the same edge now that the groups are stacked */
+    min-width: 6.5rem;
     font-size: 0.72rem;
     font-weight: 400;
     letter-spacing: 0.18em;
@@ -1819,7 +1829,7 @@ img {
 
     .hero-credits {
         margin-top: 1.5rem;
-        gap: 0.8rem 1.4rem;
+        gap: 0.7rem;
     }
 
     .hero-press {
@@ -1827,6 +1837,7 @@ img {
     }
 
     .hero-press-label {
+        min-width: 5.4rem;
         font-size: 0.65rem;
     }
 
