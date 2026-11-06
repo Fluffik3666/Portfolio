@@ -525,8 +525,10 @@
 
     const GAP = 12;
 
-    function populatePhotoGrid(grid, entries) {
-        grid.innerHTML = '';
+    // Lays out whatever .photo-item nodes the grid is holding: measures each
+    // image as it loads, drops it into the shortest column and fades it in.
+    // Separate from building the nodes, because the server now renders them.
+    function mountPhotoGrid(grid, items) {
         grid.style.position = 'relative';
 
         const cols = getMasonryCols();
@@ -534,23 +536,15 @@
         const colWidth = (gridWidth - GAP * (cols - 1)) / cols;
         const colHeights = new Array(cols).fill(0);
 
-        entries.forEach(entry => {
-            const div = document.createElement('div');
-            div.className = 'photo-item';
+        items.forEach(div => {
+            const img = div.querySelector('img');
+            if (!img) return;
+
             div.style.position = 'absolute';
             div.style.width = colWidth + 'px';
             div.style.opacity = '0';
 
-            const img = document.createElement('img');
-            img.alt = entry.alt;
-            img.src = entry.src;
-            img.style.width = '100%';
-            img.style.display = 'block';
-            img.style.borderRadius = '4px';
-            div.appendChild(img);
-            grid.appendChild(div);
-
-            // When image loads, calculate its position and fade in
+            // When the image loads, calculate its position and fade it in
             const place = () => {
                 const shortest = colHeights.indexOf(Math.min(...colHeights));
                 const x = shortest * (colWidth + GAP);
@@ -594,6 +588,23 @@
         grid._resizeHandler = resizeHandler;
     }
 
+    // Builds the nodes first, for the case where the markup didn't bring any.
+    function populatePhotoGrid(grid, entries) {
+        grid.innerHTML = '';
+        const items = entries.map(entry => {
+            const div = document.createElement('div');
+            div.className = 'photo-item';
+
+            const img = document.createElement('img');
+            img.alt = entry.alt;
+            img.src = entry.src;
+            div.appendChild(img);
+            grid.appendChild(div);
+            return div;
+        });
+        mountPhotoGrid(grid, items);
+    }
+
     // Relayout existing items on resize
     function relayoutGrid(grid) {
         const items = grid.querySelectorAll('.photo-item');
@@ -631,6 +642,15 @@
     async function fetchPhotos() {
         if (photosLoaded) return;
         const grid = document.getElementById('photo-grid');
+
+        // The photos are rendered into the page now, so that they are in the
+        // HTML a crawler reads rather than appearing only once this has run.
+        // When they are there, all that is left to do is lay them out.
+        const rendered = Array.from(grid.querySelectorAll('.photo-item'));
+        if (rendered.length) {
+            mountPhotoGrid(grid, rendered);
+            return;
+        }
 
         try {
             const res = await fetch('/api/images');
@@ -744,6 +764,7 @@
                 // Swap to high-quality version for lightbox
                 const src = photoImg.src;
                 lbImg.src = src.replace(/w=\d+/, 'w=1200').replace(/q=\d+/, 'q=95');
+                lbImg.alt = photoImg.alt;
                 lightbox.classList.add('open');
             }
         });

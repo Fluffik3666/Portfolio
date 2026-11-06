@@ -13,10 +13,12 @@ try:
     from src.firebase_config import initialize_firebase
     from src import work_data
     from src import seo as seo_mod
+    from src import photo_data
 except ImportError:
     from firebase_config import initialize_firebase
     import work_data
     import seo as seo_mod
+    import photo_data
 
 app = Flask(__name__, template_folder='../src/templates', static_folder='../src/static')
 
@@ -290,9 +292,70 @@ def redirect_legacy_host():
     resp.headers['Cache-Control'] = 'public, max-age=86400'
     return resp
 
+#! the photography gallery
+# The masonry lays every photo out at one column width, so they all take the
+# same source. Named here rather than in the template, so the markup, the
+# sitemap and the structured data can't drift onto different URLs.
+GALLERY_SRC = '/images/{}?w=600&q=80'
+
+_gallery_cache = None
+
+
+def gallery_images():
+    """The photos in the bucket, as {id, title, filename}, lowest id first.
+
+    Returns an empty list if the bucket is unreachable: a gallery that can't
+    load its photos should still render its page rather than 500.
+    """
+    global _gallery_cache
+    if _gallery_cache is not None:
+        return _gallery_cache
+    if not storage_bucket:
+        return []
+
+    found = {}
+    try:
+        for blob in storage_bucket.list_blobs(prefix='images/'):
+            parts = blob.name.split('/')
+            # Expected format: images/{id}/{filename}.JPEG
+            if len(parts) != 3 or parts[0] != 'images':
+                continue
+            try:
+                image_id = int(parts[1])
+            except ValueError:
+                continue
+            filename = parts[2]
+            if filename.lower().endswith(('.jpeg', '.jpg')):
+                found[image_id] = {
+                    'id': image_id,
+                    'title': filename.rsplit('.', 1)[0],
+                    'filename': filename,
+                }
+    except Exception as exc:  # noqa: BLE001 - the page matters more than the cause
+        app.logger.warning('gallery listing failed: %s', exc)
+        return []
+
+    _gallery_cache = [found[key] for key in sorted(found)]
+    return _gallery_cache
+
+
+def gallery_photos():
+    """The gallery as the page renders it: a source and a description each."""
+    return [
+        {
+            'id': image['id'],
+            'src': GALLERY_SRC.format(image['id']),
+            'alt': photo_data.alt_text(image['id']),
+        }
+        for image in gallery_images()
+    ]
+
+
 #! serve our important routes
 @app.route('/')
 def index():
+    # The gallery lives on this page, so the photos are rendered into it.
+    gallery = gallery_photos()
     resp = Response(render_template(
         'index.html',
         seo=seo_mod.page(
@@ -302,8 +365,10 @@ def index():
             'KidsHustle, a regulated UK marketplace for teenage work. '
             'Python, Swift, GCP and Kubernetes.',
             og_type='profile',
-            schema=[seo_mod.person_schema(), seo_mod.website_schema()],
+            schema=[seo_mod.person_schema(), seo_mod.website_schema(),
+                    seo_mod.gallery_schema(gallery)],
         ),
+        photos=gallery,
         timeline=work_data.timeline(),
         acts=work_data.acts(),
         skill_groups=work_data.SKILL_GROUPS,
@@ -323,18 +388,13 @@ def tutoring_retired(_subpath=None):
     return redirect(url_for('index'), code=301)
 
 
+# The standalone gallery page is retired. The photographs live in the
+# homepage's photography section, and two URLs showing the same pictures only
+# split the signal between them. It was indexed, so it redirects rather than
+# disappearing.
 @app.route('/photos')
-def photos():
-    return page_cache_headers(Response(render_template(
-        'photos.html',
-        seo=seo_mod.page(
-            '/photos',
-            'Photography — Sasha Bagrov',
-            'Photography by Sasha Bagrov: black-and-white and colour work '
-            'shot around London on a Canon EOS R8.',
-            schema=[seo_mod.gallery_schema()],
-        ),
-    )))
+def photos_retired():
+    return redirect(url_for('index') + '#photography', code=301)
 
 
 #! SEO endpoints
@@ -358,7 +418,13 @@ def sitemap():
                     continue
     lastmod = datetime.fromtimestamp(newest, tz=timezone.utc).strftime('%Y-%m-%d') \
         if newest else None
-    resp = Response(seo_mod.sitemap_xml(lastmod), mimetype='application/xml')
+    resp = Response(
+        seo_mod.sitemap_xml(
+            lastmod,
+            page_images={'/': [p['src'] for p in gallery_photos()]},
+        ),
+        mimetype='application/xml',
+    )
     resp.headers['Cache-Control'] = 'public, max-age=86400, s-maxage=604800'
     return resp
 
@@ -427,34 +493,7 @@ def list_images():
         if not storage_bucket:
             return jsonify({'error': 'Firebase Storage not initialized'}), 500
 
-        images = []
-        # List all blobs with prefix 'images/'
-        blobs = storage_bucket.list_blobs(prefix='images/')
-
-        # Parse blobs to find images/{id}/{filename}.JPEG
-        image_map = {}
-        for blob in blobs:
-            parts = blob.name.split('/')
-            # Expected format: images/{id}/{filename}.JPEG
-            if len(parts) == 3 and parts[0] == 'images':
-                try:
-                    image_id = int(parts[1])
-                    filename = parts[2]
-                    # Only process JPEG files
-                    if filename.lower().endswith(('.jpeg', '.jpg')):
-                        # Remove extension for title
-                        title = filename.rsplit('.', 1)[0]
-                        image_map[image_id] = {
-                            'id': image_id,
-                            'title': title,
-                            'filename': filename
-                        }
-                except ValueError:
-                    continue
-
-        # Sort by ID and return as list
-        images = [image_map[key] for key in sorted(image_map.keys())]
-        resp = jsonify({'images': images})
+        resp = jsonify({'images': gallery_images()})
         # The gallery can't render until this resolves, and it's a bucket
         # listing that changes only when photos are added.
         resp.headers['Cache-Control'] = (
