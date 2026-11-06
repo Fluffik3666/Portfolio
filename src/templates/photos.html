@@ -49,8 +49,23 @@
             <p data-scroll>Around London</p>
         </section>
 
+        {# Rendered server-side: an <img> that only exists after a fetch is
+           one an image crawler may never see. #}
         <div class="photo-grid" id="photoGrid">
-            <!-- Photos will be dynamically loaded here -->
+            {% for photo in photos %}
+            <div class="photo-item {{ photo.layout }}"{% if photo.caption %} data-title="{{ photo.caption }}"{% endif %}>
+                <img loading="lazy" src="{{ photo.src }}" alt="{{ photo.alt }}">
+                {# The overlay is the hover treatment, so it stays whether or
+                   not there is a caption to put in it. #}
+                <div class="photo-overlay">
+                    <div class="photo-details">
+                        {% if photo.caption %}<h3>{{ photo.caption }}</h3>{% endif %}
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <p style="grid-column: 1/-1; text-align: center; padding: 2rem;">No images found</p>
+            {% endfor %}
         </div>
     </main>
 
@@ -72,62 +87,9 @@
 
     <script src="{{ url_for('static', filename='js/index.js') }}"></script>
     <script>
-        // Dynamically load images from Firebase Storage
-        async function loadPhotos() {
-            const photoGrid = document.getElementById('photoGrid');
-            const layoutClasses = ['', 'large', 'wide', 'tall']; // Variety in layout
-
-            try {
-                // Fetch the list of images from the API
-                const response = await fetch('/api/images');
-                if (!response.ok) {
-                    throw new Error('Failed to fetch images');
-                }
-
-                const data = await response.json();
-                const images = data.images;
-
-                if (!images || images.length === 0) {
-                    photoGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 2rem;">No images found</p>';
-                    return;
-                }
-
-                // Create photo items for each image
-                images.forEach((image, index) => {
-                    // Determine layout class for variety
-                    const layoutClass = layoutClasses[index % layoutClasses.length];
-
-                    // Determine quality and width based on layout
-                    const isLarge = layoutClass === 'large' || layoutClass === 'wide';
-                    const width = isLarge ? 800 : 600;
-                    const quality = isLarge ? 85 : 80;
-
-                    // Create photo item
-                    const photoItem = document.createElement('div');
-                    photoItem.className = `photo-item ${layoutClass}`;
-                    photoItem.setAttribute('data-title', image.title);
-                    photoItem.setAttribute('data-copyright', 'This image is for display purposes only. All rights reserved. Not to be used without explicit permission.');
-
-                    photoItem.innerHTML = `
-                        <img loading="lazy" src="/images/${image.id}?w=${width}&q=${quality}" alt="${image.title}">
-                        <div class="photo-overlay">
-                            <div class="photo-details">
-                                <h3>${image.title}</h3>
-                            </div>
-                        </div>
-                    `;
-
-                    photoGrid.appendChild(photoItem);
-                });
-
-                // Re-attach modal listeners after loading photos
-                attachModalListeners();
-
-            } catch (error) {
-                console.error('Error loading photos:', error);
-                photoGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 2rem;">Error loading images. Please try again later.</p>';
-            }
-        }
+        // Said of every photo, so it's stated once here rather than repeated
+        // into 50-odd data attributes.
+        const COPYRIGHT = 'This image is for display purposes only. All rights reserved. Not to be used without explicit permission.';
 
         function attachModalListeners() {
             const modal = document.getElementById('imageModal');
@@ -138,22 +100,18 @@
             document.querySelectorAll('.photo-item').forEach(item => {
                 item.addEventListener('click', function() {
                     const img = this.querySelector('img');
-                    const title = this.getAttribute('data-title');
-                    const copyright = this.getAttribute('data-copyright');
-
                     const originalSrc = img.src.split('?')[0];
-                    const highQualitySrc = originalSrc + '?w=1200&q=95';
 
-                    modalImg.src = highQualitySrc;
-                    modalTitle.textContent = title;
-                    modalCopyright.textContent = copyright;
+                    modalImg.src = originalSrc + '?w=1200&q=95';
+                    modalImg.alt = img.alt;
+                    modalTitle.textContent = this.getAttribute('data-title') || '';
+                    modalCopyright.textContent = COPYRIGHT;
                     modal.style.display = 'block';
                 });
             });
         }
 
-        // Load photos when page loads
-        loadPhotos();
+        attachModalListeners();
 
         // Modal close functionality
         const modal = document.getElementById('imageModal');

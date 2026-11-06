@@ -8,6 +8,8 @@ call :func:`page` and hand the result to the template, which renders it through
 
 import os
 
+from xml.sax.saxutils import escape as xml_escape
+
 try:
     from src import work_data
 except ImportError:
@@ -47,6 +49,18 @@ SITEMAP = [
 ROBOTS_DISALLOW = [
     '/api/',
 ]
+
+# Images that live in the page markup, so the sitemap can list them without
+# asking the storage bucket anything. The gallery's photos are passed in at
+# request time instead -- only the app knows what is in the bucket.
+# Listed as the JPEG fallbacks: the <picture> elements prefer AVIF and WebP,
+# but the JPEG is the version every crawler can read.
+PAGE_IMAGES = {
+    '/': [
+        '/static/images/derived/sb_photos_bw-2-1400.jpg',
+        '/static/images/derived/sb_photos_bw-2000.jpg',
+    ],
+}
 
 PROFILES = [
     'https://github.com/Fluffik3666',
@@ -137,7 +151,14 @@ def website_schema():
     }
 
 
-def gallery_schema():
+def gallery_schema(photos=()):
+    """The gallery, and the photographs in it.
+
+    ``photos`` are the render-ready items the page itself puts on screen, so
+    the markup and the structured data name the same URLs. A gallery that
+    declares itself but lists nothing gives an image crawler no reason to
+    look further.
+    """
     return {
         '@context': 'https://schema.org',
         '@type': 'ImageGallery',
@@ -148,6 +169,16 @@ def gallery_schema():
         ),
         'url': absolute('/photos'),
         'author': {'@id': f'{SITE_URL}/#person'},
+        'image': [
+            {
+                '@type': 'ImageObject',
+                'contentUrl': absolute(photo['src']),
+                'description': photo['alt'],
+                'creator': {'@id': f'{SITE_URL}/#person'},
+                'copyrightHolder': {'@id': f'{SITE_URL}/#person'},
+            }
+            for photo in photos
+        ],
     }
 
 
@@ -158,9 +189,25 @@ def robots_txt():
     return '\n'.join(lines) + '\n'
 
 
-def sitemap_xml(lastmod=None):
+def sitemap_xml(lastmod=None, page_images=None):
+    """The sitemap, with every page's images declared alongside it.
+
+    ``page_images`` maps a path to extra image URLs for that page -- the
+    gallery's photos, which only the app can enumerate. They are merged with
+    the ones already known from the markup.
+
+    Images are listed so they can be found without waiting for a crawler to
+    render the page and notice them. Only ``image:loc`` is emitted: Google
+    dropped support for the caption, title, licence and geo tags in 2022, and
+    an unread tag is just weight.
+    """
+    images = {path: list(locs) for path, locs in PAGE_IMAGES.items()}
+    for path, locs in (page_images or {}).items():
+        images.setdefault(path, []).extend(locs)
+
     out = ['<?xml version="1.0" encoding="UTF-8"?>',
-           '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
+           '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"'
+           ' xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">']
     for entry in SITEMAP:
         out.append('  <url>')
         out.append(f'    <loc>{absolute(entry["path"])}</loc>')
@@ -168,6 +215,12 @@ def sitemap_xml(lastmod=None):
             out.append(f'    <lastmod>{lastmod}</lastmod>')
         out.append(f'    <changefreq>{entry["changefreq"]}</changefreq>')
         out.append(f'    <priority>{entry["priority"]}</priority>')
+        for loc in images.get(entry['path'], ()):
+            # Gallery URLs carry a query string, so the ampersands have to be
+            # escaped or the document isn't well-formed XML.
+            out.append('    <image:image>')
+            out.append(f'      <image:loc>{xml_escape(absolute(loc))}</image:loc>')
+            out.append('    </image:image>')
         out.append('  </url>')
     out.append('</urlset>')
     return '\n'.join(out) + '\n'
