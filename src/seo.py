@@ -164,8 +164,9 @@ def gallery_schema(photos=()):
         '@type': 'ImageGallery',
         'name': 'Photography — Sasha Bagrov',
         'description': (
-            'Photography shot around London, mostly black and white, on a '
-            'Canon EOS R8.'
+            'Street and travel photography by Sasha Bagrov: London, Prague, '
+            'Mariánské Lázně, Lübeck, New York and the forests in between, '
+            'shot on a Canon EOS R8.'
         ),
         'url': absolute('/photos'),
         'author': {'@id': f'{SITE_URL}/#person'},

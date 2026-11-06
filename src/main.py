@@ -402,8 +402,9 @@ def photos():
         seo=seo_mod.page(
             '/photos',
             'Photography — Sasha Bagrov',
-            'Photography by Sasha Bagrov: black-and-white and colour work '
-            'shot around London on a Canon EOS R8.',
+            'Street and travel photography by Sasha Bagrov: London, '
+            'Prague, Mariánské Lázně, Lübeck, New York and the forests in '
+            'between, shot on a Canon EOS R8.',
             schema=[seo_mod.gallery_schema(gallery)],
         ),
     )))
