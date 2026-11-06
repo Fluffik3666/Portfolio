@@ -293,10 +293,10 @@ def redirect_legacy_host():
     return resp
 
 #! the photography gallery
-# The grid cycles through four cell shapes, and the bigger cells are given a
-# bigger source. Decided here rather than in the template, so the markup, the
-# sitemap and the structured data can all name the identical URL.
-_GALLERY_LAYOUTS = ('', 'large', 'wide', 'tall')
+# The masonry lays every photo out at one column width, so they all take the
+# same source. Named here rather than in the template, so the markup, the
+# sitemap and the structured data can't drift onto different URLs.
+GALLERY_SRC = '/images/{}?w=600&q=80'
 
 _gallery_cache = None
 
@@ -340,26 +340,22 @@ def gallery_images():
 
 
 def gallery_photos():
-    """The gallery as the page renders it: a cell shape and a source each."""
-    photos = []
-    for index, image in enumerate(gallery_images()):
-        layout = _GALLERY_LAYOUTS[index % len(_GALLERY_LAYOUTS)]
-        large = layout in ('large', 'wide')
-        photos.append({
+    """The gallery as the page renders it: a source and a description each."""
+    return [
+        {
             'id': image['id'],
-            'layout': layout,
-            'src': '/images/{}?w={}&q={}'.format(
-                image['id'], 800 if large else 600, 85 if large else 80
-            ),
-            'caption': photo_data.caption(image['id']),
+            'src': GALLERY_SRC.format(image['id']),
             'alt': photo_data.alt_text(image['id']),
-        })
-    return photos
+        }
+        for image in gallery_images()
+    ]
 
 
 #! serve our important routes
 @app.route('/')
 def index():
+    # The gallery lives on this page, so the photos are rendered into it.
+    gallery = gallery_photos()
     resp = Response(render_template(
         'index.html',
         seo=seo_mod.page(
@@ -369,8 +365,10 @@ def index():
             'KidsHustle, a regulated UK marketplace for teenage work. '
             'Python, Swift, GCP and Kubernetes.',
             og_type='profile',
-            schema=[seo_mod.person_schema(), seo_mod.website_schema()],
+            schema=[seo_mod.person_schema(), seo_mod.website_schema(),
+                    seo_mod.gallery_schema(gallery)],
         ),
+        photos=gallery,
         timeline=work_data.timeline(),
         acts=work_data.acts(),
         skill_groups=work_data.SKILL_GROUPS,
@@ -390,24 +388,13 @@ def tutoring_retired(_subpath=None):
     return redirect(url_for('index'), code=301)
 
 
+# The standalone gallery page is retired. The photographs live in the
+# homepage's photography section, and two URLs showing the same pictures only
+# split the signal between them. It was indexed, so it redirects rather than
+# disappearing.
 @app.route('/photos')
-def photos():
-    # Rendered here rather than fetched by the page. An <img> that only
-    # appears after JavaScript has run is an <img> an image crawler may never
-    # see, and the gallery is the whole point of the page.
-    gallery = gallery_photos()
-    return page_cache_headers(Response(render_template(
-        'photos.html',
-        photos=gallery,
-        seo=seo_mod.page(
-            '/photos',
-            'Photography — Sasha Bagrov',
-            'Street and travel photography by Sasha Bagrov: London, '
-            'Prague, Mariánské Lázně, Lübeck, New York and the forests in '
-            'between, shot on a Canon EOS R8.',
-            schema=[seo_mod.gallery_schema(gallery)],
-        ),
-    )))
+def photos_retired():
+    return redirect(url_for('index') + '#photography', code=301)
 
 
 #! SEO endpoints
@@ -434,7 +421,7 @@ def sitemap():
     resp = Response(
         seo_mod.sitemap_xml(
             lastmod,
-            page_images={'/photos': [p['src'] for p in gallery_photos()]},
+            page_images={'/': [p['src'] for p in gallery_photos()]},
         ),
         mimetype='application/xml',
     )

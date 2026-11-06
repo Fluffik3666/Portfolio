@@ -42,7 +42,6 @@ OG_IMAGE_ALT = 'Sasha Bagrov — developer, founder and photographer, London'
 # Pages worth indexing, in sitemap order. Anything not listed here is an API.
 SITEMAP = [
     {'path': '/', 'priority': '1.0', 'changefreq': 'monthly'},
-    {'path': '/photos', 'priority': '0.8', 'changefreq': 'monthly'},
     {'path': '/cv', 'priority': '0.6', 'changefreq': 'monthly'},
 ]
 

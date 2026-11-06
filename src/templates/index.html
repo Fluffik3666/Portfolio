@@ -446,9 +446,18 @@
     <section class="section section--photography" id="photography">
         <div class="photography-inner">
             <h2 class="section-heading">photography.</h2>
-            <p class="photography-subtitle">mostly London, mostly wandering.</p>
+            <p class="photography-subtitle">london, prague, new york, and a lot of wandering.</p>
+            {# Rendered server-side: an <img> that only exists after the
+               masonry script has run is one an image crawler may never see.
+               index.js lays these out rather than building its own. #}
             <div class="photo-grid" id="photo-grid">
+                {% for photo in photos %}
+                <div class="photo-item">
+                    <img src="{{ photo.src }}" alt="{{ photo.alt }}">
+                </div>
+                {% else %}
                 <p class="loading-repos">loading photos...</p>
+                {% endfor %}
             </div>
         </div>
     </section>
