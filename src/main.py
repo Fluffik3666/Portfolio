@@ -475,6 +475,23 @@ def serve_css(filename):
     resp = Response(minified, mimetype='text/css')
     return cache_headers(resp)
 
+@app.route('/licensing')
+def licensing():
+    resp = Response(render_template(
+        'licensing.html',
+        seo=seo_mod.page(
+            seo_mod.LICENSING_PATH,
+            'Photo Licensing',
+            'How to license or credit photographs by Sasha Bagrov. All '
+            'rights reserved; licences are available on request.',
+        ),
+        email=seo_mod.LICENSING_EMAIL,
+        credit=seo_mod.CREDIT_TEXT,
+        notice=seo_mod.COPYRIGHT_NOTICE,
+    ))
+    return page_cache_headers(resp)
+
+
 @app.route('/cv')
 def serve_cv():
     resp = send_from_directory(
