@@ -1661,6 +1661,17 @@ img {
     width: 100%;
 }
 
+.photography-licence {
+    margin-top: 2.5rem;
+    font-size: 0.85rem;
+    color: var(--grey);
+    font-weight: 300;
+}
+
+.photography-licence a {
+    color: var(--white);
+}
+
 .photography-subtitle {
     font-size: 1.1rem;
     color: var(--grey);

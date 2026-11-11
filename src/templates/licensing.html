@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+{% from '_head.html' import head %}{{ head(seo) }}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --font-serif: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+            --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            --white: #f0f0f0;
+            --grey: #888;
+            --bg: #000;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--white);
+            font-family: var(--font-sans);
+            font-weight: 300;
+            line-height: 1.7;
+        }
+        main {
+            max-width: 40rem;
+            margin: 0 auto;
+            padding: 5rem 1.5rem 6rem;
+        }
+        h1, h2 {
+            font-family: var(--font-serif);
+            font-weight: 400;
+            line-height: 1.1;
+        }
+        h1 { font-size: 3.2rem; margin: 0 0 2rem; }
+        h2 { font-size: 1.9rem; margin: 3rem 0 1rem; }
+        p, li { color: var(--grey); }
+        strong { color: var(--white); font-weight: 400; }
+        a { color: var(--white); }
+        code {
+            display: inline-block;
+            padding: 0.15rem 0.5rem;
+            border: 1px solid #333;
+            color: var(--white);
+            font-size: 0.95rem;
+        }
+        .back { font-size: 0.9rem; text-decoration: none; color: var(--grey); }
+        .back:hover { color: var(--white); }
+    </style>
+</head>
+<body>
+    <main>
+        <a class="back" href="/#photography">&larr; photography</a>
+        <h1>licensing.</h1>
+
+        <p>{{ notice }} Every photograph on this site was taken by me, and none of them are released under an open licence. You may not copy, republish or use them commercially without written permission.</p>
+
+        <h2>credit</h2>
+        <p>Where a licence or permission has been granted, credit the photograph as:</p>
+        <p><code>{{ credit }}</code></p>
+
+        <h2 id="request">request a licence</h2>
+        <p>Editorial, commercial and print licences are available. Email <a href="mailto:{{ email }}?subject=Photo%20licence%20request">{{ email }}</a> with:</p>
+        <ul>
+            <li>which photograph (a link or a screenshot is fine)</li>
+            <li>where and how it will be used</li>
+            <li>how long you need it for</li>
+        </ul>
+        <p>I'll reply with terms and a price, usually within a few days.</p>
+    </main>
+</body>
+</html>

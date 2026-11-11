@@ -39,10 +39,16 @@ OG_IMAGE = '/static/images/og/og-card.jpg'
 OG_IMAGE_W, OG_IMAGE_H = 1200, 630
 OG_IMAGE_ALT = 'Sasha Bagrov — developer, founder and photographer, London'
 
+LICENSING_PATH = '/licensing'
+LICENSING_EMAIL = 'sasha@urbanmechanics.co.uk'
+CREDIT_TEXT = 'Photo: Sasha Bagrov'
+COPYRIGHT_NOTICE = '© Sasha Bagrov. All rights reserved.'
+
 # Pages worth indexing, in sitemap order. Anything not listed here is an API.
 SITEMAP = [
     {'path': '/', 'priority': '1.0', 'changefreq': 'monthly'},
     {'path': '/cv', 'priority': '0.6', 'changefreq': 'monthly'},
+    {'path': LICENSING_PATH, 'priority': '0.3', 'changefreq': 'yearly'},
 ]
 
 ROBOTS_DISALLOW = [
@@ -176,6 +182,10 @@ def gallery_schema(photos=()):
                 'description': photo['alt'],
                 'creator': {'@id': f'{SITE_URL}/#person'},
                 'copyrightHolder': {'@id': f'{SITE_URL}/#person'},
+                'creditText': CREDIT_TEXT,
+                'copyrightNotice': COPYRIGHT_NOTICE,
+                'license': absolute(LICENSING_PATH),
+                'acquireLicensePage': absolute(LICENSING_PATH + '#request'),
             }
             for photo in photos
         ],
