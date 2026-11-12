@@ -549,6 +549,13 @@ def serve_optimized_image(image_id):
 
         # Open and process the image
         with Image.open(io.BytesIO(image_bytes)) as img:
+            # Have the JPEG decoder scale down by a power of two on the way
+            # in, rather than decode every pixel of the original only to
+            # throw most of them away. Lanczos still does the final step.
+            if width:
+                target = int(width)
+                img.draft('RGB', (target, int(img.height * target / img.width)))
+
             if img.mode in ('RGBA', 'LA', 'P'):
                 img = img.convert('RGB')
 
