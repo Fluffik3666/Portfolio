@@ -1467,8 +1467,122 @@
     });
 
     // ── Init ──
+    // ── Split-flap headline ──
+    // A translated press headline that flips back to its original letter by
+    // letter, like a departures board: every cell spins, then they land in a
+    // wave from the left.
+    const FLAP_TICK = 55;
+    const FLAP_STAGGER = 16;
+    const FLAP_GLYPHS = [
+        /[а-яё]/, 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя',
+        /[А-ЯЁ]/, 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ',
+        /[a-z]/, 'abcdefghijklmnopqrstuvwxyz',
+        /[A-Z]/, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+        /[0-9]/, '0123456789'
+    ];
+
+    function flapPool(ch) {
+        for (let i = 0; i < FLAP_GLYPHS.length; i += 2) {
+            if (FLAP_GLYPHS[i].test(ch)) return FLAP_GLYPHS[i + 1];
+        }
+        return ch;
+    }
+
+    function flapTo(title, text, isCurrent) {
+        if (reduceMotion) {
+            title.textContent = text;
+            return;
+        }
+
+        // Screen readers get the final text once; the board is only a picture.
+        const spoken = document.createElement('span');
+        spoken.className = 'sr-only';
+        spoken.textContent = text;
+        const board = document.createElement('span');
+        board.setAttribute('aria-hidden', 'true');
+
+        const cells = [];
+        text.split(' ').forEach((word, w) => {
+            if (w) board.appendChild(document.createTextNode(' '));
+            const wordEl = document.createElement('span');
+            wordEl.className = 'flap-word';
+            for (const ch of word) {
+                const cell = document.createElement('span');
+                cell.className = 'flap-cell is-flipping';
+                const size = document.createElement('span');
+                size.className = 'flap-size';
+                size.textContent = ch;
+                const face = document.createElement('span');
+                face.className = 'flap-face';
+                const pool = flapPool(ch);
+                face.textContent = pool[Math.floor(Math.random() * pool.length)];
+                cell.append(size, face);
+                wordEl.appendChild(cell);
+                cells.push({
+                    cell, face, ch, pool,
+                    end: cells.length * FLAP_STAGGER + FLAP_TICK * (4 + Math.random() * 5),
+                    next: FLAP_TICK
+                });
+            }
+            board.appendChild(wordEl);
+        });
+        title.replaceChildren(spoken, board);
+
+        const start = performance.now();
+        let left = cells.length;
+        (function frame(now) {
+            if (!isCurrent()) return;
+            const t = now - start;
+            cells.forEach(c => {
+                if (c.done || t < c.next) return;
+                if (t >= c.end) {
+                    c.face.textContent = c.ch;
+                    c.cell.classList.remove('is-flipping');
+                    c.done = true;
+                    left--;
+                    return;
+                }
+                c.face.textContent = c.pool[Math.floor(Math.random() * c.pool.length)];
+                c.face.animate(
+                    [{ transform: 'rotateX(75deg)' }, { transform: 'rotateX(0)' }],
+                    { duration: FLAP_TICK * 0.8, easing: 'ease-out' }
+                );
+                c.next += FLAP_TICK;
+            });
+            if (left) {
+                requestAnimationFrame(frame);
+            } else {
+                // Let the tiles fade out, then hand back plain text.
+                setTimeout(() => { if (isCurrent()) title.textContent = text; }, 450);
+            }
+        })(start);
+    }
+
+    function initFlap() {
+        document.querySelectorAll('[data-flap-original]').forEach(title => {
+            const toggle = title.closest('.featured-in-card')?.querySelector('.flap-toggle');
+            if (!toggle) return;
+            const translation = title.textContent.trim();
+            const original = title.dataset.flapOriginal;
+            let showingOriginal = false;
+            let run = 0;
+            toggle.hidden = false;
+
+            toggle.addEventListener('click', () => {
+                showingOriginal = !showingOriginal;
+                toggle.setAttribute('aria-pressed', String(showingOriginal));
+                toggle.textContent = showingOriginal ? 'show translation' : 'show original';
+                if (showingOriginal) title.lang = title.dataset.flapLang;
+                else title.removeAttribute('lang');
+                const id = ++run;
+                flapTo(title, showingOriginal ? original : translation, () => id === run);
+            });
+        });
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
         animateHero();
+        initFlap();
         if (typeof ScrollTrigger !== 'undefined') gsap.registerPlugin(ScrollTrigger);
         initWork();
         initShow();
