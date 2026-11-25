@@ -335,9 +335,10 @@ img {
     height: 34px;
 }
 
-/* Solid square tile — set smaller so it doesn't outweigh the flat wordmarks */
-.hero-press-logo--nbs {
-    height: 30px;
+/* Long single-line wordmark — set by its letter height rather than the box,
+   so it doesn't stretch out wider than the stacked logos beside it */
+.hero-press-logo--akcent {
+    height: 20px;
 }
 
 /* Single-line lockup, so its box is only as tall as the wordmark — sized by
@@ -569,6 +570,109 @@ img {
 .featured-in-card:hover .featured-in-arrow {
     transform: translateX(4px);
     color: var(--white);
+}
+
+/* The headline's link reaches over the whole card, so it still opens from
+   anywhere the other cards do; the toggle sits above that on its own layer. */
+.featured-in-card--split {
+    position: relative;
+}
+
+.featured-in-link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 4px;
+}
+
+.featured-in-link:focus-visible {
+    outline: none;
+}
+
+.featured-in-link:focus-visible::after {
+    outline: 1px solid var(--white);
+}
+
+.featured-in-card--split:hover .featured-in-arrow {
+    transform: translateX(4px);
+    color: var(--white);
+}
+
+/* Wraps as a unit, so the toggle starts flush left when it drops a line */
+.featured-in-card--split .featured-in-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    column-gap: 0.6rem;
+}
+
+.flap-toggle {
+    position: relative;
+    z-index: 1;
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    letter-spacing: inherit;
+    color: var(--grey);
+    text-decoration: underline;
+    text-decoration-color: rgba(136, 136, 136, 0.5);
+    text-underline-offset: 3px;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.flap-toggle:hover,
+.flap-toggle:focus-visible {
+    color: var(--white);
+}
+
+/* Split-flap board. Each cell is sized by the letter it will land on, held
+   invisibly underneath, so the line never reflows while the faces spin. */
+.flap-word {
+    display: inline-block;
+    white-space: nowrap;
+}
+
+.flap-cell {
+    position: relative;
+    display: inline-block;
+    perspective: 200px;
+}
+
+.flap-size {
+    visibility: hidden;
+}
+
+.flap-face {
+    position: absolute;
+    inset: 0 -1px;
+    display: flex;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: 2px;
+    transform-origin: 50% 50%;
+    transition: background-color 0.4s ease;
+}
+
+/* While a cell is still spinning it reads as a tile with the hinge across it */
+.flap-cell.is-flipping .flap-face {
+    background: linear-gradient(to bottom,
+        #1c1c1c 0, #1c1c1c calc(50% - 0.5px),
+        #000 calc(50% - 0.5px), #000 calc(50% + 0.5px),
+        #151515 calc(50% + 0.5px), #151515 100%);
+    color: #fff;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
 }
 
 /* ══════════════════════════════════
@@ -2138,8 +2242,8 @@ img {
         height: 26px;
     }
 
-    .hero-press-logo--nbs {
-        height: 24px;
+    .hero-press-logo--akcent {
+        height: 16px;
     }
 
     .hero-press-logo--foundhaus {

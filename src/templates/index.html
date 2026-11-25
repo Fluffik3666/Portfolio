@@ -65,11 +65,11 @@
                              alt="Tech.eu" />
                     </a>
                     <a class="hero-press-link"
-                       href="https://www.the-nbs.fr/p/un-ado-cree-le-uber-des-petits-boulots-pour-enfants"
+                       href="https://www.akcent.uk/articles/startap-mezhdu-urokami-i-domashnimi-zadaniyami-intervyu-s-sozdatelem-kidshustle-sashey-bagrovym"
                        target="_blank" rel="noopener">
-                        <img class="hero-press-logo hero-press-logo--nbs"
-                             src="{{ url_for('static', filename='images/press/nbs.png') }}"
-                             alt="NBS" />
+                        <img class="hero-press-logo hero-press-logo--akcent"
+                             src="{{ url_for('static', filename='images/press/akcent.svg') }}"
+                             alt="Akcent UK" />
                     </a>
                 </div>
                 <div class="hero-press">
@@ -131,18 +131,23 @@
                         </span>
                         <span class="featured-in-arrow">&rarr;</span>
                     </a>
-                    <a class="featured-in-card"
-                       href="https://www.the-nbs.fr/p/un-ado-cree-le-uber-des-petits-boulots-pour-enfants"
-                       target="_blank" rel="noopener">
+                    <!-- Not one big link like the others: the toggle is a button and
+                         can't live inside an anchor, so the headline's link is stretched
+                         over the card instead. -->
+                    <div class="featured-in-card featured-in-card--split">
                         <img class="featured-in-logo"
-                             src="{{ url_for('static', filename='images/press/nbs.png') }}"
-                             alt="NBS" />
+                             src="{{ url_for('static', filename='images/press/akcent.svg') }}"
+                             alt="Akcent UK" />
                         <span class="featured-in-body">
-                            <span class="featured-in-title" lang="fr">Un ado cr&eacute;e le Uber des petits boulots pour enfants</span>
-                            <span class="featured-in-meta">French tech newsletter</span>
+                            <a class="featured-in-title featured-in-link"
+                               href="https://www.akcent.uk/articles/startap-mezhdu-urokami-i-domashnimi-zadaniyami-intervyu-s-sozdatelem-kidshustle-sashey-bagrovym"
+                               target="_blank" rel="noopener"
+                               data-flap-original="Стартап между уроками и домашними заданиями: интервью с создателем KidsHustle Сашей Багровым"
+                               data-flap-lang="ru">A startup between lessons and homework: an interview with KidsHustle founder Sasha Bagrov</a>
+                            <span class="featured-in-meta">25 November 2026 &middot; interview<button type="button" class="flap-toggle" aria-pressed="false" hidden>show original</button></span>
                         </span>
-                        <span class="featured-in-arrow">&rarr;</span>
-                    </a>
+                        <span class="featured-in-arrow" aria-hidden="true">&rarr;</span>
+                    </div>
                 </div>
             </div>
 
